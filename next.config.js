@@ -4,6 +4,7 @@ const path = require('path');
 const generateTheme = require('next-dynamic-antd-theme/plugin');
 const cssLoader = require('css-loader/dist/utils');
 const withCss = require('@zeit/next-css');
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 
 /** Unused comment */
 const withSass = require('@zeit/next-sass');
@@ -51,6 +52,11 @@ withAntd = (nextConfig = {}) => {
       },
     },
     webpack(config, options) {
+      config.plugins.push(
+        new FilterWarningsPlugin({
+          exclude: /Conflicting order/,
+        })
+      )
       if (config.externals) {
         const includes = [/antd/];
         config.externals = config.externals.map((external) => {
