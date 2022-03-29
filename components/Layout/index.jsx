@@ -8,6 +8,7 @@ import Sliderbar from './Sliderbar';
 import CustomMenu from './CustomMenu';
 import CustomHeader from './CustomHeader';
 import useBreakpoints from '../../hooks/useBreakpoint';
+import LayoutExcluder from '../../utils/LayoutExcluder';
 
 
 
@@ -24,43 +25,49 @@ const AppLayout = ({children}) =>{
 
   return (
     <>
-      <div className={`basicLayout basicLayout-fix-siderbar screen-${screen}`}>
-        <Layout hasSider={screen.indexes > 2}>
+    { LayoutExcluder() ? 
+        <div className={`basicLayout basicLayout-fix-siderbar screen-${screen}`}>
+          <Layout hasSider={screen.indexes > 2}>
 
-            <Sliderbar
-              collapsed={iscollapsed}
-              collapsedToggle={CollapsedToggle}
-              screen={screen}
-            >
-
-              <CustomMenu/>
-
-            </Sliderbar>
-          
-          <div className="ant-layout" style={{ position: "relative" }}>
-
-            <CustomHeader collapsed={iscollapsed} CollapsedToggle={CollapsedToggle}/>
-
-            <Content
-              style={{
-                margin: "24px 16px 0",
-                overflow: "initial",
-              }}
-            >
-              
-              <div
-                className="site-layout-background"
-                style={{ textAlign: "center" }}
+              <Sliderbar
+                collapsed={iscollapsed}
+                collapsedToggle={CollapsedToggle}
+                screen={screen}
               >
-                {children}
-              </div>
 
-            </Content>
+                <CustomMenu/>
 
-            <Footer style={{ textAlign: "center" }}>PTT-SSHE Application @ 2022</Footer>
-          </div>
-        </Layout>
-      </div>
+              </Sliderbar>
+            
+            <div className="ant-layout" style={{ position: "relative" }}>
+
+              <CustomHeader collapsed={iscollapsed} CollapsedToggle={CollapsedToggle}/>
+
+              <Content
+                style={{
+                  margin: "24px 16px 0",
+                  overflow: "initial",
+                }}
+              >
+                
+                <div
+                  className="site-layout-background"
+                  style={{ textAlign: "center" }}
+                >
+                  {children}
+                </div>
+
+              </Content>
+
+              <Footer style={{ textAlign: "center" }}>PTT-SSHE Application @ 2022</Footer>
+            </div>
+          </Layout>
+        </div>
+
+      :
+        <>{children}</>
+    }
+      
     </>
   );
 }
