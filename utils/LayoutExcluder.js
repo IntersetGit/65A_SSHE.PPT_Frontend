@@ -8,12 +8,13 @@ import { useRouter } from "next/router"
 
 const Exclude = [
   '/login',
-  '/'
+  '/',
+  '/_error'
 ]
 
 const LayoutExcluder = () => {
   const router = useRouter()
-
+  
   const isFound = Exclude.find( e => e === router.pathname )
 
   return isFound ? false : true
