@@ -1,17 +1,26 @@
 import { Layout , Divider , Dropdown , Menu , Space , Tooltip} from 'antd'
 import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined} from '@ant-design/icons';
 import Image from 'next/image'
+import { useRouter } from 'next/router';
+import _localStorage from '../../utils/BrowserLocalstorage';
 
 const { Header } = Layout
 
 const CustomHeader = ({CollapsedToggle , collapsed}) => {
+  const router = useRouter()
+
+
+  const Logout = () => {
+    _localStorage.remove('token')
+    router.push('/login')
+  }
 
   const menu = (
     <Menu>
       <Menu.Item key="0">
         แก้ไขข้อมูลส่วนตัว
       </Menu.Item>
-      <Menu.Item key="1">
+      <Menu.Item onClick={Logout} key="1">
         ออกจากระบบ
       </Menu.Item>
     </Menu>
