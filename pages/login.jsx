@@ -1,19 +1,25 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import { Row, Col, Image, Input, Button, Form, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
+import _localStorage from "../utils/BrowserLocalstorage";
 import changeTheme from 'next-dynamic-antd-theme';
 
 
 const Login = () =>{
 
   const [form] = Form.useForm();
+  const router = useRouter()
   const [isBlock, setisBlock] = useState(false)
   const [loading, setLoading] = useState(false)
 
 
-  const onFinish = () =>{
 
+  const onFinish = (value) =>{
+    console.log(value)
+    _localStorage.set('token' ,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiV29uZ3NhdGhvcm4iLCJyb2xlX2lkIjoiMiIsImlhdCI6MTUxNjIzOTAyMn0.vDapJQsDXne2Hi1z9ZxUBbsgVMepo6JDR9zyo1LCZRQ')
+    router.push('/backoffice/contractor_company_mange')
   }
 
   return(
