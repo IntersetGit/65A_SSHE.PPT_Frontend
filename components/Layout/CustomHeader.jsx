@@ -1,6 +1,5 @@
 import { Layout , Divider , Dropdown , Menu , Space , Tooltip} from 'antd'
 import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined} from '@ant-design/icons';
-import Image from 'next/image'
 import { useRouter } from 'next/router';
 import _localStorage from '../../utils/BrowserLocalstorage';
 
@@ -62,7 +61,7 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
             alignItems: "center",
           }}
         >
-          <Image
+          <img
             src="/assets/images/PTT Public Company Limited.svg"
             width={120}
             height={60}
