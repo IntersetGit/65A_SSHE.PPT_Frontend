@@ -11,9 +11,6 @@ const Login = () =>{
   const [isBlock, setisBlock] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const Changetheme = () =>{
-    changeTheme('dark')
-  }
 
   const onFinish = () =>{
 
@@ -83,14 +80,6 @@ const Login = () =>{
             </Form.Item>
 
             <Form.Item>
-            <Button
-                type="primary"
-                className="login-form-button"
-                onClick={Changetheme}
-                style={{ width: "100%" }}
-              >
-                 Change theme
-              </Button>
               <Button
                 type="primary"
                 htmlType="submit"
