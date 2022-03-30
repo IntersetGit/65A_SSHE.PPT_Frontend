@@ -2,7 +2,9 @@
 import { ConfigProvider } from 'antd'
 import Head from 'next/head';
 import AppLayout from '../components/Layout'
-// import '../styles/globals.css'
+
+import { Provider } from 'react-redux';
+import { store } from '../redux/store'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -12,9 +14,11 @@ function MyApp({ Component, pageProps }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true"  />
       </Head>
       <ConfigProvider>
-        <AppLayout>
-          <Component {...pageProps} />
-        </AppLayout>
+        <Provider store={store}>
+          <AppLayout>
+            <Component {...pageProps} />
+          </AppLayout>
+        </Provider>
       </ConfigProvider>
     </>
   )
