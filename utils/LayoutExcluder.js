@@ -8,7 +8,8 @@ import { useRouter } from "next/router"
 
 const Exclude = [
   '/login',
-  '/_error'
+  '/_error',
+  '/'
 ]
 
 const LayoutExcluder = () => {
