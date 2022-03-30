@@ -1,8 +1,7 @@
 import '../../styles/AppLayout.module.css'
 
-import { useState , useEffect } from 'react';
+import { useState } from 'react';
 import { Layout } from 'antd';
-import { UserOutlined , MenuFoldOutlined , MenuUnfoldOutlined} from '@ant-design/icons';
 
 import Sliderbar from './Sliderbar';
 import CustomMenu from './CustomMenu';
@@ -16,7 +15,6 @@ const { Content ,Footer } = Layout;
 
 const AppLayout = ({children}) =>{
   const [iscollapsed , setcollapsed]  = useState (false)
-
   const screen = useBreakpoints()
 
   const CollapsedToggle = () => {
@@ -52,7 +50,6 @@ const AppLayout = ({children}) =>{
                 
                 <div
                   className="site-layout-background"
-                  style={{ textAlign: "center" }}
                 >
                   {children}
                 </div>
