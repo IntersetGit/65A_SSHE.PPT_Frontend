@@ -98,6 +98,9 @@ module.exports = withPlugins(
   ],
   {
     webpack5: false,
+    images: {
+      domains: ['pttsshe']
+    }
     //exportTrailingSlash: true,
     //assetPrefix: '/pttsshe',
     //basePath: '/pttsshe',
