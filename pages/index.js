@@ -1,17 +1,18 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Card } from 'antd';
+import { isUserLoggedin } from "../utils/authenticate/utils"
+import { useEffect } from "react"
+import { useRouter } from "next/router"
 
 export default function Home() {
-  return (
-    <>
-      <div className="site-card-border-less-wrapper">
-        <Card title="Card title" bordered={false} style={{ width: 300 }}>
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
-        </Card>
-      </div>
-    </>
-  )
+
+  const router = useRouter()
+
+  useEffect(() => {
+    if (isUserLoggedin()) {
+      router.push('/backoffice/contractor_company_mange')
+    }else{
+      router.push('/login')
+    }
+  })
+
+  return (<> </>)
 }
