@@ -98,11 +98,29 @@ module.exports = withPlugins(
   ],
   {
     webpack5: false,
-    images: {
-      domains: ['pttsshe']
+    reactStrictMode: true,
+    trailingSlash: true,
+    //assetPrefix: './pttsshe/',
+    basePath: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASE_PATH : '',
+    webpack: function (config) {
+      config.module.rules.push({
+        test: /\.(eot|woff|woff2|ttf|svg|png|jpg|gif)$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 100000,
+            name: '[name].[ext]',
+          },
+        },
+      });
+      return config;
     }
-    //exportTrailingSlash: true,
-    //assetPrefix: '/pttsshe',
-    //basePath: '/pttsshe',
   }
 );
+
+/**
+ * TO KNOW
+ *
+ * exportTrailingSlash: true ใช้สำหรับ Nextjs Version ที่ต่ำกว่า v9.3.4
+ *
+ */
