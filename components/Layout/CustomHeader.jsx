@@ -2,6 +2,7 @@ import { Layout , Divider , Dropdown , Menu , Space , Tooltip} from 'antd'
 import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined} from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import _localStorage from '../../utils/BrowserLocalstorage';
+import { ImageLoader } from "../../utils/Utils";
 
 const { Header } = Layout
 
@@ -62,7 +63,7 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
           }}
         >
           <img
-            src="/assets/images/PTT Public Company Limited.svg"
+            src={ImageLoader("/assets/images/PTT Public Company Limited.svg")}
             width={120}
             height={60}
             alt="ptt-logo"
