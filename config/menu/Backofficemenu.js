@@ -2,7 +2,7 @@ import { UserOutlined } from '@ant-design/icons'
 
 const  Backoffice_menu = {
     pathname : 'Backoffice',
-
+    redirectPage : `/Backoffice/contractor_company_mange`,
     menu : [
         {
             title : 'เมนูสำหรับผู้ใช้ AD',
