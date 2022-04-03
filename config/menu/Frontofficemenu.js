@@ -1,16 +1,19 @@
-import {UserOutlined} from "@ant-design/icons";
+import {UserOutlined , FundOutlined , FormOutlined , AuditOutlined , BarChartOutlined , PieChartOutlined} from "@ant-design/icons";
 
 const  Frontoffice_menu = {
     pathname : 'Frontoffice',
+    redirectPage : `/Frontoffice/analysis_graph`,
     menu : [
         {
             title : 'เมนูสำหรับผู้ใช้ทัวไป',
             list : [
-                {menu_name : 'contractor_company_mange' , title : 'จัดการข้อมูลบริษัทผู้รับเหมา' , type : 'menu'  , icon : UserOutlined},
-                {menu_name : 'non_ad_user_manage' , title : 'จัดการผู้ใช้นอก AD' , type : 'menu'  , icon : UserOutlined},
-                {menu_name : 'test_dropdown_menu' , title : 'Test Dropdown Menu' , type : 'submenu' , icon : UserOutlined ,
+                {menu_name : 'sshe_issue' , title : 'SSHE ISSUE' , type : 'menu'  , icon : UserOutlined},
+                {menu_name : 'sshe_incident' , title : 'SSHE INCIDENT' , type : 'menu'  , icon : FormOutlined},
+                {menu_name : 'sshe_analysis_submenu' , title : 'SSHE ANALYSIS' , type : 'submenu' , icon : FundOutlined ,
                     menu_list : [
-                        {menu_name : 'tes1' , title : 'test1' , type : 'menu' , icon : UserOutlined}
+                        {menu_name : 'analysis_report' , title : 'ANALYSIS REPORT' , type : 'menu' , icon : AuditOutlined},
+                        {menu_name : 'summary_static' , title : 'SUMMARY STATIC' , type : 'menu' , icon : BarChartOutlined},
+                        {menu_name : 'analysis_graph' , title : 'ANALYSIS GRAPH' , type : 'menu' , icon : PieChartOutlined},
                     ]
                 }
             ]
