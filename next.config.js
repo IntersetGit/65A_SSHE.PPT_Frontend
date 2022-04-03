@@ -12,7 +12,7 @@ const withOptimizedImages = require('next-optimized-images');
 // const withTM = require('next-transpile-modules');
 
 const prod = process.env.NODE_ENV === 'production';
-const prefix = prod ? '/next-dynamic-antd-theme/' : '/';
+const prefix = prod ? `${process.env.NEXT_PUBLIC_BASE_PATH}/` : '/';
 
 const withAntdTheme = generateTheme({
   antDir: path.join(__dirname, './node_modules/antd'),
@@ -20,8 +20,10 @@ const withAntdTheme = generateTheme({
   varFile: path.join(__dirname, './theme/vars.less'),
   outputFilePath: path.join(__dirname, './.next/static/color.less'),
   lessFilePath: `${prefix}_next/static/color.less`,
+  lessJSPath: 'https://cdnjs.cloudflare.com/ajax/libs/less.js/4.1.2/less.min.js',
   cssModules : 'true'
 });
+
 
 const css = [withCss, {
   cssModules: false, 
