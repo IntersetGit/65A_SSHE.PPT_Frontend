@@ -11,6 +11,9 @@ import CustomHeader from './CustomHeader';
 import useBreakpoints from '../../hooks/useBreakpoint';
 import LayoutExcluder from '../../utils/LayoutExcluder';
 
+/*
+* TODO: ทำตัวเช็ค Authen กับ User_role
+* */
 
 
 const { Content ,Footer } = Layout;
@@ -33,11 +36,11 @@ const AppLayout = ({children}) =>{
   } , [currpath])
 
   /*
-    This Hook for catch if Menuitems updated
+    This Hook for catch if Menuitems updated ใช้ สำหรับเช็ค ว่า Login หรือป่าว หรือ Role ผ่านหรือป่าว
   * */
-  useEffect(() =>{
-    console.log("Menu items",Menuitems)
-  },[Menuitems])
+  // useEffect(() =>{
+  //   // console.log("Menu items",Menuitems)
+  // },[Menuitems])
 
   const CollapsedToggle = () => {
     setcollapsed(!iscollapsed)
@@ -63,7 +66,7 @@ const AppLayout = ({children}) =>{
             
             <div className="ant-layout" style={{ position: "relative" }}>
 
-              <CustomHeader collapsed={iscollapsed} CollapsedToggle={CollapsedToggle}/>
+              <CustomHeader collapsed={iscollapsed} CollapsedToggle={CollapsedToggle} breakpoints={screen} currpath={currpath} />
 
               <Content
                 style={{
