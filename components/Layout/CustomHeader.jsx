@@ -1,18 +1,26 @@
 import { Layout , Divider , Dropdown , Menu , Space , Tooltip} from 'antd'
-import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined} from '@ant-design/icons';
+import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined , FileSearchOutlined} from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import _localStorage from '../../utils/BrowserLocalstorage';
 import { ImageLoader } from "../../utils/Utils";
+import Themeswitch from "../Themeswitch";
+import Config from "../../config";
+import Rootmenu from "../../config/menu";
 
 const { Header } = Layout
 
-const CustomHeader = ({CollapsedToggle , collapsed}) => {
+const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) => {
   const router = useRouter()
 
 
   const Logout = () => {
     _localStorage.remove('token')
-    router.push('/login')
+    router.push(Config.NO_AUTH_PAGE)
+  }
+
+  const ToggleSideRedirect = () =>{
+      const _rpath = currpath === 'Backoffice' ? 'Frontoffice' : 'Backoffice'
+      router.push(Rootmenu[_rpath].redirectPage)
   }
 
   const menu = (
@@ -68,15 +76,18 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
             height={60}
             alt="ptt-logo"
           />
-          <span
-            style={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-            }}
-          >
-            PTT SSHE Application
-          </span>
+            {breakpoints.indexes > 2 &&
+                <span
+                    style={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "1.1rem",
+                    }}
+                >
+                    PTT SSHE Application
+                </span>
+            }
+
           <Divider type="vertical" />
           <span
             onClick={CollapsedToggle}
@@ -100,8 +111,9 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
           }}
         > 
           <Space direction='horizontal'>
-            <Tooltip title="Backoffice">
-              <p style={{ cursor : 'pointer' }}><SettingOutlined /></p>
+              <Themeswitch/>
+            <Tooltip title={currpath === 'Backoffice' ? 'Frontoffice' : 'Backoffice'}>
+              <p onClick={ToggleSideRedirect} style={{ cursor : 'pointer' }}>{currpath === 'Backoffice' ? <FileSearchOutlined /> : <SettingOutlined /> }</p>
             </Tooltip>
             <Dropdown  overlay={menu} trigger={['click']}>
                 <p style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>

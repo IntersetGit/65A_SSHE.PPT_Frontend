@@ -2,6 +2,9 @@ import { Menu } from "antd";
 import Icon from '@ant-design/icons';
 import Link from 'next/link';
 
+/*
+* TODO: เพิ่ม path resolver สำหรับ select Menu
+* */
 
 const { SubMenu } = Menu;
 
@@ -10,10 +13,11 @@ const CustomMenu = ({Menuitems}) => {
   return (
     <>
       <Menu
-        theme="dark"
-        mode="inline"
-        // defaultSelectedKeys={["1"]}
-        style={{ height: "100%", borderRight: 0, fontSize: "0.8rem" }}
+            selectable={false}
+            theme="dark"
+            mode="inline"
+            // defaultSelectedKeys={["1"]}
+            style={{ height: "100%", borderRight: 0, fontSize: "0.8rem" }}
       >
         {
           Menuitems.menu.map((value,key) =>{
@@ -24,14 +28,14 @@ const CustomMenu = ({Menuitems}) => {
                             return(
                                 v.type === 'menu' ?
                                     <Menu.Item key={`${k+1}`} icon={<Icon component={v.icon} />}>
-                                        <Link href={v.menu_name}>{v.title}</Link>
+                                        <Link href={`/${Menuitems.pathname}/${v.menu_name}`}>{v.title}</Link>
                                     </Menu.Item>
                                     :
                                     <SubMenu key={v.menu_name} icon={<Icon component={v.icon} />} title={v.title}>
                                         {v.menu_list.map((_v,_k) =>{
                                             return (
                                                 _v.type === 'menu' &&
-                                                    <Menu.Item icon={<Icon component={_v.icon} />} key={`${v.menu_name}_${_k}`}><Link href={_v.menu_name}>{_v.title}</Link></Menu.Item>
+                                                <Menu.Item icon={<Icon component={_v.icon} />} key={`${v.menu_name}_${_k}`}><Link href={`/${Menuitems.pathname}/${_v.menu_name}`}>{_v.title}</Link></Menu.Item>
                                             )
                                         })
                                         }
@@ -46,14 +50,14 @@ const CustomMenu = ({Menuitems}) => {
                             return(
                                 v.type === 'menu' ?
                                     <Menu.Item key={`${k+1}`} icon={<Icon component={v.icon} />}>
-                                        <Link href={v.menu_name}>{v.title}</Link>
+                                        <Link href={`/${Menuitems.pathname}/${v.menu_name}`}>{v.title}</Link>
                                     </Menu.Item>
                                     :
                                     <SubMenu key={v.menu_name} icon={<Icon component={v.icon} />} title={v.title}>
                                         {v.menu_list.map((_v,_k) =>{
                                             return (
                                                 _v.type === 'menu' &&
-                                                <Menu.Item icon={<Icon component={_v.icon} />} key={`${v.menu_name}_${_k}`}><Link href={_v.menu_name}>{_v.title}</Link></Menu.Item>
+                                                <Menu.Item icon={<Icon component={_v.icon} />} key={`${v.menu_name}_${_k}`}><Link href={`/${Menuitems.pathname}/${_v.menu_name}`}>{_v.title}</Link></Menu.Item>
                                             )
                                         })
                                         }
