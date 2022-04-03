@@ -1,7 +1,9 @@
 import '../../styles/AppLayout.module.css'
 
-import { useState } from 'react';
+import { useState , useEffect , useMemo } from 'react';
+import { useRouter } from "next/router";
 import { Layout } from 'antd';
+import Rootmenu from "../../config/menu";
 
 import Sliderbar from './Sliderbar';
 import CustomMenu from './CustomMenu';
@@ -16,6 +18,26 @@ const { Content ,Footer } = Layout;
 const AppLayout = ({children}) =>{
   const [iscollapsed , setcollapsed]  = useState (false)
   const screen = useBreakpoints()
+  const router = useRouter()
+  const [currpath,setcurrpath] = useState(router.pathname.split('/')[1])
+
+  /*
+  *  This hook for catch if router path name changed
+  * */
+  useEffect(() =>{
+    setcurrpath(router.pathname.split('/')[1])
+  },[router.pathname])
+
+  const Menuitems = useMemo(() =>{
+    return Rootmenu[currpath]
+  } , [currpath])
+
+  /*
+    This Hook for catch if Menuitems updated
+  * */
+  useEffect(() =>{
+    console.log("Menu items",Menuitems)
+  },[Menuitems])
 
   const CollapsedToggle = () => {
     setcollapsed(!iscollapsed)
@@ -25,17 +47,19 @@ const AppLayout = ({children}) =>{
     <>
     { LayoutExcluder() ? 
         <div className={`basicLayout basicLayout-fix-siderbar screen-${screen}`}>
-          <Layout hasSider={screen.indexes > 2}>
+          <Layout hasSider={screen.indexes > 2 || Menuitems !== undefined}>
 
-              <Sliderbar
+            {Menuitems!== undefined&&
+                <Sliderbar
                 collapsed={iscollapsed}
                 collapsedToggle={CollapsedToggle}
                 screen={screen}
-              >
+                >
 
-                <CustomMenu/>
+                <CustomMenu Menuitems={Menuitems}/>
 
-              </Sliderbar>
+                </Sliderbar>
+            }
             
             <div className="ant-layout" style={{ position: "relative" }}>
 
