@@ -8,8 +8,8 @@ const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const withOptimizedImages = require('next-optimized-images');
 
 /** Unused comment */
-const withSass = require('@zeit/next-sass');
-const withTM = require('next-transpile-modules');
+// const withSass = require('@zeit/next-sass');
+// const withTM = require('next-transpile-modules');
 
 const prod = process.env.NODE_ENV === 'production';
 const prefix = prod ? '/next-dynamic-antd-theme/' : '/';
@@ -98,7 +98,7 @@ module.exports = withPlugins(
   ],
   {
     webpack5: false,
-    reactStrictMode: true,
+    reactStrictMode: false,
     trailingSlash: true,
     //assetPrefix: './pttsshe/',
     basePath: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASE_PATH : '',
