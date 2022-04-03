@@ -81,7 +81,7 @@ const ContractorCompanyManage = () =>{
         <p>ฟิลเตอร์ค้นหาบริษัท</p>
       </Card>
       <Card style={{ marginTop : '1rem' }} bordered={true}>
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={data} expandable size={'middle'} />
       </Card>
     </>
   )
