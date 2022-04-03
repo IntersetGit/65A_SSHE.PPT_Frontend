@@ -3,6 +3,7 @@ import { ConfigProvider } from 'antd'
 import Head from 'next/head';
 import AppLayout from '../components/Layout'
 
+
 import { Provider } from 'react-redux';
 import { store } from '../redux/store'
 
