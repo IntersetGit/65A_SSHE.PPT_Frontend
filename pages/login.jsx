@@ -5,7 +5,8 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import _localStorage from "../utils/BrowserLocalstorage";
 import { ImageLoader } from "../utils/Utils";
-import changeTheme from 'next-dynamic-antd-theme';
+import ThemeSwitch from "../components/Themeswitch";
+import Config from "../config";
 
 
 const Login = () =>{
@@ -20,7 +21,7 @@ const Login = () =>{
   const onFinish = (value) =>{
     console.log(value)
     _localStorage.set('token' ,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiV29uZ3NhdGhvcm4iLCJyb2xlX2lkIjoiMiIsImlhdCI6MTUxNjIzOTAyMn0.vDapJQsDXne2Hi1z9ZxUBbsgVMepo6JDR9zyo1LCZRQ')
-    router.push('/Backoffice/contractor_company_mange')
+    router.push(Config.DEFAULT_REDIRECT_PATH)
   }
 
   return(
@@ -33,6 +34,9 @@ const Login = () =>{
           <img src={ImageLoader("/assets/images/photo_2022-03-24_13-01-06.jpg")} style={{ height: "100vh", width: '100%', objectFit: 'cover' }} />
         </Col>
         <Col xs={24} sm={14} mg={14} lg={14} xl={9} style={{ padding: '5%', marginTop: "-2%", }}>
+          <div style={{float : 'right'}}>
+            <ThemeSwitch/>
+          </div>
           <Col style={{ padding: '0 0 15%' }}>
             <img width="50%" src={ImageLoader("/assets/images/logo_PTT.png")}  />
           </Col>
