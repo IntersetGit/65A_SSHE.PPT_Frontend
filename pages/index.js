@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isUserLoggedin()) {
-      router.push('/backoffice/contractor_company_mange')
+      router.push('/Backoffice/contractor_company_mange')
     }else{
       router.push('/login')
     }

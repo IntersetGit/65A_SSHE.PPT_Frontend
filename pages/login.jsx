@@ -20,7 +20,7 @@ const Login = () =>{
   const onFinish = (value) =>{
     console.log(value)
     _localStorage.set('token' ,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiV29uZ3NhdGhvcm4iLCJyb2xlX2lkIjoiMiIsImlhdCI6MTUxNjIzOTAyMn0.vDapJQsDXne2Hi1z9ZxUBbsgVMepo6JDR9zyo1LCZRQ')
-    router.push('/backoffice/contractor_company_mange')
+    router.push('/Backoffice/contractor_company_mange')
   }
 
   return(
