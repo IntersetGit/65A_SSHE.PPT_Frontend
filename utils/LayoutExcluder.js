@@ -17,7 +17,7 @@ const LayoutExcluder = () => {
   
   const isFound = Exclude.find( e => e === router.pathname )
 
-  return isFound ? false : true
+  return !isFound
 }
 
 export default LayoutExcluder
