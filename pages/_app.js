@@ -2,10 +2,18 @@
 import { ConfigProvider } from 'antd'
 import Head from 'next/head';
 import AppLayout from '../components/Layout'
-
+import { ThemeContext } from "../components/Themeswitch";
+import _localStorage from "../utils/BrowserLocalstorage";
+import Config from "../config";
+import Theme from "../components/Themeswitch/Theme";
 
 import { Provider } from 'react-redux';
 import { store } from '../redux/store'
+
+const GetthemeColor = () =>{
+    if (!_localStorage.get('theme')) _localStorage.set('theme',Config.DEFAULT_THEME)
+    return _localStorage.get('theme')
+}
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -17,9 +25,12 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <ConfigProvider>
         <Provider store={store}>
-          <AppLayout>
-            <Component {...pageProps} />
-          </AppLayout>
+            <ThemeContext.Provider value={GetthemeColor()}>
+                <Theme/>
+                  <AppLayout>
+                    <Component {...pageProps} />
+                  </AppLayout>
+            </ThemeContext.Provider>
         </Provider>
       </ConfigProvider>
     </>
