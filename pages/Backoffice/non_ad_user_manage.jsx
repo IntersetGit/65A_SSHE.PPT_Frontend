@@ -1,9 +1,13 @@
-import { Card, Menu, Input, Button, Dropdown, Table } from 'antd';
+import React, { useState } from 'react'
+import { Card, Menu, Input, Button, Dropdown, Table, Drawer, Form } from 'antd';
 import { EditOutlined, DeleteOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
 
-const onSearch = value => console.log(value);
+const onSearch = (values,e) => {
+    if (values == e.number) return data
+    console.log(values)
+}
 
 const columns = [
     {
@@ -80,10 +84,47 @@ const data = [
       }
 ]
 
-const NonadUsermanage = () =>{
+const NonadUsermanage = (props) => {
+    const [isShowModal, setShowModal] = useState(false)
+
+    const showModal = () => {
+        setShowModal(true)
+    }
+
+    const hideModal = () => {
+        setShowModal(false)
+    }
+
+    const onFinish = (values) => {
+        onClose(values)
+    }  
 
     return(
         <>
+        <Drawer
+                title='เพิ่มผู้ใช้นอก AD'
+                headerStyle={{ textAlign: 'center' }}
+                onClose={hideModal}
+                onCancel={hideModal}
+                visible={isShowModal}
+                closable={true}
+                maskClosable={false}
+                keyboard={false}
+                size='large'
+            >
+                <Form
+                    layout="inline"
+                    size="medium"
+                    onFinish={onFinish}
+                    scrollToFirstError
+                    initialValues={{
+
+                    }}
+
+                >
+
+                </Form>
+        </Drawer>        
             <Card style={{ marginTop : '1rem' }} bordered={true}>
             <h1><p>จัดการผู้ใช้นอก AD</p></h1>
             <Search
@@ -93,7 +134,7 @@ const NonadUsermanage = () =>{
                 onSearch={onSearch}
                 style={{ width: 400 }}
             />
-            <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'right' }}>เพิ่มผู้ใช้นอก AD</Button>
+            <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'right' }} onClick={showModal}>เพิ่มผู้ใช้นอก AD</Button>
                 <Table columns={columns} dataSource={data} style={{ marginTop: 20}}
                 pagination={{
                 }}/>
