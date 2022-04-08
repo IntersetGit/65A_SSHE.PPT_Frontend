@@ -8,8 +8,8 @@ const {Sider} = Layout;
 const Sliderbar = ({ collapsed , collapsedToggle , children , screen}) => {
 
   const Settings = {
-    width : '210px',
-    collapsedWidth : '48px'
+    width : '250px',
+    collapsedWidth : '60px'
   }
   
   const Breakpoint = (b) =>{
@@ -42,7 +42,7 @@ const Sliderbar = ({ collapsed , collapsedToggle , children , screen}) => {
           overflow: "auto",
           height: "100vh",
           position: "fixed",
-          paddingTop: "48px",
+          paddingTop: "60px",
         }}
         className="site-layout-background"
       >

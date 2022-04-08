@@ -17,7 +17,7 @@ const CustomMenu = ({Menuitems}) => {
             theme="dark"
             mode="inline"
             // defaultSelectedKeys={["1"]}
-            style={{ height: "100%", borderRight: 0, fontSize: "0.8rem" }}
+            style={{ height: "100%", borderRight: 0, fontSize: "1rem" }}
       >
         {
           Menuitems.menu.map((value,key) =>{

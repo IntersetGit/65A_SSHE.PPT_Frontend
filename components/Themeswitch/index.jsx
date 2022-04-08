@@ -27,7 +27,7 @@ const ThemeSwitch = () =>{
 
 
     return(
-        <Switch checked={theme !== 'dark'} style={{ marginTop :  '-1.3rem'}} onClick={Changetheme} checkedChildren="🌞" unCheckedChildren="🌙" />
+        <Switch size={'small'} checked={theme !== 'dark'} style={{ marginTop :  '-1.3rem'}} onClick={Changetheme} checkedChildren="🌞" unCheckedChildren="🌙" />
     )
 }
 

@@ -18,9 +18,8 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
     router.push(Config.NO_AUTH_PAGE)
   }
 
-  const ToggleSideRedirect = () =>{
-      const _rpath = currpath === 'Backoffice' ? 'Frontoffice' : 'Backoffice'
-      router.push(Rootmenu[_rpath].redirectPage)
+  const ToggleSideRedirect = (mode) =>{
+      router.push(Rootmenu[mode].redirectPage)
   }
 
   const menu = (
@@ -39,7 +38,7 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
       <Header
         className="site-layout-background"
         style={{
-          height: "48px",
+          height: "60px",
           lineHeight: "48px",
           background: "transparent",
         }}
@@ -48,7 +47,7 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
         className="headers__drop__shadow"
         style={{
           padding: "0px",
-          height: "48px",
+          height: "60px",
           lineHeight: "48px",
           width: "100%",
           zIndex: "100",
@@ -100,21 +99,26 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
         {/* Right Navbar */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            justifyItems: "center",
-            alignItems: "center",
-            marginRight : '1.5%' , 
-            color : 'white' ,
-            fontSize : '1.1rem',
-            marginTop :  '1.1rem'
+              display: "flex",
+              justifyContent: "center",
+              justifyItems: "center",
+              alignItems: "center",
+              marginRight : '1.5%' ,
+              color : 'white' ,
+              fontSize : '0.95rem',
+              marginTop :  '1.1rem'
           }}
         > 
           <Space direction='horizontal'>
               <Themeswitch/>
-            <Tooltip title={currpath === 'Backoffice' ? 'Frontoffice' : 'Backoffice'}>
-              <p onClick={ToggleSideRedirect} style={{ cursor : 'pointer' }}>{currpath === 'Backoffice' ? <FileSearchOutlined /> : <SettingOutlined /> }</p>
-            </Tooltip>
+                <Tooltip title={'Frontoffice'}>
+                  <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </p>
+                </Tooltip>
+
+              <Tooltip title={'Backoffice'}>
+                  <p onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <SettingOutlined /> </p>
+              </Tooltip>
+
             <Dropdown  overlay={menu} trigger={['click']}>
                 <p style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>
                   <UserOutlined/> Administrator <DownOutlined />
