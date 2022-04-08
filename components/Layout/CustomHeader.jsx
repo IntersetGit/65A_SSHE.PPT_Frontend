@@ -1,17 +1,33 @@
 import { Layout , Divider , Dropdown , Menu , Space , Tooltip} from 'antd'
-import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined} from '@ant-design/icons';
-import Image from 'next/image'
+import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined , FileSearchOutlined} from '@ant-design/icons';
+import { useRouter } from 'next/router';
+import _localStorage from '../../utils/BrowserLocalstorage';
+import { ImageLoader } from "../../utils/Utils";
+import Themeswitch from "../Themeswitch";
+import Config from "../../config";
+import Rootmenu from "../../config/menu";
 
 const { Header } = Layout
 
-const CustomHeader = ({CollapsedToggle , collapsed}) => {
+const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) => {
+  const router = useRouter()
+
+
+  const Logout = () => {
+    _localStorage.remove('token')
+    router.push(Config.NO_AUTH_PAGE)
+  }
+
+  const ToggleSideRedirect = (mode) =>{
+      router.push(Rootmenu[mode].redirectPage)
+  }
 
   const menu = (
     <Menu>
       <Menu.Item key="0">
         แก้ไขข้อมูลส่วนตัว
       </Menu.Item>
-      <Menu.Item key="1">
+      <Menu.Item onClick={Logout} key="1">
         ออกจากระบบ
       </Menu.Item>
     </Menu>
@@ -22,7 +38,7 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
       <Header
         className="site-layout-background"
         style={{
-          height: "48px",
+          height: "60px",
           lineHeight: "48px",
           background: "transparent",
         }}
@@ -31,7 +47,7 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
         className="headers__drop__shadow"
         style={{
           padding: "0px",
-          height: "48px",
+          height: "60px",
           lineHeight: "48px",
           width: "100%",
           zIndex: "100",
@@ -53,21 +69,24 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
             alignItems: "center",
           }}
         >
-          <Image
-            src="/assets/images/PTT Public Company Limited.svg"
+          <img
+            src={ImageLoader("/assets/images/PTT Public Company Limited.svg")}
             width={120}
             height={60}
             alt="ptt-logo"
           />
-          <span
-            style={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-            }}
-          >
-            PTT SSHE Application
-          </span>
+            {breakpoints.indexes > 2 &&
+                <span
+                    style={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "1.1rem",
+                    }}
+                >
+                    PTT SSHE Application
+                </span>
+            }
+
           <Divider type="vertical" />
           <span
             onClick={CollapsedToggle}
@@ -80,20 +99,26 @@ const CustomHeader = ({CollapsedToggle , collapsed}) => {
         {/* Right Navbar */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            justifyItems: "center",
-            alignItems: "center",
-            marginRight : '1.5%' , 
-            color : 'white' ,
-            fontSize : '1.1rem',
-            marginTop :  '1.1rem'
+              display: "flex",
+              justifyContent: "center",
+              justifyItems: "center",
+              alignItems: "center",
+              marginRight : '1.5%' ,
+              color : 'white' ,
+              fontSize : '0.95rem',
+              marginTop :  '1.1rem'
           }}
         > 
           <Space direction='horizontal'>
-            <Tooltip title="Backoffice">
-              <p style={{ cursor : 'pointer' }}><SettingOutlined /></p>
-            </Tooltip>
+              <Themeswitch/>
+                <Tooltip title={'Frontoffice'}>
+                  <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </p>
+                </Tooltip>
+
+              <Tooltip title={'Backoffice'}>
+                  <p onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <SettingOutlined /> </p>
+              </Tooltip>
+
             <Dropdown  overlay={menu} trigger={['click']}>
                 <p style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>
                   <UserOutlined/> Administrator <DownOutlined />

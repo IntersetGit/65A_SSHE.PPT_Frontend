@@ -1,22 +1,27 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
-import { Row, Col, Image, Input, Button, Form, Checkbox, message } from "antd";
+import { Row, Col, Input, Button, Form, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import changeTheme from 'next-dynamic-antd-theme';
+import { useRouter } from "next/router";
+import _localStorage from "../utils/BrowserLocalstorage";
+import { ImageLoader } from "../utils/Utils";
+import ThemeSwitch from "../components/Themeswitch";
+import Config from "../config";
 
 
 const Login = () =>{
 
   const [form] = Form.useForm();
+  const router = useRouter()
   const [isBlock, setisBlock] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const Changetheme = () =>{
-    changeTheme('dark')
-  }
 
-  const onFinish = () =>{
 
+  const onFinish = (value) =>{
+    console.log(value)
+    _localStorage.set('token' ,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiV29uZ3NhdGhvcm4iLCJyb2xlX2lkIjoiMiIsImlhdCI6MTUxNjIzOTAyMn0.vDapJQsDXne2Hi1z9ZxUBbsgVMepo6JDR9zyo1LCZRQ')
+    router.push(Config.DEFAULT_REDIRECT_PATH)
   }
 
   return(
@@ -26,11 +31,14 @@ const Login = () =>{
       </Head>
       <Row>
         <Col xs={0} sm={10} mg={10} lg={10} xl={15} >
-          <img src="/assets/images/photo_2022-03-24_13-01-06.jpg" style={{ height: "100vh", width: '100%', objectFit: 'cover' }} />
+          <img src={ImageLoader("/assets/images/photo_2022-03-24_13-01-06.jpg")} style={{ height: "100vh", width: '100%', objectFit: 'cover' }} />
         </Col>
         <Col xs={24} sm={14} mg={14} lg={14} xl={9} style={{ padding: '5%', marginTop: "-2%", }}>
+          <div style={{float : 'right'}}>
+            <ThemeSwitch/>
+          </div>
           <Col style={{ padding: '0 0 15%' }}>
-            <img width="50%" src="/assets/images/logo_PTT.png" />
+            <img width="50%" src={ImageLoader("/assets/images/logo_PTT.png")}  />
           </Col>
           <h2><b>Sign in</b></h2>
           <Form
@@ -83,14 +91,6 @@ const Login = () =>{
             </Form.Item>
 
             <Form.Item>
-            <Button
-                type="primary"
-                className="login-form-button"
-                onClick={Changetheme}
-                style={{ width: "100%" }}
-              >
-                 Change theme
-              </Button>
               <Button
                 type="primary"
                 htmlType="submit"

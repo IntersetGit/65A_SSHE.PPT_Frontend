@@ -1,38 +1,75 @@
 import { Menu } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import Icon from '@ant-design/icons';
+import Link from 'next/link';
+
+/*
+* TODO: เพิ่ม path resolver สำหรับ select Menu
+* */
 
 const { SubMenu } = Menu;
 
-const CustomMenu = () => {
+const CustomMenu = ({Menuitems}) => {
+
   return (
     <>
       <Menu
-        theme="dark"
-        mode="inline"
-        defaultSelectedKeys={["1"]}
-        style={{ height: "100%", borderRight: 0, fontSize: "0.8rem" }}
+            selectable={false}
+            theme="dark"
+            mode="inline"
+            // defaultSelectedKeys={["1"]}
+            style={{ height: "100%", borderRight: 0, fontSize: "1rem" }}
       >
-        <Menu.Item key="1" icon={<UserOutlined />}>
-          จัดการผู้ใช้ระบบ
-        </Menu.Item>
-        <Menu.Item key="2" icon={<UserOutlined />}>
-          จัดการข้อมูลบริษัทผู้รับเหมา
-        </Menu.Item>
-        <Menu.Item key="3" icon={<UserOutlined />}>
-          จัดการข้อมูลผู้ใช้นอก AD
-        </Menu.Item>
-        <Menu.Item key="4" icon={<UserOutlined />}>
-          จัดการข้อมูลโครงการ
-        </Menu.Item>
-        <Menu.Item key="5" icon={<UserOutlined />}>
-          จัดการข้อมูลกิจกรรม
-        </Menu.Item>
-        <SubMenu key="sub1" icon={<UserOutlined />} title="Test Dropdown Menu">
-          <Menu.Item key="6">option1</Menu.Item>
-          <Menu.Item key="7">option2</Menu.Item>
-          <Menu.Item key="8">option3</Menu.Item>
-          <Menu.Item key="9">option4</Menu.Item>
-        </SubMenu>
+        {
+          Menuitems.menu.map((value,key) =>{
+            return(
+                value.title ?
+                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : '#00AEEF' , fontWeight : 'bold'}}>{value.title}</span>}>
+                        {value.list.map((v , k) =>{
+                            return(
+                                v.type === 'menu' ?
+                                    <Menu.Item key={`${k+1}`} icon={<Icon component={v.icon} />}>
+                                        <Link href={`/${Menuitems.pathname}/${v.menu_name}`}>{v.title}</Link>
+                                    </Menu.Item>
+                                    :
+                                    <SubMenu key={v.menu_name} icon={<Icon component={v.icon} />} title={v.title}>
+                                        {v.menu_list.map((_v,_k) =>{
+                                            return (
+                                                _v.type === 'menu' &&
+                                                <Menu.Item icon={<Icon component={_v.icon} />} key={`${v.menu_name}_${_k}`}><Link href={`/${Menuitems.pathname}/${_v.menu_name}`}>{_v.title}</Link></Menu.Item>
+                                            )
+                                        })
+                                        }
+                                    </SubMenu>
+                            )
+                        })
+                        }
+                    </Menu.ItemGroup>
+                    :
+                    <>
+                        {value.list.map((v , k) =>{
+                            return(
+                                v.type === 'menu' ?
+                                    <Menu.Item key={`${k+1}`} icon={<Icon component={v.icon} />}>
+                                        <Link href={`/${Menuitems.pathname}/${v.menu_name}`}>{v.title}</Link>
+                                    </Menu.Item>
+                                    :
+                                    <SubMenu key={v.menu_name} icon={<Icon component={v.icon} />} title={v.title}>
+                                        {v.menu_list.map((_v,_k) =>{
+                                            return (
+                                                _v.type === 'menu' &&
+                                                <Menu.Item icon={<Icon component={_v.icon} />} key={`${v.menu_name}_${_k}`}><Link href={`/${Menuitems.pathname}/${_v.menu_name}`}>{_v.title}</Link></Menu.Item>
+                                            )
+                                        })
+                                        }
+                                    </SubMenu>
+                            )
+                        })
+                        }
+                    </>
+
+            )
+          })
+        }
       </Menu>
     </>
   );
