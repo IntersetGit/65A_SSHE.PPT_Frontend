@@ -9,29 +9,13 @@ const AnalysisGraph = () =>{
 
     const data = [
         {
-            type: '分类一',
-            value: 27,
+            type: 'Unsafe Action Issue',
+            value: 16,
         },
         {
-            type: '分类二',
-            value: 25,
-        },
-        {
-            type: '分类三',
-            value: 18,
-        },
-        {
-            type: '分类四',
-            value: 15,
-        },
-        {
-            type: '分类五',
-            value: 10,
-        },
-        {
-            type: '其他',
-            value: 5,
-        },
+            type: 'Unsafe Condition Issue',
+            value: 84,
+        }
     ];
     const config = {
         appendPadding: 10,
@@ -158,7 +142,18 @@ const AnalysisGraph = () =>{
 
                     </Card>
                 </Col>
+                <Col xl={12}>
+                    <Card size='small' title={'Unsafe Statistic'}>
+                        {isLoading ?
+                            <Pie {...config} />
+                            :
+                            <Skeleton active/>
+                        }
+
+                    </Card>
+                </Col>
             </Row>
+
         </>
     )
 }
