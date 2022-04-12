@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Button, Drawer, Form, Select, Input, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { office_type } from '../../config/office_type';
+import { region } from '../../config/region';
+import { povine } from '../../config/povine';
 
 const {Option} = Select;
 const { TextArea } = Input;
@@ -34,7 +36,7 @@ const LocationDrawer = (props) => {
 
       return(
           <>
-          <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'left' }} onClick={showModal}>เพิ่ม</Button>
+          <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={showModal}>เพิ่ม</Button>
           <Drawer
                 title='เพิ่มที่ตั้งบริษัท'
                 headerStyle={{ textAlign: 'center' }}
@@ -132,6 +134,46 @@ const LocationDrawer = (props) => {
                                 ]}
                             >
                                 <TextArea rows={4} />
+                            </Form.Item>
+                        </Form.Item>
+                    </Col>
+
+                    <Col>
+                        <Form.Item label="">
+                            <Form.Item
+                                name="mas_region_id"
+                                label="ภูมิภาค :"
+                                labelCol={{ span: 24 }}
+                                style={{
+                                display: "inline-block",
+                                width: "calc(50% - 12px)",
+                                }}
+                                rules={[
+                                {
+                                    required: true,
+                                    message: "กรุณาระบุภูมิภาค",
+                                },
+                                ]}
+                            >
+                                <Select options={region}></Select>
+                            </Form.Item>
+                            <Form.Item
+                                name="mas_prov_id"
+                                label="จังหวัด :"
+                                labelCol={{ span: 24 }}
+                                style={{
+                                marginLeft: "20px",
+                                display: "inline-block",
+                                width: "calc(50% - 12px)",
+                                }}
+                                rules={[
+                                {
+                                    required: true,
+                                    message: "กรุณาระบุจังหวัด",
+                                },
+                                ]}
+                            >
+                                <Select options={povine}></Select>
                             </Form.Item>
                         </Form.Item>
                     </Col>

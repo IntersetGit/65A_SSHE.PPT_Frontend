@@ -103,7 +103,7 @@ const NonadUsermanage = (props) => {
     return(
         <>     
             <Card style={{ marginTop : '1rem' }} bordered={true}>
-            <h1><p>จัดการผู้ใช้นอก AD</p></h1>
+            <h1><p>จัดการผู้ใช้งานระบบ</p></h1>
             <Search
                 placeholder="input search text"
                 allowClear
