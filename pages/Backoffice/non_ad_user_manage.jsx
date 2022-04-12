@@ -1,47 +1,48 @@
 import React, { useState } from 'react'
-import { Card, Menu, Input, Button, Dropdown, Table, Drawer, Form } from 'antd';
+import { Card, Menu, Input, Button, Dropdown, Table, Drawer, Form, Col } from 'antd';
 import { EditOutlined, DeleteOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
+import UsernonadDrawer from '../../components/Drawers/user_non_ad_drawer';
 
 const { Search } = Input;
 
 const onSearch = (values,e) => {
-    if (values == e.number) return data
+    if (values === data) return data
     console.log(values)
 }
 
 const columns = [
     {
-      title: 'ลำดับ',
+      title: <b>ลำดับ</b>,
       dataIndex: 'number',
       key: 'number',
     },
     {
-      title: 'ชื่อเข้าใช้ระบบ',
+      title: <b>ชื่อเข้าใช้ระบบ</b>,
       dataIndex: 'username',
       key: 'username',
     },
     {
-      title: 'ชื่อ-นามสกุล',
+      title: <b>ชื่อ-นามสกุล</b>,
       dataIndex: 'first_last_name',
       key: 'first_last_name',
     },
     {
-      title: 'อีเมล์',
+      title: <b>อีเมล์</b>,
       dataIndex: 'email',
       key: 'email',
     },
     {
-      title: 'กลุ่มผู้ใช้งาน',
+      title: <b>กลุ่มผู้ใช้งาน</b>,
       dataIndex: 'user_group',
       key: 'user_group',
     },
     {
-      title: 'แหล่งที่มาจากผู้ใช้งาน',
+      title: <b>แหล่งที่มาจากผู้ใช้งาน</b>,
       dataIndex: 'source_user',
       key: 'source_user',
     },
     {
-      title: 'จัดการ',
+      title: <b>จัดการ</b>,
       render: (record) => {
         return (<Dropdown.Button icon={<MoreOutlined />} type="text"
                     overlay={<Menu mode="vertical">
@@ -100,31 +101,7 @@ const NonadUsermanage = (props) => {
     }  
 
     return(
-        <>
-        <Drawer
-                title='เพิ่มผู้ใช้นอก AD'
-                headerStyle={{ textAlign: 'center' }}
-                onClose={hideModal}
-                onCancel={hideModal}
-                visible={isShowModal}
-                closable={true}
-                maskClosable={false}
-                keyboard={false}
-                size='large'
-            >
-                <Form
-                    layout="inline"
-                    size="medium"
-                    onFinish={onFinish}
-                    scrollToFirstError
-                    initialValues={{
-
-                    }}
-
-                >
-
-                </Form>
-        </Drawer>        
+        <>     
             <Card style={{ marginTop : '1rem' }} bordered={true}>
             <h1><p>จัดการผู้ใช้นอก AD</p></h1>
             <Search
@@ -134,10 +111,16 @@ const NonadUsermanage = (props) => {
                 onSearch={onSearch}
                 style={{ width: 400 }}
             />
-            <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'right' }} onClick={showModal}>เพิ่มผู้ใช้นอก AD</Button>
+            <UsernonadDrawer type={1} />
+            <UsernonadDrawer type={2} />
+            <Col span={24}>
+              <div>
                 <Table columns={columns} dataSource={data} style={{ marginTop: 20}}
                 pagination={{
-                }}/>
+                }}
+                />
+              </div>
+            </Col>
             </Card>
         </>
     )

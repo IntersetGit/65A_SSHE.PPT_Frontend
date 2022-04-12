@@ -1,4 +1,6 @@
-import { Card , Space , Table , Tag } from 'antd';
+import { Card , Space , Table , Tag, Dropdown, Button, Menu } from 'antd';
+import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import LocationDrawer from '../../components/Drawers/location_drawer';
 
 const columns = [
   {
@@ -18,58 +20,50 @@ const columns = [
     key: 'address',
   },
   {
-    title: 'สถานะ',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: tags => (
-      <>
-        {tags.map(tag => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
+    title: "สถานะ",
+    dataIndex: "tag",
+    key: "tag",
+    sorter: (a, b) => a.type - b.type,
+    render: (record) => {
+      return <p style={{ backgroundColor: record ? '#6CFF60' : '#FF6060', textAlign: 'center', borderRadius: '10px', color: 'white' }}>{record ? "ใช้งาน" : "ไม่ได้ใช้งาน"}</p>;
+    },
   },
   {
-    title: 'การกระทำ',
-    key: 'action',
-    render: (text, record) => (
-      <Space size="middle">
-        <p>Invite {record.name}</p>
-        <p>Delete</p>
-      </Space>
-    ),
-  },
+    title: 'จัดการ',
+    key: 'จัดการ',
+    render: (record) => {
+      return (<Dropdown.Button icon={<MoreOutlined />} type="text"
+                  overlay={<Menu mode="vertical">
+                  <Menu.Item key="1" icon={<EditOutlined />}>แก้ไขข้อมูลบริษัท</Menu.Item>
+                  <Menu.Item key="2" icon={<DeleteOutlined />}>ลบข้อมูลบริษัท</Menu.Item>
+                  </Menu>}
+              >
+              </Dropdown.Button>)
+              },
+  }
 ];
 
 const data = [
   {
     key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
+    name: 'Interset',
+    age: 10,
+    address: 'Elephet Tower',
+    tags: 'ใช้งาน',
   },
   {
     key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
+    name: 'PTT GROUP',
+    age: 20,
+    address: 'Ratchada',
+    tags: 'ไม่ได้ใช้งาน',
   },
   {
     key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
+    name: 'BMW',
+    age: 30,
+    address: 'Ratchada',
+    tags: 'ใช้งาน',
   },
 ];
 
@@ -81,6 +75,7 @@ const ContractorCompanyManage = () =>{
         <p>ฟิลเตอร์ค้นหาบริษัท</p>
       </Card>
       <Card style={{ marginTop : '1rem' }} bordered={true}>
+      <LocationDrawer />
         <Table columns={columns} dataSource={data} expandable size={'middle'} />
       </Card>
     </>
