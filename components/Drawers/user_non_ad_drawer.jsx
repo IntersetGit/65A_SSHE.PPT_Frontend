@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
-import { Button, Drawer, Form, Input, Select, Space} from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, Drawer, Form, Input, Select, Space, Dropdown, Menu} from 'antd';
+import { PlusOutlined , MoreOutlined , EditOutlined , DeleteOutlined } from '@ant-design/icons';
 import UseradDrawer from './user_ad_drawer';
 import { group_roles } from '../../config/group_roles';
+import { com_id } from '../../config/com_id';
 
 const { Option } = Select
 
 const UsernonadDrawer = (props) => {
     const [isShowModal, setShowModal] = useState(false)
+    const [drawerType, setdrawerType] = useState(1)
 
-    const showModal = () => {
+    const showModal = (type) => {
+        setdrawerType(type)
         setShowModal(true)
     }
 
@@ -17,16 +20,33 @@ const UsernonadDrawer = (props) => {
         setShowModal(false)
     }
 
+    const preDelete = (values) => {
+        console.log(props.data.key)
+        props.onSave ('DELETE' , props.data.key)
+    }
+
     const onFinish = (values) => {
-        onClose(values)
+        drawerType === 1 ?
+            props.onSave('ADD' , values )
+            : 
+            props.onSave ('UPDATE' , values )
     }  
 
     return(
         <>
         {props.type === 1 ?
             <UseradDrawer />
-            : <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'right' }} onClick={showModal}>เพิ่มผู้ใช้ระบบนอก AD</Button>
+            : props.type === 2 ? 
+                <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'right' }} onClick={() => showModal(1)}>เพิ่มผู้ใช้ระบบนอก AD</Button>
+                : <Dropdown.Button icon={<MoreOutlined />} type="text"
+                    overlay={<Menu mode="vertical">
+                    <Menu.Item key="1" icon={<EditOutlined />} onClick={() => showModal(2)}>แก้ไข พนักงาน</Menu.Item>
+                    <Menu.Item key="2" icon={<DeleteOutlined />} onClick={preDelete}>ลบ พนักงาน</Menu.Item>
+                    </Menu>}
+                    >
+                    </Dropdown.Button>
         }
+        
         <Drawer
                 title='เพิ่มผู้ใช้ระบบนอก AD'
                 headerStyle={{ textAlign: 'center' }}
@@ -45,17 +65,27 @@ const UsernonadDrawer = (props) => {
                     onFinish={onFinish}
                     scrollToFirstError
                     initialValues={{
-
+                        key : props.data ? props.data.key : '',
+                        number : props.data ? props.data.number : '',
+                        company_id : props.data && props.data.company_id,
+                        username : props.data ? props.data.username : '',
+                        password : props.data ? props.data.password : '',
+                        first_last_name : props.data ? props.data.first_last_name : '',
+                        email : props.data ? props.data.email : '',
+                        user_group : props.data && props.data.user_group,
+                        source_user : props.data ? props.data.source_user : ''
                     }}
 
                 >
                     <Form.Item
                         label="รหัสบริษัท"
-                        name="company"
+                        name="company_id"
                         rules={[
                         { required: true, message: "กรุณากรอกรหัสบริษัท" },
-                        ]}>
-                        <Input />
+                        ]}
+                        >
+                        <Select placeholder="รหัสบริษัท" options={com_id}>
+                        </Select>
                     </Form.Item>
 
                     <Form.Item
@@ -91,8 +121,8 @@ const UsernonadDrawer = (props) => {
                     </Form.Item>
 
                     <Form.Item
-                        label="ชื่อจริง"
-                        name="first_name"
+                        label="ชื่อจริง-นามสกุล"
+                        name="first_last_name"
                         rules={[
                         { required: true, message: "กรุณากรอกข้อมูล" },
                         ]}
@@ -101,21 +131,14 @@ const UsernonadDrawer = (props) => {
                     </Form.Item>
 
                     <Form.Item
-                        label="นามสกุล"
-                        name="last_name"
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
                         label="Email"
-                        name="e_mail"
+                        name="email"
                     >
                         <Input />
                     </Form.Item>
 
                     <Form.Item
-                        name="roles_id"
+                        name="user_group"
                         label="กลุ่มผู้ใช้งาน"
                         rules={[
                         { required: true, message: "กรุณาเลือกข้อมูล" },
@@ -128,7 +151,7 @@ const UsernonadDrawer = (props) => {
                     <Form.Item>
                         <Space style={{ float: 'right'}}>
                             <Button size='medium' type='primary' htmlType='sumbit'>ตกลง</Button>
-                            <Button size='medium' htmlType='sumbit' onClick={hideModal}>ยกเลิก</Button>
+                            <Button size='medium' type='primary' onClick={hideModal}>ยกเลิก</Button>
                         </Space>
                     </Form.Item>
                 </Form>
