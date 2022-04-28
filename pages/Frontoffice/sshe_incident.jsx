@@ -310,10 +310,62 @@ const Incident = () => {
                 Content of Tab Pane 3
               </TabPane>
               <TabPane tab="Property Damage" key="4">
-                Content of Tab Pane 3
+              <Card title="Property Damage">
+                  <Form.Item
+                    label="List of Property/MaterialsDamage"
+                    name="Property_Damage_1"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนทรัพย์สินที่เสียหาย" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Nature of Damage"
+                    name="Property_Damage_2"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนลักษณะของความเสียหาย" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Object/Substance Inflicting Damage"
+                    name="Property_Damage_3"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนวัตถุที่สร้างความเสียหาย" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Damage Cost"
+                    name="Property_Damage_4"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนค่าความเสียหาย" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                </Card>
               </TabPane>
               <TabPane tab="Incident Description" key="5">
-                Content of Tab Pane 3
+                <Card title="Incident Disciption">
+                  <Form.Item
+                    label="Incident Discription"
+                    name="Incident_Discription"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนรายละเอียดเหตุการณ์" },
+                    ]}
+                    >
+                    <TextArea rows={4} autoSize={{ minRows: 12 , maxRows:12}} />
+                  </Form.Item>
+
+                </Card>
               </TabPane>
               <TabPane tab="Why did the incident happen?" key="6">
                 Content of Tab Pane 3
