@@ -1,9 +1,10 @@
 import React from 'react';
 import Head from 'next/head';
 import { ImageLoader } from '../../utils/Utils';
-import { Card , Tabs , Input , Form , DatePicker , Col , Row , TimePicker , Checkbox } from 'antd';
+import { Card , Tabs , Input , Form , DatePicker , Col , Row , TimePicker , Checkbox, } from 'antd';
 
 const { TabPane } = Tabs;
+const { TextArea } = Input;
 
 const Incident = () => {
 
@@ -18,6 +19,15 @@ const Incident = () => {
       { label: 'Environmental Incident ', value: 'Environmental Incident' },
       { label: 'Other ', value: 'Other' },
     ];
+
+    const employeroptions = [
+      { label: 'Fatality' , value: 'Fatality' },
+      { label: 'Medical Treatment' , value: 'medical Treatment' },
+      { label: 'First Aid' , value: 'First Aid' },
+      { label: 'Lost Time' , value: 'Lost Time' },
+      { label: 'Restricted Work' , value: 'Restricted Work'}
+
+    ]
 
     const typeofonChange = () =>{
       
@@ -193,7 +203,108 @@ const Incident = () => {
 
 
               <TabPane tab="Details of Injury/Illness" key="2">
-                Content of Tab Pane 2
+              <Card title={"Employer"}>
+                  <Form.Item
+                    label="Company Name"
+                    name="company_name"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนชื่อบริษัท" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Subcontractor"
+                    name="sub_contractor"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนชื่อผู้รับเหมา" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Type of Incident"
+                    name="typeofincident"
+                  >
+                    <Checkbox.Group options={employeroptions} onChange={typeofonChange} />
+                  </Form.Item>
+              </Card>
+              <Card title={"Duration of Employment"}>
+                  <Form.Item
+                    label="Year"
+                    name="year"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนปีที่ทำงาน" },
+                    ]}
+                    >
+                    <DatePicker picker='year' />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Month"
+                    name="month"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนเดือนที่ทำงาน" },
+                    ]}
+                    >
+                    <DatePicker picker='month' />
+                  </Form.Item>
+              </Card>
+              <Card>
+                  <Form.Item
+                    label="Name of injured"
+                    name="nameofinjured"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนชื่อผู้เสียหาย" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Age"
+                    name="age"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนอายุ" },
+                    ]}
+                    >
+                    <Input style={{ width: 140 }} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Nationality"
+                    name="nationality"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนสัญชาติ" },
+                    ]}
+                    >
+                    <Input style={{ width: 140 }} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Personal ID/Passport No."
+                    name="personal_passport"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนเลขบัตรประชาชนหรือพาสปอร์ต" },
+                    ]}
+                    >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนที่อยู่" },
+                    ]}
+                    >
+                    <TextArea rows={4} />
+                  </Form.Item>
+
+              </Card>
+
               </TabPane>
               <TabPane tab="Witness or Witness Statement" key="3">
                 Content of Tab Pane 3
