@@ -1,12 +1,100 @@
 import React from 'react';
 import Head from 'next/head';
 import { ImageLoader } from '../../utils/Utils';
-import { Card , Tabs , Input , Form , DatePicker , Col , Row , TimePicker , Checkbox, } from 'antd';
+import { Card , Tabs , Input , Form , DatePicker , Col , Row , TimePicker , Checkbox, Table , Space , Tag, Button, Dropdown, Menu } from 'antd';
+import Search from 'antd/lib/input/Search';
+import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 
 const Incident = () => {
+
+    const columns = [
+      {
+          title: 'Report No.',
+          dataIndex: 'report_no',
+          key: 'report_no',
+      },
+      {
+          title: 'Incident No.',
+          dataIndex: 'incident_no',
+          key: 'incident_no'
+      },
+      {
+          title: 'Project',
+          dataIndex: 'project',
+          key: 'project',
+      },
+      {
+        title: 'Company',
+        dataIndex: 'company',
+        key: 'company',
+      },
+      {
+        title: 'Date of Incident',
+        dataIndex: 'doi',
+        key: 'doi',
+      },
+      {
+        title: 'Location',
+        dataIndex: 'location',
+        key: 'location',
+      },
+      {
+        title: 'Incident Type',
+        dataIndex: 'incidenttype',
+        key: 'incidenttype',
+      },
+      {
+          title: 'Action',
+          key: 'action',
+          render: (text, record) => (
+              <Dropdown.Button icon={<MoreOutlined/>} type='text' overlay={ 
+                <Menu>
+                  <Menu.Item key="1" icon={<EditOutlined />}>แก้ไข</Menu.Item>
+                  <Menu.Item key="2" icon={<DeleteOutlined />}>ลบ</Menu.Item>
+                </Menu>
+              
+                }>
+
+              </Dropdown.Button>
+          ),
+      },
+    ];
+
+    const table_data = [
+      {
+        key : '1',
+        report_no : 'Rp-001',
+        incident_no : 'l-x00190',
+        project : 'ปรับปรุง Tank Farm',
+        company : 'ABC',
+        doi : '20 ม.ค. 2565',
+        location : 'Tank Farm',
+        incidenttype : 'Lack of Machine'
+      },
+      {
+        key : '2',
+        report_no : 'Rp-002',
+        incident_no : 'l-x00191',
+        project : 'ต่อเติมอาคาร 101',
+        company : 'XYZ',
+        doi : '1 ก.พ. 2565',
+        location : 'บริเวณอาคาร 101',
+        incidenttype : 'Lack of Machine'
+      },
+      {
+        key : '3',
+        report_no : 'Rp-003',
+        incident_no : 'l-x00192',
+        project : 'วางท่อก๊าซ ระยอง-บ้านเพ',
+        company : 'อีตัล',
+        doi : '12 เม.ย. 2565',
+        location : 'K-291',
+        incidenttype : 'Lack of Equipment'
+      }
+    ]
 
     const typeofincidentoptions = [
       { label: 'Fatality', value: 'Fatality' },
@@ -46,6 +134,19 @@ const Incident = () => {
         <Head>
           <title>PTT SSHE | INCIDENT </title>
         </Head>
+        <Card title={'การจัดการข้อมูล Incident'}>
+
+          <div style={{ display :'flex' , justifyContent : 'space-between' , alignItems : 'center'  }}>
+            <Space size={'large'}>
+              <h1>IncidentCategory</h1>
+              <Input placeholder='Search to Select'/>
+              <Search placeholder='Search'/>
+              <Button type='primary' icon={<PlusOutlined/>}>เพิ่ม ISSUE </Button>
+            </Space>
+          </div>
+
+          <Table columns={columns} dataSource={table_data} />
+        </Card>
         <Card>
           <Form
             name="basic"
