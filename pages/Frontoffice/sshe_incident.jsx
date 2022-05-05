@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { ImageLoader } from '../../utils/Utils';
-import { Card , Tabs , Input , Form , DatePicker , Col , Row , TimePicker , Checkbox, } from 'antd';
+import { Card , Tabs , Input , Form , DatePicker , Col , Row , TimePicker , Checkbox, Radio} from 'antd';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -25,9 +25,43 @@ const Incident = () => {
       { label: 'Medical Treatment' , value: 'medical Treatment' },
       { label: 'First Aid' , value: 'First Aid' },
       { label: 'Lost Time' , value: 'Lost Time' },
-      { label: 'Restricted Work' , value: 'Restricted Work'}
+      { label: 'Restricted Work' , value: 'Restricted Work'},
+    ];
 
-    ]
+    const wordplaceconditionoption = [
+      { label: 'Inadequate guard', value: 'Inadequate guard'},
+      { label: 'Unguarded hazard', value: 'Unguarded hazard'},
+      { label: 'Safety device is defective', value: 'Safety device is defective'},
+      { label: 'Tool or equipm ent defectiove', value: 'Tool or equipm ent defectiove'},
+      { label: 'Workstation layout is hazardous', value: 'Workstation layout is hazardous'},
+      { label: 'Unsafe lighting', value: 'Unsafe lighting'},
+      { label: 'Unsafe ventilation', value: 'Unsafe ventilation'},
+      { label: 'Lack of needed personal protective equipm ent', value: 'Lack of needed personal protective equipm ent'},
+      { label: 'Lack of appropriate equipm ent/tools', value: 'Lack of appropriate equipm ent/tools'},
+      { label: 'Unsafe clothing', value: 'Unsafe clothing'},
+      { label: 'No training or insufficient training', value: 'No training or insufficient training'},
+      { label: 'Other', value: 'Other'},
+    ];
+
+    const actsbypeopleoption = [
+      { label: 'Operating without permission', value: 'Operating without permission'},
+      { label: 'Operating at unsafe speed', value: 'Operating at unsafe speed'},
+      { label: 'Servicing equipment that has power to it', value: 'Servicing equipment that has power to it'},
+      { label: 'Making a safety device inoperative', value: 'Making a safety device inoperative'},
+      { label: 'Using defective equipment', value: 'Using defective equipment'},
+      { label: 'Using equipment in an unapproved way', value: 'Using equipment in an unapproved way'},
+      { label: 'Unsafe lifting', value: 'Unsafe lifting'},
+      { label: 'Taking an unsafe position or posture', value: 'Taking an unsafe position or posture'},
+      { label: 'Distraction, teasing, horseplay', value: 'Distraction, teasing, horseplay'},
+      { label: 'Failure to wear personal protective equipment', value: 'Failure to wear personal protective equipment'},
+      { label: 'Failure to use the available equipment / tools', value: 'Failure to use the available equipment / tools'},
+      { label: 'Other', value: 'Other'},
+    ];
+
+    const reportoption = [
+      { label: 'Yes', value: 'Yes'},
+      { label: 'No', value: 'No'},      
+    ];
 
     const typeofonChange = () =>{
       
@@ -368,7 +402,56 @@ const Incident = () => {
                 </Card>
               </TabPane>
               <TabPane tab="Why did the incident happen?" key="6">
-                Content of Tab Pane 3
+              <Card title="Why did the incident happen?">
+                  <Form.Item
+                    label="Unsafe workplace conditions: (Check all that apply)"
+                    name="unsafe_workplace_conditions"
+                  >
+                    <Checkbox.Group options={wordplaceconditionoption} onChange={typeofonChange} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Unsafe acts by people: (Check all that apply)"
+                    name="unsafe_acts_by_people"
+                  >
+                    <Checkbox.Group options={actsbypeopleoption} onChange={typeofonChange} />
+                  </Form.Item>
+              </Card>
+              <Card>
+                  <Form.Item
+                    label="Why did the unsafe conditions exist?"
+                    name="unsafe_conditions_exist"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนเหตุใดที่่ทำให้เกิดอันตราย"},
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Why did the unsafe acts occur?"
+                    name="unsafe_acts_occur"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนการกระทำที่่ทำให้เกิดอันตราย"},
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Were the unsafe acts or conditions reported prior to the incident?"
+                    name="acts_conditions_report"
+                  >
+                    <Radio.Group options={reportoption} onChange={typeofonChange} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Have there been similar incidents or near misses prior to this one?"
+                    name="similar_incident_near_miss"
+                  >
+                    <Radio.Group options={reportoption} onChange={typeofonChange} />
+                  </Form.Item>
+              </Card>
               </TabPane>
               <TabPane tab="How can future incidents be prevented?" key="7">
                 Content of Tab Pane 3
@@ -383,7 +466,48 @@ const Incident = () => {
                 tab="Investigation Team and Prepared/completed report"
                 key="10"
               >
-                Content of Tab Pane 3
+              <Card title="Investigation Team and Prepared/completed report">
+                  <Form.Item
+                    label="Prepared by"
+                    name="prepared"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนผู้เตรียมการ"},
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Position"
+                    name="position"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนตำแหน่ง"},
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Department"
+                    name="department  "
+                    rules={[
+                      { required: true, message: "กรุณาป้อนสาขา"},
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Names of investigation team members"
+                    name="name_team_member"
+                    rules={[
+                      { required: true, message: "กรุณาป้อนชื่อสมาชิก" },
+                    ]}
+                    >
+                    <TextArea rows={4} autoSize={{ minRows: 12 , maxRows:12}} />
+                  </Form.Item>
+                
+              </Card>
               </TabPane>
               <TabPane tab="Review and Comment" key="11">
                 Content of Tab Pane 3
