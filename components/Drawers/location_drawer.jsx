@@ -32,6 +32,8 @@ const LocationDrawer = (props) => {
             props.onSave('ADD' , values )
             : 
             props.onSave ('UPDATE' , values )
+    
+    hideModal()
     }  
     
     const formItemLayout = {
