@@ -1,17 +1,20 @@
 import React, { useState } from 'react'
-import { Button, Drawer, Form, Select, Input, Col } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, Drawer, Form, Select, Input, Col, Radio, Dropdown, Menu, Space } from 'antd';
+import { PlusOutlined, MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { office_type } from '../../config/office_type';
 import { region } from '../../config/region';
 import { povine } from '../../config/povine';
+import { reg_id } from '../../config/reg_id';
 
 const {Option} = Select;
 const { TextArea } = Input;
 
 const LocationDrawer = (props) => {
     const [isShowModal, setShowModal] = useState(false)
+    const [drawerType, setdrawerType] = useState(1)
 
-    const showModal = () => {
+    const showModal = (type) => {
+        setdrawerType(type)
         setShowModal(true)
     }
 
@@ -19,9 +22,17 @@ const LocationDrawer = (props) => {
         setShowModal(false)
     }
 
-    const onFinish = (values) => {
-        onClose(values)
+    const preDelete = (values) => {
+        console.log(props.data.key)
+        props.onSave ('DELETE' , props.data.key)
     }
+
+    const onFinish = (values) => {
+        drawerType === 1 ?
+            props.onSave('ADD' , values )
+            : 
+            props.onSave ('UPDATE' , values )
+    }  
     
     const formItemLayout = {
         labelCol: {
@@ -36,7 +47,16 @@ const LocationDrawer = (props) => {
 
       return(
           <>
-          <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={showModal}>เพิ่ม</Button>
+          {props.type === 1  ?
+                <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={showModal}>เพิ่ม</Button>
+                : <Dropdown.Button icon={<MoreOutlined />} type="text"
+                    overlay={<Menu mode="vertical">
+                    <Menu.Item key="1" icon={<EditOutlined />} onClick={() => showModal(2)}>แก้ไขข้อมูลบริษัท</Menu.Item>
+                    <Menu.Item key="2" icon={<DeleteOutlined />} onClick={preDelete}>ลบข้อมูลบริษัท</Menu.Item>
+                    </Menu>}
+                    >
+                    </Dropdown.Button>
+          }
           <Drawer
                 title='เพิ่มที่ตั้งบริษัท'
                 headerStyle={{ textAlign: 'center' }}
@@ -56,7 +76,12 @@ const LocationDrawer = (props) => {
                     onFinish={onFinish}
                     size="large"
                     initialValues={{
-
+                        key : props.data ? props.data.key : '',
+                        reg_company_id : props.data && props.data.reg_company_id,
+                        company_level_id : props.data && props.data.company_level_id,
+                        company_name_th : props.data ? props.data.company_name_th : '',
+                        village_building_th : props.data ? props.data.village_building_th : '',
+                        status : props.data ? props.data.status : ''
                     }}
                 >
                     <Col>
@@ -76,7 +101,8 @@ const LocationDrawer = (props) => {
                                 },
                                 ]}
                             >
-                                <Input />
+                                <Select options={reg_id}>
+                                </Select>
                             </Form.Item>
                             <Form.Item
                                 name="company_level_id"
@@ -137,46 +163,24 @@ const LocationDrawer = (props) => {
                             </Form.Item>
                         </Form.Item>
                     </Col>
-
                     <Col>
-                        <Form.Item label="">
-                            <Form.Item
-                                name="mas_region_id"
-                                label="ภูมิภาค :"
-                                labelCol={{ span: 24 }}
-                                style={{
-                                display: "inline-block",
-                                width: "calc(50% - 12px)",
-                                }}
-                                rules={[
-                                {
-                                    required: true,
-                                    message: "กรุณาระบุภูมิภาค",
-                                },
-                                ]}
-                            >
-                                <Select options={region}></Select>
-                            </Form.Item>
-                            <Form.Item
-                                name="mas_prov_id"
-                                label="จังหวัด :"
-                                labelCol={{ span: 24 }}
-                                style={{
-                                marginLeft: "20px",
-                                display: "inline-block",
-                                width: "calc(50% - 12px)",
-                                }}
-                                rules={[
-                                {
-                                    required: true,
-                                    message: "กรุณาระบุจังหวัด",
-                                },
-                                ]}
-                            >
-                                <Select options={povine}></Select>
-                            </Form.Item>
+                        <Form.Item
+                            name="status"
+                            label="สถานะ"
+                        >
+                            <Radio.Group>
+                                <Radio.Button value="ใช้งาน">ใช้งาน</Radio.Button>
+                                <Radio.Button value="ไม่ใช้งาน">ไม่ใช้งาน</Radio.Button>
+                            </Radio.Group>
                         </Form.Item>
                     </Col>
+
+                    <Form.Item>
+                        <Space style={{ float: 'right'}}>
+                            <Button size='medium' type='primary' htmlType='sumbit'>ตกลง</Button>
+                            <Button size='medium' type='primary' onClick={hideModal}>ยกเลิก</Button>
+                        </Space>
+                    </Form.Item>
                 </Form>
         </Drawer>        
           </>
