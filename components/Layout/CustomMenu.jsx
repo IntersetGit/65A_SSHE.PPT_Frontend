@@ -14,16 +14,16 @@ const CustomMenu = ({Menuitems}) => {
     <>
       <Menu
             selectable={false}
-            theme="dark"
+            theme="light"
             mode="inline"
             // defaultSelectedKeys={["1"]}
-            style={{ height: "100%", borderRight: 0, fontSize: "1rem" }}
+            style={{ height: "100%", borderRight: 0, fontSize: "0.8rem" , fontWeight : "bold" , overflowX : 'hidden' }}
       >
         {
           Menuitems.menu.map((value,key) =>{
             return(
                 value.title ?
-                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : '#00AEEF' , fontWeight : 'bold'}}>{value.title}</span>}>
+                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : '#00AEEF' , fontWeight : 'bold' , backgroundColor : 'white' , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
                         {value.list.map((v , k) =>{
                             return(
                                 v.type === 'menu' ?
