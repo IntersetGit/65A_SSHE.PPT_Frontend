@@ -1,27 +1,59 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import Head from "next/head";
-import { Row, Col, Input, Button, Form, Checkbox, message } from "antd";
+import { Row, Col, Input, Button, Form, Checkbox, message , notification } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import _localStorage from "../utils/BrowserLocalstorage";
 import { ImageLoader } from "../utils/Utils";
 import ThemeSwitch from "../components/Themeswitch";
 import Config from "../config";
+import API from '../utils/Service'
+import { useDispatch } from "react-redux";
+import { handleLogin } from "../redux/reducers/authenticate";
 
 
 const Login = () =>{
 
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
   const router = useRouter()
   const [isBlock, setisBlock] = useState(false)
   const [loading, setLoading] = useState(false)
 
 
+  useEffect(() =>{
+    const token = _localStorage.get('token')
+    
+    if ( token ) router.push('/')
+
+    
+  })
 
   const onFinish = (value) =>{
+    //** Set loading state */
+    setLoading(true)
+
     console.log(value)
-    _localStorage.set('token' ,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiV29uZ3NhdGhvcm4iLCJyb2xlX2lkIjoiMiIsImlhdCI6MTUxNjIzOTAyMn0.vDapJQsDXne2Hi1z9ZxUBbsgVMepo6JDR9zyo1LCZRQ')
-    router.push(Config.DEFAULT_REDIRECT_PATH)
+    API.post('/provider/login',value).then((res) =>{
+
+      _localStorage.set('token' , res.data.items.access_token)
+      _localStorage.set('refresh_token' , res.data.items.refresh_token)
+      
+      dispatch(handleLogin({ token : res.data.items.access_token , refresh_token : res.data.items.refresh_token}))
+
+      router.push('/')
+
+    }).catch((err) =>{
+      //** Set loading state */
+      setLoading(false)
+      notification.open({
+        message : `Login error code ${err.response.status}`,
+        description : err.response.data.error.message,
+        placement : 'bottomRight',
+        type : 'error'
+      })
+    })
+    // router.push(Config.DEFAULT_REDIRECT_PATH)
   }
 
   return(
@@ -35,7 +67,7 @@ const Login = () =>{
         </Col>
         <Col xs={24} sm={14} mg={14} lg={14} xl={9} style={{ padding: '5%', marginTop: "-2%", }}>
           <div style={{float : 'right'}}>
-            <ThemeSwitch/>
+            {/* <ThemeSwitch/> */}
           </div>
           <Col style={{ padding: '0 0 15%' }}>
             <img width="50%" src={ImageLoader("/assets/images/logo_PTT.png")}  />
@@ -86,7 +118,7 @@ const Login = () =>{
 
             <Form.Item>
               <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox loading={loading} disabled={isBlock || loading}>Remember me</Checkbox>
+                <Checkbox disabled={isBlock || loading}>Remember me</Checkbox>
               </Form.Item>
             </Form.Item>
 
@@ -102,8 +134,8 @@ const Login = () =>{
               </Button>
             </Form.Item>
 
-            {isBlock ? <h5 className="text-center text-red">ไม่สามารถใช้งานได้ถึง {dateText}</h5> : null}
-            {loading ? <h5 className="text-center text-red">กำลังโหลดข้อมูล{pointLoading}</h5> : null}
+            {/* {isBlock ? <h5 className="text-center text-red">ไม่สามารถใช้งานได้ถึง {dateText}</h5> : null}
+            {loading ? <h5 className="text-center text-red">กำลังโหลดข้อมูล{pointLoading}</h5> : null} */}
           </Form>
         </Col>
       </Row>

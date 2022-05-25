@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import { ImageLoader } from '../../utils/Utils';
-import { Card , Tabs , Input , Form , DatePicker , Upload , Col , Row , TimePicker , Checkbox, Radio , Table , Space , Tag, Button, Dropdown, Menu } from 'antd';
+import { Card , Tabs , Input, message , Form , DatePicker , Upload , Col , Row , TimePicker , Checkbox, Radio , Table , Space , Tag, Button, Dropdown, Menu } from 'antd';
 import Search from 'antd/lib/input/Search';
-import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined , InboxOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined , LeftOutlined , InboxOutlined } from '@ant-design/icons';
 
 
 const { TabPane } = Tabs;
@@ -31,6 +31,8 @@ const props = {
 };
 
 const Incident = () => {
+
+    const [isTablefield,setTablefield] = useState(true)
 
     const columns = [
       {
@@ -204,27 +206,33 @@ const Incident = () => {
         <Head>
           <title>PTT SSHE | INCIDENT </title>
         </Head>
-        <Card title={"การจัดการข้อมูล Incident"}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Space size={"large"}>
-              <h1>IncidentCategory</h1>
-              <Input placeholder="Search to Select" />
-              <Search placeholder="Search" />
-              <Button type="primary" icon={<PlusOutlined />}>
-                เพิ่ม ISSUE{" "}
-              </Button>
-            </Space>
-          </div>
+        {
+          isTablefield ? 
+            <Card title={"การจัดการข้อมูล Incident"}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Space size={"large"}>
+                <h1>IncidentCategory</h1>
+                <Input placeholder="Search to Select" />
+                <Search placeholder="Search" />
+                <Button type='primary' icon={<PlusOutlined />} onClick={() => setTablefield(false)}>
+                  เพิ่ม ISSUE{" "}
+                </Button>
+              </Space>
+            </div>
 
-          <Table columns={columns} dataSource={table_data} />
-        </Card>
-        <Card>
+            <Table columns={columns} dataSource={table_data} />
+          </Card>
+          :
+          <Card>
+            <Button type="text" icon={<LeftOutlined />} onClick={() => setTablefield(true)}>
+                กลับ
+            </Button>
           <Form
             name="basic"
             labelCol={{ span: 8 }}
@@ -740,6 +748,8 @@ const Incident = () => {
             </Tabs>
           </Form>
         </Card>
+        }
+
       </>
     );
 }
