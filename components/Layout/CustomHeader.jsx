@@ -6,15 +6,25 @@ import { ImageLoader } from "../../utils/Utils";
 import Themeswitch from "../Themeswitch";
 import Config from "../../config";
 import Rootmenu from "../../config/menu";
+import { useDispatch , useSelector } from 'react-redux';
+import { handleLogout } from '../../redux/reducers/authenticate';
+
 
 const { Header } = Layout
 
 const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) => {
   const router = useRouter()
-
-
+  const dispatch = useDispatch()
+  const userData = useSelector(({auth}) => auth.userData)
+  
   const Logout = () => {
+
     _localStorage.remove('token')
+    _localStorage.remove('refresh_token')
+
+    //** Clear userData redux */
+    dispatch(handleLogout())
+
     router.push(Config.NO_AUTH_PAGE)
   }
 
@@ -110,7 +120,7 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
           }}
         > 
           <Space direction='horizontal'>
-              <Themeswitch/>
+              {/* <Themeswitch/> */}
                 <Tooltip title={'Frontoffice'}>
                   <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </p>
                 </Tooltip>
@@ -121,7 +131,7 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
 
             <Dropdown  overlay={menu} trigger={['click']}>
                 <p style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>
-                  <UserOutlined/> Administrator <DownOutlined />
+                  <UserOutlined/> {userData.first_name} <DownOutlined />
                 </p>
             </Dropdown>
           </Space>
