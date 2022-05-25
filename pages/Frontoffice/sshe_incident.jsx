@@ -227,8 +227,11 @@ const Incident = () => {
         <Card>
           <Form
             name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 , flex: 1 }}
+            labelWrap
+            labelAlign='left'
+            colon={false}
             initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}

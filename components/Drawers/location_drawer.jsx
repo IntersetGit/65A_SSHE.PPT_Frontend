@@ -78,7 +78,7 @@ const LocationDrawer = (props) => {
                     onFinish={onFinish}
                     size="large"
                     initialValues={{
-                        key : props.data ? props.data.key : '',
+                        key : props.data && props.data.key,
                         reg_company_id : props.data && props.data.reg_company_id,
                         company_level_id : props.data && props.data.company_level_id,
                         company_name_th : props.data ? props.data.company_name_th : '',

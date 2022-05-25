@@ -12,7 +12,7 @@ const ContractorCompanyManage = (props) => {
       switch (type) {
         case "ADD":
           console.log([...comusermanage, {key : comusermanage.length + 1 , ..._data}])
-          setcomusermanage([...comusermanage, {key :adusermanage.length + 1 , ..._data}])
+          setcomusermanage([...comusermanage, {key :comusermanage.length + 1 , ..._data}])
           break;
 
         case "UPDATE":
