@@ -64,7 +64,7 @@ const ContractorCompanyManage = (props) => {
       key: "status",
       sorter: (a, b) => a.type - b.type,
       render: (record) => {
-        return <p style={{ backgroundColor: record ? '#6CFF60' : '#FF6060', textAlign: 'center', borderRadius: '10px', color: 'white' }}>{record ? "ใช้งาน" : "ไม่ได้ใช้งาน"}</p>;
+        return <p>{record ? "ใช้งาน" : "ไม่ได้ใช้งาน"}</p>;
       },
     },
     {

@@ -150,7 +150,7 @@ const LocationDrawer = (props) => {
                                 labelCol={{ span: 24 }}
                                 style={{
                                 display: "inline-block",
-                                width: "calc(50% - 12px)",
+                                width: "calc(100% - 12px)",
                                 }}
                                 rules={[
                                 {
