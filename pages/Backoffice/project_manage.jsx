@@ -6,19 +6,19 @@ const ProjectManage = (props) => {
 
     const columns = [
         {
-          title: 'รหัสโครงการ',
-          dataIndex: 'project_company_id',
+          title: 'ชื่อโครงการ',
+          dataIndex: 'project_name_th',
           key: 'project_company_id',
         },
         {
-          title: 'ชื่อโครงการ',
-          dataIndex: 'project_name_th',
-          key: 'project_name_th',
+          title: 'ชื่อบริษัท',
+          dataIndex: 'company_name_th',
+          key: 'company_name_th',
         },
         {
-          title: 'ผู้รับผิดชอบ',
-          dataIndex: 'respon_person',
-          key: 'respon_person',
+          title: 'ผู้รับเหมา',
+          dataIndex: 'contractor_name_th',
+          key: 'contractor_name_th',
         },
     ];
 

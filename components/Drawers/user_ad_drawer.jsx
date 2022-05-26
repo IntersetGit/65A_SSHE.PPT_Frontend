@@ -70,6 +70,13 @@ const UseradDrawer = (props) => {
                         <Select placeholder="กลุ่มผู้ใช้งาน" options={group_roles} >
                         </Select>
                     </Form.Item>
+
+                    <Form.Item>
+                        <Space style={{ float: 'right'}}>
+                            <Button size='medium' type='primary' htmlType='sumbit'>ตกลง</Button>
+                            <Button size='medium' type='primary' onClick={hideModal}>ยกเลิก</Button>
+                        </Space>
+                    </Form.Item>
                 </Form>
         </Drawer>        
         </>
