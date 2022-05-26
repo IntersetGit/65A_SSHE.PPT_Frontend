@@ -3,33 +3,33 @@ export const datas = [
       key: 1,
       company_id : '01',
       number: '1',
-      username: 'test1',
+      user_name: 'test1',
       password: '1234567890',
-      first_last_name: 'THANONGSAK SUWANNACHOD',
-      email: 'test1@gmail.com',
-      user_group: 'Administrator',
-      source_user: 'Non-AD'
+      firstlast: 'THANONGSAK SUWANNACHOD',
+      e_mail: 'test1@gmail.com',
+      roles_name: 'Administrator',
+      is_ad: 'Non-AD'
     },
     {
       key: 2,
       company_id : '01',
       number: '2',
-      username: 'test2',
+      user_name: 'test2',
       password: '1234567891',
-      first_last_name: 'JAKAPAN SUWANNACHOD',
-      email: 'test2@gmail.com',
-      user_group: 'Viewer',
-      source_user: 'Non-AD'
+      firstlast: 'JAKAPAN SUWANNACHOD',
+      e_mail: 'test2@gmail.com',
+      roles_name: 'Viewer',
+      is_ad: 'AD'
     },
     {
       key: 3,
       company_id : '01',
       number: '3',
-      username: 'test3',
+      user_name: 'test3',
       password: '1234567892',
-      first_last_name: 'NATTASIT BANSRA',
-      email: 'test3@gmail.com',
-      user_group: 'Editor',
-      source_user: 'Non-AD'
+      firstlast: 'NATTASIT BANSRA',
+      e_mail: 'test3@gmail.com',
+      roles_name: 'Editor',
+      is_ad: 'Non-AD'
       }
 ]

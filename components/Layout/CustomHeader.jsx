@@ -1,4 +1,4 @@
-import { Layout , Divider , Dropdown , Menu , Space , Tooltip} from 'antd'
+import { Layout , Divider , Dropdown , Menu , Space , Tooltip , Typography} from 'antd'
 import { MenuFoldOutlined , MenuUnfoldOutlined , DownOutlined , UserOutlined , SettingOutlined , FileSearchOutlined} from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import _localStorage from '../../utils/BrowserLocalstorage';
@@ -6,15 +6,26 @@ import { ImageLoader } from "../../utils/Utils";
 import Themeswitch from "../Themeswitch";
 import Config from "../../config";
 import Rootmenu from "../../config/menu";
+import { useDispatch , useSelector } from 'react-redux';
+import { handleLogout } from '../../redux/reducers/authenticate';
+
+const { Text, Link } = Typography;
 
 const { Header } = Layout
 
 const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) => {
   const router = useRouter()
-
-
+  const dispatch = useDispatch()
+  const userData = useSelector(({auth}) => auth.userData)
+  
   const Logout = () => {
+
     _localStorage.remove('token')
+    _localStorage.remove('refresh_token')
+
+    //** Clear userData redux */
+    dispatch(handleLogout())
+
     router.push(Config.NO_AUTH_PAGE)
   }
 
@@ -76,24 +87,36 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
             alt="ptt-logo"
           />
             {breakpoints.indexes > 2 &&
-                <span
+                <div style={{ display : 'flex' , flexDirection : 'column'}}>
+                  <Text
                     style={{
-                        color: "white",
+                        margin : 0,
                         fontWeight: "bold",
-                        fontSize: "1.1rem",
+                        fontSize: "1rem",
+                        color: 'white'
                     }}
-                >
-                    PTT SSHE Application
-                </span>
+                  > 
+                      SSHE APPLICATION
+                  </Text>
+                  {/* <Text
+                    style={{
+                      margin : 0,
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    APPLICATION
+                  </Text> */}
+                </div>
             }
 
-          <Divider type="vertical" />
-          <span
+          <Divider style={{color : "white" }} type="vertical" />
+          <Text
             onClick={CollapsedToggle}
-            style={{ color: "white", fontSize: "1.2rem", paddingLeft: "0px" }}
+            style={{ fontSize: "1.2rem", paddingLeft: "0px" }}
           >
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </span>
+          </Text>
         </div>
 
         {/* Right Navbar */}
@@ -104,25 +127,24 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
               justifyItems: "center",
               alignItems: "center",
               marginRight : '1.5%' ,
-              color : 'white' ,
               fontSize : '0.95rem',
-              marginTop :  '1.1rem'
+              color : 'white'
           }}
         > 
           <Space direction='horizontal'>
               <Themeswitch/>
                 <Tooltip title={'Frontoffice'}>
-                  <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </p>
+                  <Text onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </Text>
                 </Tooltip>
 
               <Tooltip title={'Backoffice'}>
-                  <p onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <SettingOutlined /> </p>
+                  <Text onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <SettingOutlined /> </Text>
               </Tooltip>
 
             <Dropdown  overlay={menu} trigger={['click']}>
-                <p style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>
-                  <UserOutlined/> Administrator <DownOutlined />
-                </p>
+                <Text style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>
+                  <UserOutlined/> {userData.e_mail} <DownOutlined />
+                </Text>
             </Dropdown>
           </Space>
         </div>

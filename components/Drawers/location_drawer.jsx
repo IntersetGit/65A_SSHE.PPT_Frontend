@@ -50,7 +50,7 @@ const LocationDrawer = (props) => {
       return(
           <>
           {props.type === 1  ?
-                <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={showModal}>เพิ่ม</Button>
+                <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={() => showModal(1)}>เพิ่ม</Button>
                 : <Dropdown.Button icon={<MoreOutlined />} type="text"
                     overlay={<Menu mode="vertical">
                     <Menu.Item key="1" icon={<EditOutlined />} onClick={() => showModal(2)}>แก้ไขข้อมูลบริษัท</Menu.Item>
@@ -78,8 +78,14 @@ const LocationDrawer = (props) => {
                     onFinish={onFinish}
                     size="large"
                     initialValues={{
+<<<<<<< HEAD
+                        id : props.data ? props.data.id : '',
                         key : props.data ? props.data.key : '',
+                        reg_company_id : props.data ? props.data.reg_company_id : '',
+=======
+                        key : props.data && props.data.key,
                         reg_company_id : props.data && props.data.reg_company_id,
+>>>>>>> 88da245d16f8f0f96fa3aa2be6df9524f6877b8f
                         company_level_id : props.data && props.data.company_level_id,
                         company_name_th : props.data ? props.data.company_name_th : '',
                         village_building_th : props.data ? props.data.village_building_th : '',
