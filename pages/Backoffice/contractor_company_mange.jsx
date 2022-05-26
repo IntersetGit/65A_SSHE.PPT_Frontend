@@ -8,7 +8,7 @@ const ContractorCompanyManage = (props) => {
   const [comusermanage,setcomusermanage] = useState(dataz);
 
     const AddComData = (type, _data) => {
-      console.log('onSaveData')
+      console.log('onSaveData', type)
       switch (type) {
         case "ADD":
           console.log([...comusermanage, {key : comusermanage.length + 1 , ..._data}])
@@ -22,6 +22,7 @@ const ContractorCompanyManage = (props) => {
           arr[indexs] = _data
 
           setcomusermanage(arr)
+          console.log(arr)
           break;
 
         case "DELETE":
@@ -48,7 +49,6 @@ const ContractorCompanyManage = (props) => {
       title: 'ชื่อบริษัท',
       dataIndex: 'company_name_th',
       key: 'company_name_th',
-      render: text => <p>{text}</p>,
     },
     {
       title: 'ที่อยู่',

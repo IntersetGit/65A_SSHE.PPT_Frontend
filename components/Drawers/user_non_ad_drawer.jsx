@@ -30,6 +30,8 @@ const UsernonadDrawer = (props) => {
             props.onSave('ADD' , values )
             : 
             props.onSave ('UPDATE' , values )
+            
+    hideModal()
     }  
 
     return(

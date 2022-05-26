@@ -50,7 +50,7 @@ const LocationDrawer = (props) => {
       return(
           <>
           {props.type === 1  ?
-                <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={showModal}>เพิ่ม</Button>
+                <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={() => showModal(1)}>เพิ่ม</Button>
                 : <Dropdown.Button icon={<MoreOutlined />} type="text"
                     overlay={<Menu mode="vertical">
                     <Menu.Item key="1" icon={<EditOutlined />} onClick={() => showModal(2)}>แก้ไขข้อมูลบริษัท</Menu.Item>
