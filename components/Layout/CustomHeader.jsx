@@ -36,9 +36,12 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
   const menu = (
     <Menu>
       <Menu.Item key="0">
+        <Themeswitch/>
+      </Menu.Item>
+      <Menu.Item key="1">
         แก้ไขข้อมูลส่วนตัว
       </Menu.Item>
-      <Menu.Item onClick={Logout} key="1">
+      <Menu.Item onClick={Logout} key="2">
         ออกจากระบบ
       </Menu.Item>
     </Menu>
@@ -134,7 +137,6 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
           }}
         > 
           <Space direction='horizontal'>
-              <Themeswitch/>
                 <Tooltip title={'Frontoffice'}>
                   <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </p>
                 </Tooltip>

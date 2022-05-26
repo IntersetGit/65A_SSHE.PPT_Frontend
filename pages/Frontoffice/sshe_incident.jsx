@@ -4,7 +4,8 @@ import { ImageLoader } from '../../utils/Utils';
 import { Card , Tabs , Input, message , Form , DatePicker , Upload , Col , Row , TimePicker , Checkbox, Radio , Table , Space , Tag, Button, Dropdown, Menu } from 'antd';
 import Search from 'antd/lib/input/Search';
 import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined , LeftOutlined , InboxOutlined } from '@ant-design/icons';
-
+import {incident_dummy_data} from '../../config/incident_dummy_data'
+import moment from 'moment';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -33,17 +34,47 @@ const props = {
 const Incident = () => {
 
     const [isTablefield,setTablefield] = useState(true)
+    const [form] = Form.useForm()
+    const [incidentdata,setincidentdata] = useState(incident_dummy_data)
+    const [selectedrow,setselectedrow] = useState(null)
+    const [actiontype,setactiontype] = useState(1)
+
+    const AddDataState = (type, _data = {}) => {
+      switch (type) {
+        case "ADD":
+          setincidentdata([...incidentdata, _data])
+          break;
+  
+        case "EDIT":
+          const indexs = incidentdata.findIndex(e => e.key == _data.key)
+          let arr = [...incidentdata]
+          console.log(indexs)
+          arr[indexs] = _data
+  
+          setincidentdata(arr)
+          break;
+  
+        case "DELETE":
+          const newState = [...incidentdata]
+          const newArr = newState.filter(e => e.key != _data.key)
+          setincidentdata(newArr)
+          break;
+  
+        default:
+          break;
+      }
+    }
 
     const columns = [
       {
           title: 'Report No.',
-          dataIndex: 'report_no',
-          key: 'report_no',
+          dataIndex: 'key',
+          key: 'key',
       },
       {
           title: 'Incident No.',
-          dataIndex: 'incident_no',
-          key: 'incident_no'
+          dataIndex: 'incident_id',
+          key: 'incident_id'
       },
       {
           title: 'Project',
@@ -57,18 +88,18 @@ const Incident = () => {
       },
       {
         title: 'Date of Incident',
-        dataIndex: 'doi',
-        key: 'doi',
+        dataIndex: 'dateofincident',
+        key: 'dateofincident',
       },
       {
         title: 'Location',
-        dataIndex: 'location',
-        key: 'location',
+        dataIndex: 'locationofincident',
+        key: 'locationofincident',
       },
       {
         title: 'Incident Type',
-        dataIndex: 'incidenttype',
-        key: 'incidenttype',
+        dataIndex: 'typeofincident',
+        key: 'typeofincident',
       },
       {
           title: 'Action',
@@ -76,8 +107,13 @@ const Incident = () => {
           render: (text, record) => (
               <Dropdown.Button icon={<MoreOutlined/>} type='text' overlay={ 
                 <Menu>
-                  <Menu.Item key="1" icon={<EditOutlined />}>แก้ไข</Menu.Item>
-                  <Menu.Item key="2" icon={<DeleteOutlined />}>ลบ</Menu.Item>
+                  <Menu.Item key="1" icon={<EditOutlined />} onClick={() => {
+                    setactiontype(2)
+                    form.setFieldsValue(record)
+                    setselectedrow(record)
+                    setTablefield(false)
+                  }}>แก้ไข</Menu.Item>
+                  <Menu.Item key="2" icon={<DeleteOutlined />} onClick={() => AddDataState("DELETE", record)}>ลบ</Menu.Item>
                 </Menu>
               
                 }>
@@ -193,12 +229,26 @@ const Incident = () => {
       
     }
 
-    const onFinish = () =>{
-
+    const onFinish = (valuse) =>{
+      console.log(valuse)
+      if (actiontype == 1){
+        AddDataState("ADD",{key : incidentdata.length + 1 , ...valuse})
+      }else if (actiontype == 2) {
+        const modified_value = {...selectedrow,...valuse}
+        console.log(modified_value)
+        AddDataState("EDIT", modified_value)
+      }
+      handleClose()
     }
 
     const onFinishFailed = () => {
+      console.log("Failed")
+    }
 
+    const handleClose = () =>{
+      setselectedrow(null)
+      form.resetFields()
+      setTablefield(true)
     }
 
     return (
@@ -217,20 +267,23 @@ const Incident = () => {
               }}
             >
               <Space size={"large"}>
-                <h1>IncidentCategory</h1>
+                <p>IncidentCategory</p>
                 <Input placeholder="Search to Select" />
                 <Search placeholder="Search" />
-                <Button type='primary' icon={<PlusOutlined />} onClick={() => setTablefield(false)}>
+                <Button type='primary' icon={<PlusOutlined />} onClick={() => {
+                  setactiontype(1) 
+                  setTablefield(false)
+                }}>
                   เพิ่ม ISSUE{" "}
                 </Button>
               </Space>
             </div>
 
-            <Table columns={columns} dataSource={table_data} />
+            <Table columns={columns} dataSource={incidentdata} />
           </Card>
           :
           <Card>
-            <Button type="text" icon={<LeftOutlined />} onClick={() => setTablefield(true)}>
+            <Button type="text" icon={<LeftOutlined />} onClick={handleClose}>
                 กลับ
             </Button>
           <Form
@@ -238,9 +291,47 @@ const Incident = () => {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 , flex: 1 }}
             labelWrap
+            form={form}
             labelAlign='left'
             colon={false}
-            initialValues={{ remember: true }}
+            // initialValues={{ 
+            //   key : selectedrow && selectedrow.key,
+            //   Incident_Discription: selectedrow && selectedrow.Incident_Discription,
+            //   Property_Damage_1: selectedrow && selectedrow.Property_Damage_1,
+            //   Property_Damage_2: selectedrow && selectedrow.Property_Damage_2,
+            //   Property_Damage_3: selectedrow && selectedrow.Property_Damage_3,
+            //   Property_Damage_4: selectedrow && selectedrow.Property_Damage_4,
+            //   acts_conditions_report: selectedrow && selectedrow.acts_conditions_report,
+            //   address: selectedrow && selectedrow.address,
+            //   age: selectedrow && selectedrow.age,
+            //   company: selectedrow && selectedrow.company,
+            //   company_activity: selectedrow && selectedrow.company_activity,
+            //   company_name: selectedrow && selectedrow.company_name,
+            //   dateofincident: selectedrow && moment(selectedrow.dateofincident) ,
+            //   dateofreport: selectedrow && moment(selectedrow.dateofreport),
+            //   department: selectedrow && selectedrow.department,
+            //   incident_id: selectedrow && selectedrow.incident_id,
+            //   locationofincident: selectedrow && selectedrow.locationofincident,
+            //   month: selectedrow && moment(selectedrow.month),
+            //   name_team_member: selectedrow && selectedrow.name_team_member,
+            //   nameofinjured: selectedrow && selectedrow.nameofinjured,
+            //   nationality: selectedrow && selectedrow.nationality,
+            //   personal_passport: selectedrow && selectedrow.personal_passport,
+            //   position: selectedrow && selectedrow.position,
+            //   prepared: selectedrow && selectedrow.prepared,
+            //   project: selectedrow && selectedrow.project,
+            //   similar_incident_near_miss: selectedrow && selectedrow.similar_incident_near_miss,
+            //   sub_contractor: selectedrow && selectedrow.sub_contractor,
+            //   sug_option: selectedrow && selectedrow.sug_option,
+            //   timeofincident: selectedrow && moment(selectedrow.timeofincident),
+            //   timeofreport: selectedrow && moment(selectedrow.timeofreport),
+            //   typeofincident: selectedrow && selectedrow.typeofincident,
+            //   unsafe_acts_by_people: selectedrow && selectedrow.unsafe_acts_by_people,
+            //   unsafe_acts_occur: selectedrow && selectedrow.unsafe_acts_occur,
+            //   unsafe_conditions_exist: selectedrow && selectedrow.unsafe_conditions_exist,
+            //   unsafe_workplace_conditions: selectedrow && selectedrow.unsafe_workplace_conditions,
+            //   year: selectedrow && moment(selectedrow.year)
+            // }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
@@ -498,7 +589,7 @@ const Incident = () => {
                 </Card>
               </TabPane>
               <TabPane tab="Witness or Witness Statement" key="3">
-                Content of Tab Pane 3
+                Waiting for implement Edittable Module...
               </TabPane>
               <TabPane tab="Property Damage" key="4">
                 <Card title="Property Damage">
@@ -660,7 +751,7 @@ const Incident = () => {
                     What should be (or has been) done to carry out the
                     suggestion(s) checked above?
                   </p>
-                  <Form.Item label={"Description continued on attached sheets"}>
+                  <Form.Item label={"Description continued on attached sheets"} name="description_continued_on_attached_sheet">
                     <Radio.Group
                       options={[
                         { label: "Yes", value: "Yes" },
@@ -673,6 +764,7 @@ const Incident = () => {
 
               <TabPane tab="Corrective/Preventive Action Tracking " key="8">
                 Corrective/Preventive Action Tracking
+                <p> Waiting for implement Edittable Module... </p>
               </TabPane>
               <TabPane
                 tab="Attachment List / Investigation Team and Prepared/completed report"
@@ -712,7 +804,7 @@ const Incident = () => {
 
                   <Form.Item
                     label="Department"
-                    name="department  "
+                    name="department"
                     rules={[{ required: true, message: "กรุณาป้อนสาขา" }]}
                   >
                     <Input />
@@ -731,9 +823,9 @@ const Incident = () => {
                 </Card>
               </TabPane>
               <TabPane tab="Review and Comment" key="10">
-                <Card title="Review and Comment">
+                {/* <Card title="Review and Comment">
 
-                </Card>
+                </Card> */}
                 <Card title="Photo Report">
                   <Dragger {...props}>
                     <p className="ant-upload-drag-icon">
@@ -749,6 +841,10 @@ const Incident = () => {
                 </Card>
               </TabPane>
             </Tabs>
+                <Space size="middle">
+                  <Button type="primary" htmlType="submit">บันทึก</Button>
+                  <Button type="primary" danger onClick={handleClose}>ยกเลิก</Button>
+                </Space>
           </Form>
         </Card>
         }
