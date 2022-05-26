@@ -11,24 +11,27 @@ const ContractorCompanyManage = (props) => {
       console.log('onSaveData', type)
       switch (type) {
         case "ADD":
-          console.log([...comusermanage, {key : comusermanage.length + 1 , ..._data}])
-          setcomusermanage([...comusermanage, {key :comusermanage.length + 1 , ..._data}])
+          console.log([...comusermanage , {key : comusermanage.length + 1 , ..._data}])
+          setcomusermanage([...comusermanage, {key : comusermanage.length + 1 , ..._data}])
           break;
 
         case "UPDATE":
-          const indexs = comusermanage.findIndex(e => e.id == _data.id)
-          let arr = [...comusermanage]
+          const indexs = comusermanage.findIndex(e => e.key == _data.key)
+          if (indexs != -1) {
+            let arr = [...comusermanage]
           
-          arr[indexs] = _data
+            arr[indexs] = _data
 
-          setcomusermanage(arr)
-          console.log(arr)
+            setcomusermanage(arr)
+            console.log(arr)
+            
+          }
           break;
 
         case "DELETE":
           console.log(_data)
           const newState = [...comusermanage]
-          const newArr = newState.filter(e => e.key != _data)
+          const newArr = newState.filter(e => e.key != _data.key)
 
           setcomusermanage(newArr)
           break;

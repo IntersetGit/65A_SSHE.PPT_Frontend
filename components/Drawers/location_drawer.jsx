@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { Button, Drawer, Form, Select, Input, Col, Radio, Dropdown, Menu, Space } from 'antd';
 import { PlusOutlined, MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { office_type } from '../../config/office_type';
-import { region } from '../../config/region';
-import { povine } from '../../config/povine';
 import { reg_id } from '../../config/reg_id';
 
 const {Option} = Select;
@@ -31,7 +29,7 @@ const LocationDrawer = (props) => {
         drawerType === 1 ?
             props.onSave('ADD' , values )
             : 
-            props.onSave ('UPDATE' , values )
+            props.onSave('UPDATE' , {...values , key : props.data.key} )
     
     hideModal()
     }  
