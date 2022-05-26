@@ -32,7 +32,7 @@ const ProjectManage = (props) => {
         <>
         <Card style={{ marginTop : '1rem' }} bordered={true}>
             <h1>จัดการข้อมูลโครงการ</h1>
-            <Table columns={columns} dataSource={project_company} expandable size={'middle'} />
+            <Table columns={columns} expandable size={'middle'} />
         </Card>
         </>
     )
