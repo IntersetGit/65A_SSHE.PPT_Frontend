@@ -6,30 +6,32 @@ import { datas } from '../../config/data_ad';
 
 const { Search } = Input;
 
-const onSearch = (values) => {
+const onSearch = (values,e) => {
     if (values === datas) return datas
-    console.log(values)
 }
 
 const NonadUsermanage = (props) => {
     const [adusermanage,setadusermanage] = useState(datas);
 
     const AddAdData = (type, _data) => {
-      console.log('onSaveData')
+      console.log('onSaveData' , type)
       switch (type) {
         case "ADD":
           const _num = `${adusermanage.length + 1}`
-          console.log([...adusermanage, {key :adusermanage.length + 1 , number : _num , source_user : "Non-AD" , ..._data}])
-          setadusermanage([...adusermanage, {key :adusermanage.length + 1 , number : _num , source_user : "Non-AD" , ..._data}])
+          console.log([...adusermanage, {key :adusermanage.length + 1 , number : _num , is_ad : "Non-AD" , ..._data}])
+          setadusermanage([...adusermanage, {key :adusermanage.length + 1 , number : _num , is_ad : "Non-AD" , ..._data}])
           break;
 
         case "UPDATE":
-          const indexs = adusermanage.findIndex(e => e.id == _data.id)
-          let arr = [...adusermanage]
+          const indexs = adusermanage.findIndex(e => e.key == _data.key)
+          if (indexs != -1) {
+            let arr = [...adusermanage]
           
-          arr[indexs] = _data
+            arr[indexs] = _data
 
-          setadusermanage(arr)
+            setadusermanage(arr)
+            console.log(arr)
+          }
           break;
 
         case "DELETE":
@@ -56,28 +58,28 @@ const NonadUsermanage = (props) => {
       },
       {
         title: <b>ชื่อเข้าใช้ระบบ</b>,
-        dataIndex: 'username',
-        key: 'username',
+        dataIndex: 'user_name',
+        key: 'user_name',
       },
       {
         title: <b>ชื่อ-นามสกุล</b>,
-        dataIndex: 'first_last_name',
-        key: 'first_last_name',
+        dataIndex: 'firstlast',
+        key: 'firstlast',
       },
       {
         title: <b>อีเมล์</b>,
-        dataIndex: 'email',
-        key: 'email',
+        dataIndex: 'e_mail',
+        key: 'e_mail',
       },
       {
         title: <b>กลุ่มผู้ใช้งาน</b>,
-        dataIndex: 'user_group',
-        key: 'user_group',
+        dataIndex: 'roles_name',
+        key: 'roles_name',
       },
       {
         title: <b>แหล่งที่มาจากผู้ใช้งาน</b>,
-        dataIndex: 'source_user',
-        key: 'source_user',
+        dataIndex: 'is_ad',
+        key: 'is_ad',
         render: (record) => {
           return (<p>{record}</p>)
         }

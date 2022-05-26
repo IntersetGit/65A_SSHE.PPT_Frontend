@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Drawer, Form, Input, Select, Space, Dropdown, Menu} from 'antd';
 import { PlusOutlined , MoreOutlined , EditOutlined , DeleteOutlined } from '@ant-design/icons';
-import UseradDrawer from './user_ad_drawer';
 import { group_roles } from '../../config/group_roles';
 import { com_id } from '../../config/com_id';
 
@@ -29,7 +28,7 @@ const UsernonadDrawer = (props) => {
         drawerType === 1 ?
             props.onSave('ADD' , values )
             : 
-            props.onSave ('UPDATE' , values )
+            props.onSave ('UPDATE' , {...values , key: props.data.key} )
             
     hideModal()
     }  
@@ -37,7 +36,7 @@ const UsernonadDrawer = (props) => {
     return(
         <>
         {props.type === 1 ?
-            <UseradDrawer />
+            <Button></Button>
             : props.type === 2 ? 
                 <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'right' }} onClick={() => showModal(1)}>เพิ่มผู้ใช้ระบบนอก AD</Button>
                 : <Dropdown.Button icon={<MoreOutlined />} type="text"
@@ -70,12 +69,12 @@ const UsernonadDrawer = (props) => {
                         key : props.data ? props.data.key : '',
                         number : props.data ? props.data.number : '',
                         company_id : props.data && props.data.company_id,
-                        username : props.data ? props.data.username : '',
+                        user_name : props.data ? props.data.user_name : '',
                         password : props.data ? props.data.password : '',
-                        first_last_name : props.data ? props.data.first_last_name : '',
-                        email : props.data ? props.data.email : '',
-                        user_group : props.data && props.data.user_group,
-                        source_user : props.data ? props.data.source_user : ''
+                        firstlast : props.data ? props.data.firstlast : '',
+                        e_mail : props.data ? props.data.e_mail : '',
+                        roles_name : props.data && props.data.roles_name,
+                        is_ad : props.data ? props.data.is_ad : ''
                     }}
 
                 >
@@ -92,7 +91,7 @@ const UsernonadDrawer = (props) => {
 
                     <Form.Item
                         label="ชื่อผู้ใช้"
-                        name="username"
+                        name="user_name"
                         rules={[
                         { required: true, message: "กรุณากรอกข้อมูล" },
                         ]}>
@@ -124,7 +123,7 @@ const UsernonadDrawer = (props) => {
 
                     <Form.Item
                         label="ชื่อจริง-นามสกุล"
-                        name="first_last_name"
+                        name="firstlast"
                         rules={[
                         { required: true, message: "กรุณากรอกข้อมูล" },
                         ]}
@@ -134,13 +133,13 @@ const UsernonadDrawer = (props) => {
 
                     <Form.Item
                         label="Email"
-                        name="email"
+                        name="e_mail"
                     >
                         <Input />
                     </Form.Item>
 
                     <Form.Item
-                        name="user_group"
+                        name="roles_name"
                         label="กลุ่มผู้ใช้งาน"
                         rules={[
                         { required: true, message: "กรุณาเลือกข้อมูล" },

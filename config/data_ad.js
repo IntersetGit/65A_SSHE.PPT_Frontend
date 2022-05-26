@@ -19,7 +19,7 @@ export const datas = [
       firstlast: 'JAKAPAN SUWANNACHOD',
       e_mail: 'test2@gmail.com',
       roles_name: 'Viewer',
-      is_ad: 'AD'
+      is_ad: 'Non-AD'
     },
     {
       key: 3,
