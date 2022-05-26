@@ -1,5 +1,6 @@
 import React, { useState , useEffect } from 'react'
 import { Card , Space , Table , Tag, Dropdown, Button, Menu } from 'antd';
+import { project_company } from '../../config/project_company';
 
 const ProjectManage = (props) => {
     
@@ -20,13 +21,18 @@ const ProjectManage = (props) => {
           dataIndex: 'contractor_name_th',
           key: 'contractor_name_th',
         },
+        {
+          title: 'ตำแหน่ง',
+          dataIndex: 'contractor_position',
+          key: 'contractor_position',
+        }
     ];
 
     return(
         <>
         <Card style={{ marginTop : '1rem' }} bordered={true}>
             <h1>จัดการข้อมูลโครงการ</h1>
-            <Table columns={columns} expandable size={'middle'} />
+            <Table columns={columns} dataSource={project_company} expandable size={'middle'} />
         </Card>
         </>
     )

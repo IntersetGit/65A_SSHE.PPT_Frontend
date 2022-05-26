@@ -159,7 +159,10 @@ const LocationDrawer = (props) => {
                                 },
                                 ]}
                             >
-                                <TextArea rows={4} />
+                                <TextArea 
+                                    rows={8}
+                                    autoSize={{ minRows: 8 , width: 12 }}
+                                />
                             </Form.Item>
                         </Form.Item>
                     </Col>

@@ -155,6 +155,18 @@ const UsernonadDrawer = (props) => {
                             <Button size='medium' type='primary' onClick={hideModal}>ยกเลิก</Button>
                         </Space>
                     </Form.Item>
+
+                    <Form.Item
+                        name="number"
+                    >
+                        <Input type="hidden" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="is_ad"
+                    >
+                        <Input type="hidden" />
+                    </Form.Item>
                 </Form>
 
         </Drawer>        
