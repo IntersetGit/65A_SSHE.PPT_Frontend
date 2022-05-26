@@ -23,7 +23,7 @@ const CustomMenu = ({Menuitems}) => {
           Menuitems.menu.map((value,key) =>{
             return(
                 value.title ?
-                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : '#00AEEF' , fontWeight : 'bold' , backgroundColor : 'white' , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
+                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : '#00AEEF' , fontWeight : 'bold'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
                         {value.list.map((v , k) =>{
                             return(
                                 v.type === 'menu' ?
