@@ -113,7 +113,7 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
           <Divider style={{color : "white" }} type="vertical" />
           <Text
             onClick={CollapsedToggle}
-            style={{ fontSize: "1.2rem", paddingLeft: "0px" }}
+            style={{ fontSize: "1.2rem", paddingLeft: "0px" , color : 'white' }}
           >
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </Text>
@@ -128,23 +128,25 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
               alignItems: "center",
               marginRight : '1.5%' ,
               fontSize : '0.95rem',
-              color : 'white'
+              marginTop : '1.1rem',
+              color : 'white',
+              fontWeight : 'bold'
           }}
         > 
           <Space direction='horizontal'>
               <Themeswitch/>
                 <Tooltip title={'Frontoffice'}>
-                  <Text onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </Text>
+                  <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </p>
                 </Tooltip>
 
               <Tooltip title={'Backoffice'}>
-                  <Text onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <SettingOutlined /> </Text>
+                  <p onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <SettingOutlined /> </p>
               </Tooltip>
 
             <Dropdown  overlay={menu} trigger={['click']}>
-                <Text style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>
+                <p style={{ textAlign : 'center' , cursor : 'pointer'}} onClick={e => e.preventDefault()}>
                   <UserOutlined/> {userData.e_mail} <DownOutlined />
-                </Text>
+                </p>
             </Dropdown>
           </Space>
         </div>
