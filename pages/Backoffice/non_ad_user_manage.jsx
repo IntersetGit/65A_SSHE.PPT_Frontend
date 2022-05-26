@@ -44,7 +44,7 @@ const NonadUsermanage = (props) => {
 
       const columns = [
       {
-        title: <b>ลำดับ</b>,
+        title: 'ลำดับ',
         dataIndex: 'number',
         key: 'number',
         render: (record) => {
@@ -52,27 +52,27 @@ const NonadUsermanage = (props) => {
         }
       },
       {
-        title: <b>ชื่อเข้าใช้ระบบ</b>,
+        title: 'ชื่อเข้าใช้ระบบ',
         dataIndex: 'user_name',
         key: 'user_name',
       },
       {
-        title: <b>ชื่อ-นามสกุล</b>,
+        title: 'ชื่อ-นามสกุล',
         dataIndex: 'firstlast',
         key: 'firstlast',
       },
       {
-        title: <b>อีเมล์</b>,
+        title: 'อีเมล์',
         dataIndex: 'e_mail',
         key: 'e_mail',
       },
       {
-        title: <b>กลุ่มผู้ใช้งาน</b>,
+        title: 'กลุ่มผู้ใช้งาน',
         dataIndex: 'roles_name',
         key: 'roles_name',
       },
       {
-        title: <b>แหล่งที่มาจากผู้ใช้งาน</b>,
+        title: 'แหล่งที่มาจากผู้ใช้งาน',
         dataIndex: 'is_ad',
         key: 'is_ad',
         render: (record) => {
