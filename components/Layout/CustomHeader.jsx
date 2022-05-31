@@ -94,22 +94,13 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
                   <Text
                     style={{
                         margin : 0,
-                        fontWeight: "bold",
-                        fontSize: "1rem",
-                        color: 'white'
+                        fontWeight: "bolder",
+                        fontSize: "1.2rem",
                     }}
                   > 
-                      SSHE APPLICATION
+                  <span style={{ color : '#7CFC00' , marginRight : '3px'}}>SSHE</span>
+                  <span style={{ color : 'white' , fontStyle : 'italic'}}>AI</span>
                   </Text>
-                  {/* <Text
-                    style={{
-                      margin : 0,
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    APPLICATION
-                  </Text> */}
                 </div>
             }
 
@@ -138,11 +129,15 @@ const CustomHeader = ({CollapsedToggle , collapsed , currpath , breakpoints}) =>
         > 
           <Space direction='horizontal'>
                 <Tooltip title={'Frontoffice'}>
-                  <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <FileSearchOutlined /> </p>
+                  <p onClick={() => ToggleSideRedirect('Frontoffice')} style={{ cursor : 'pointer' }}> <img src={ImageLoader(`/assets/sshe.png`)} width={40} height={40} alt="ptt-logo"/> </p>
                 </Tooltip>
 
               <Tooltip title={'Backoffice'}>
-                  <p onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <SettingOutlined /> </p>
+                  <p onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <img src={ImageLoader(`/assets/backoffice.png`)} width={40} height={40} alt="ptt-logo"/> </p>
+              </Tooltip>
+
+              <Tooltip title={'คู่มือ'}>
+                  <p onClick={() => ToggleSideRedirect('Backoffice')} style={{ cursor : 'pointer' }}> <img src={ImageLoader(`/assets/manual.png`)} width={40} height={40} alt="ptt-logo"/> </p>
               </Tooltip>
 
             <Dropdown  overlay={menu} trigger={['click']}>

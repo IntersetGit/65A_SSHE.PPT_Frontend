@@ -1,6 +1,7 @@
 import { Menu } from "antd";
 import Icon from '@ant-design/icons';
 import Link from 'next/link';
+import PTTBACKGROUND from '../../public/assets/bg-section-3-black.png'
 
 /*
 * TODO: เพิ่ม path resolver สำหรับ select Menu
@@ -14,20 +15,21 @@ const CustomMenu = ({Menuitems}) => {
     <>
       <Menu
             selectable={false}
-            theme="light"
+            multiple
+            theme="dark"
             mode="inline"
             // defaultSelectedKeys={["1"]}
-            style={{ height: "100%", borderRight: 0, fontSize: "0.8rem" , fontWeight : "bold" , overflowX : 'hidden' }}
+            style={{ height: "100%", borderRight: 0, fontSize: "0.9rem" , fontWeight : "bold" , overflowX : 'hidden' , backgroundImage : `url(${PTTBACKGROUND})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
       >
         {
           Menuitems.menu.map((value,key) =>{
             return(
                 value.title ?
-                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : '#00AEEF' , fontWeight : 'bold'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
+                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : 'white' , fontWeight : 'bold'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
                         {value.list.map((v , k) =>{
                             return(
                                 v.type === 'menu' ?
-                                    <Menu.Item key={`${k+1}`} icon={<Icon component={v.icon} />}>
+                                    <Menu.Item key={`${v.menu_name}${k+1}`} icon={<Icon component={v.icon} />}>
                                         <Link href={`/${Menuitems.pathname}/${v.menu_name}`}>{v.title}</Link>
                                     </Menu.Item>
                                     :
@@ -49,7 +51,7 @@ const CustomMenu = ({Menuitems}) => {
                         {value.list.map((v , k) =>{
                             return(
                                 v.type === 'menu' ?
-                                    <Menu.Item key={`${k+1}`} icon={<Icon component={v.icon} />}>
+                                    <Menu.Item key={`${v.menu_name}${k+1}`} icon={<Icon component={PictureIcon} />}>
                                         <Link href={`/${Menuitems.pathname}/${v.menu_name}`}>{v.title}</Link>
                                     </Menu.Item>
                                     :
