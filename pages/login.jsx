@@ -41,6 +41,11 @@ const Login = () =>{
     console.log(value)
     API.post('/provider/login',value).then((res) =>{
 
+      _localStorage.set('token' , res.data.items.access_token)
+      _localStorage.set('refresh_token' , res.data.items.refresh_token)
+      
+      dispatch(handleLogin({ token : res.data.items.access_token , refresh_token : res.data.items.refresh_token}))
+
       router.push('/')
 
     }).catch((err) =>{

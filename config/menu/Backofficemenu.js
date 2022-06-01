@@ -12,11 +12,6 @@ const  Backoffice_menu = {
                 {menu_name : 'project_manage' , title : 'โครงการ' , type : 'menu' , icon : project},
                 {menu_name : 'contractor_company_mange' , title : 'ผู้รับเหมา' , type : 'menu'  , icon : contractor2},
                 {menu_name : 'non_ad_user_manage' , title : 'ผู้ใช้งานระบบ' , type : 'menu'  , icon : user2},
-                {menu_name : 'test_dropdown_menu' , title : 'Test Dropdown Menu' , type : 'submenu' , icon : UserOutlined ,
-                    menu_list : [
-                        {menu_name : 'tes1' , title : 'test1' , type : 'menu' , icon : UserOutlined}
-                    ]
-                }
             ]
         },
         {

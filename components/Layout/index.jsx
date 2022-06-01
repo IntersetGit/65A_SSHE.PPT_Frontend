@@ -10,6 +10,7 @@ import CustomMenu from './CustomMenu';
 import CustomHeader from './CustomHeader';
 import useBreakpoints from '../../hooks/useBreakpoint';
 import LayoutExcluder from '../../utils/LayoutExcluder';
+import { ImageLoader } from '../../utils/Utils';
 
 /*
 * TODO: ทำตัวเช็ค Authen กับ User_role
@@ -85,8 +86,14 @@ const AppLayout = ({children}) =>{
 
               <Footer style={{padding : '10px'  , background : 'linear-gradient(to right,#247CB3 0%,#247CB3 80%,#68BE58 100%)' }}>
                 <div style={{ color : 'white', fontWeight:'bold' , height : '100%' , width : '100%' , display : 'flex' , justifyItems : 'center' , justifyContent : 'space-between' , alignItems : 'center'  }}>
-                    <div>
-                      (ไม่มีโลโก้สีขาว)
+                    <div style={{width : '50%'}}>
+                    <img
+                        src={ImageLoader(`/assets/white-logo.png`)}
+                        width={60}
+                        height={30}
+                        alt="ptt-logo"
+                        style={{marginRight : '2%'}}
+                    />
                       บริษัท ปตท. จำกัด (มหาชน)
                     </div>
                     <div>

@@ -69,7 +69,7 @@ export const mitigation = () =>{
 export const procedure = () =>{
     return(
         <img
-        src={ImageLoader(`/assets/mitigation.png`)}
+        src={ImageLoader(`/assets/procedure.png`)}
         width={20}
         height={20}
         alt="ptt-logo"

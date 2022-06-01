@@ -19,13 +19,13 @@ const CustomMenu = ({Menuitems}) => {
             theme="dark"
             mode="inline"
             // defaultSelectedKeys={["1"]}
-            style={{ height: "100%", borderRight: 0, fontSize: "0.9rem" , fontWeight : "bold" , overflowX : 'hidden' , backgroundImage : `url(${PTTBACKGROUND})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
+            style={{ height: "100%", borderRight: 0, fontSize: "0.9rem" , fontWeight : "200" , overflowX : 'hidden' , backgroundImage : `url(${PTTBACKGROUND})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
       >
         {
           Menuitems.menu.map((value,key) =>{
             return(
                 value.title ?
-                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : 'white' , fontWeight : 'bold'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
+                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : 'white' , fontWeight : '300'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
                         {value.list.map((v , k) =>{
                             return(
                                 v.type === 'menu' ?
