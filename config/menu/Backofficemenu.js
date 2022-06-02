@@ -1,4 +1,3 @@
-import { UserOutlined } from '@ant-design/icons'
 import { project , user2 , contractor2 , Impact , activity2 , mitigation , procedure , security , mitigation2 , health ,enviroment } from './pictureicon'
 
 

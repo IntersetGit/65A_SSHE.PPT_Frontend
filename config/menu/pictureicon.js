@@ -121,3 +121,102 @@ export const enviroment = () =>{
     )
 }
 
+export const Risk_Assessment = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/Risk Assessment.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const Risk_Identification = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/Risk Identification.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const sshe_issue = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/sshe-issue.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const SSHE_Incident = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/SSHE-Incident.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const SSHE_Analysis = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/SSHE-Analysis.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const Risk_Register = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/Risk Register.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const Analysis_Report = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/Analysis-Report.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const SSHE_Statistic = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/SSHE-Statistic.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
+export const SSHE_Graph = () =>{
+    return(
+        <img
+        src={ImageLoader(`/assets/SSHE-Graph.png`)}
+        width={20}
+        height={20}
+        alt="ptt-logo"
+    />
+    )
+}
+
