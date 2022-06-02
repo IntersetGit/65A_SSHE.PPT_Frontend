@@ -3,6 +3,7 @@ import { Button, Drawer, Form, Select, Input, Col, Radio, Dropdown, Menu, Space 
 import { PlusOutlined, MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { office_type } from '../../config/office_type';
 import { reg_id } from '../../config/reg_id';
+import Swal from 'sweetalert2';
 
 const {Option} = Select;
 const { TextArea } = Input;
@@ -22,15 +23,68 @@ const LocationDrawer = (props) => {
 
     const preDelete = (values) => {
         console.log(props.data.key)
-        props.onSave ('DELETE' , props.data.key)
+        Swal.fire({
+            title: 'ลบข้อมูล',
+            text: "ยืนยันการลบข้อมูล",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                props.onSave ('DELETE' , {...values , key : props.data.key})
+                Swal.fire(
+                    'ลบข้อมูลสำเร็จ',
+                    '',
+                    'success'
+                )
+            }
+        })
     }
 
     const onFinish = (values) => {
         drawerType === 1 ?
-            props.onSave('ADD' , values )
-            : 
-            props.onSave('UPDATE' , {...values , key : props.data.key} )
-    
+        Swal.fire({
+            title: 'บันทึกข้อมูล',
+            text: "ยืนยันการบันทึกข้อมูล",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                props.onSave('ADD' , values )
+              Swal.fire(
+                'บันทึกข้อมูลสำเร็จ',
+                '',
+                'success'
+              )
+            }
+            })  
+            :
+            Swal.fire({
+                title: 'แก้ไขข้อมูล',
+                text: "ยืนยันการแก้ไขข้อมูล",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    props.onSave('UPDATE' , {...values , key : props.data.key , ...props.data} )
+                  Swal.fire(
+                    'แก้ไขข้อมูลสำเร็จ',
+                    '',
+                    'success'
+                  )
+                }
+                })
     hideModal()
     }  
     
@@ -48,7 +102,7 @@ const LocationDrawer = (props) => {
       return(
           <>
           {props.type === 1  ?
-                <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginBottom: 20, float: 'left' }} onClick={() => showModal(1)}>เพิ่ม</Button>
+                <Button icon={<PlusOutlined/>} type='primary' style={{ marginBottom: 20, float: 'right' }} onClick={() => showModal(1)}>เพิ่ม</Button>
                 : <Dropdown.Button icon={<MoreOutlined />} type="text"
                     overlay={<Menu mode="vertical">
                     <Menu.Item key="1" icon={<EditOutlined />} onClick={() => showModal(2)}>แก้ไขข้อมูลบริษัท</Menu.Item>
@@ -58,7 +112,7 @@ const LocationDrawer = (props) => {
                     </Dropdown.Button>
           }
           <Drawer
-                title='เพิ่มที่ตั้งบริษัท'
+                title='บริษัทผู้รับเหมา'
                 headerStyle={{ textAlign: 'center' }}
                 onClose={hideModal}
                 onCancel={hideModal}
@@ -77,49 +131,13 @@ const LocationDrawer = (props) => {
                     size="large"
                     initialValues={{
                         key : props.data && props.data.key,
-                        reg_company_id : props.data && props.data.reg_company_id,
+                        reg_company_id : props.data ? props.data.reg_company_id : '',
                         company_level_id : props.data && props.data.company_level_id,
                         company_name_th : props.data ? props.data.company_name_th : '',
                         village_building_th : props.data ? props.data.village_building_th : '',
                         status : props.data ? props.data.status : ''
                     }}
                 >
-                    <Col>
-                        <Form.Item label="">
-                            <Form.Item
-                                name="reg_company_id"
-                                label="รหัสบริษัท :"
-                                labelCol={{ span: 24 }}
-                                style={{
-                                display: "inline-block",
-                                width: "calc(50% - 12px)",
-                                }}
-                                rules={[
-                                {
-                                    required: true,
-                                    message: "กรุณาระบุรหัสบริษัท",
-                                },
-                                ]}
-                            >
-                                <Select options={reg_id}>
-                                </Select>
-                            </Form.Item>
-                            <Form.Item
-                                name="company_level_id"
-                                label="สำนักงานใญ่/สาขา :"
-                                labelCol={{ span: 24 }}
-                                style={{
-                                marginLeft: "20px",
-                                display: "inline-block",
-                                width: "calc(50% - 12px)",
-                                }}
-                            >
-                                <Select options={office_type}>
-                                </Select>
-                            </Form.Item>
-                        </Form.Item>
-                    </Col>
-
                     <Col>
                         <Form.Item label="">
                             <Form.Item
@@ -138,6 +156,23 @@ const LocationDrawer = (props) => {
                                 ]}
                             >
                                 <Input />
+                            </Form.Item>
+                        </Form.Item>
+                    </Col>
+                    
+                    <Col>
+                        <Form.Item label="">
+                            <Form.Item
+                                name="company_level_id"
+                                label="สำนักงานใหญ๋/สาขา :"
+                                labelCol={{ span: 24 }}
+                                style={{
+                                display: "inline-block",
+                                width: "calc(100% - 12px)",
+                                }}
+                            >
+                                <Select options={office_type}>
+                                </Select>
                             </Form.Item>
                         </Form.Item>
                     </Col>
@@ -172,8 +207,8 @@ const LocationDrawer = (props) => {
                             label="สถานะ"
                         >
                             <Radio.Group>
-                                <Radio.Button value="ใช้งาน">ใช้งาน</Radio.Button>
-                                <Radio.Button value="ไม่ใช้งาน">ไม่ใช้งาน</Radio.Button>
+                                <Radio.Button value="Active">Active</Radio.Button>
+                                <Radio.Button value="Non Active">Non Active</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
                     </Col>
@@ -184,6 +219,7 @@ const LocationDrawer = (props) => {
                             <Button size='medium' type='primary' onClick={hideModal}>ยกเลิก</Button>
                         </Space>
                     </Form.Item>
+                            
                 </Form>
         </Drawer>        
           </>

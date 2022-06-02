@@ -1,8 +1,9 @@
 import React, { useState , useEffect } from 'react'
-import { Card , Space , Table , Tag, Dropdown, Button, Menu } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card , Space , Table , Input, Dropdown, Button, Menu } from 'antd';
 import LocationDrawer from '../../components/Drawers/location_drawer';
 import { dataz } from '../../config/data_company';
+
+const { Search } = Input;
 
 const ContractorCompanyManage = (props) => {
   const [comusermanage,setcomusermanage] = useState(dataz);
@@ -11,8 +12,8 @@ const ContractorCompanyManage = (props) => {
       console.log('onSaveData', type)
       switch (type) {
         case "ADD":
-          console.log([...comusermanage , {key : comusermanage.length + 1 , ..._data}])
-          setcomusermanage([...comusermanage, {key : comusermanage.length + 1 , ..._data}])
+          console.log([...comusermanage , {id : comusermanage.length + 1 , key : comusermanage.length + 1 , reg_company_id : `Rp-00${comusermanage.length + 1}` , ..._data}])
+          setcomusermanage([...comusermanage, {id : comusermanage.length + 1 , key : comusermanage.length + 1 , reg_company_id : `Rp-00${comusermanage.length + 1}`, ..._data}])
           break;
 
         case "UPDATE":
@@ -44,32 +45,37 @@ const ContractorCompanyManage = (props) => {
 
   const columns = [
     {
-      title: 'รหัสบริษัท',
+      title: 'Company ID',
       dataIndex: 'reg_company_id',
       key: 'reg_company_id',
+      align: 'center'
     },
     {
-      title: 'ชื่อบริษัท',
+      title: 'Company',
       dataIndex: 'company_name_th',
       key: 'company_name_th',
+      align: 'center'
     },
     {
       title: 'ที่อยู่',
       dataIndex: 'village_building_th',
       key: 'village_building_th',
+      align: 'center'
     },
     {
       title: "สถานะ",
       dataIndex: "status",
       key: "status",
+      align: 'center',
       sorter: (a, b) => a.type - b.type,
       render: (record) => {
-        return <p>{record ? "ใช้งาน" : "ไม่ได้ใช้งาน"}</p>;
+        return <p>{record ? "Active" : "Non Active"}</p>;
       },
     },
     {
       title: 'จัดการ',
       key: 'จัดการ',
+      align: 'center',
       render: (record) => {
         return (<LocationDrawer data={record} type={2} onSave={AddComData} /> )
       }
@@ -78,12 +84,25 @@ const ContractorCompanyManage = (props) => {
 
   return (
     <>
-      <Card bordered={true}>
-        <p>ฟิลเตอร์ค้นหาบริษัท</p>
-      </Card>
       <Card style={{ marginTop : '1rem' }} bordered={true}>
+      <h1>การจัดการข้อมูล บริษัทผู้รับเหมา</h1>
+      <Space>
+        <p>ชื่อโครงการ</p>
+        <Search
+            placeholder="Search"
+            style={{ width : 300 , marginBottom : 10}}
+            enterButton
+        />
+      </Space>
       <LocationDrawer type={1} onSave={AddComData} />
-        <Table columns={columns} dataSource={comusermanage} expandable size={'middle'} />
+        <Table 
+        columns={columns} 
+        dataSource={comusermanage} 
+        expandable size={'middle'}
+        scroll={{
+          y: 240,
+        }}
+        />
       </Card>
     </>
   )
