@@ -1,4 +1,4 @@
-import '../../styles/AppLayout.module.css'
+import '../../styles/AppLayout.css'
 
 import { useState , useEffect , useMemo } from 'react';
 import { useRouter } from "next/router";

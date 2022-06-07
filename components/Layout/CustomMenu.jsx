@@ -1,7 +1,7 @@
 import { Menu } from "antd";
 import Icon from '@ant-design/icons';
 import Link from 'next/link';
-import PTTBACKGROUND from '../../public/assets/bg-section-3-black.png'
+// import PTTBACKGROUND from '../../public/assets/bg-section-3-black.png'
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
 
@@ -29,10 +29,10 @@ const CustomMenu = ({Menuitems}) => {
             defaultOpenKeys={['sshe_analysis_submenu']}
             defaultSelectedKeys={selectedKeys}
             selectedKeys={selectedKeys}
-            style={{ height: "100%", borderRight: 0, fontSize: "1rem" , fontWeight : "normal" , overflowX : 'hidden' , backgroundImage : `url(${PTTBACKGROUND})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
+            style={{ height: "100%", borderRight: 0, fontSize: "1rem" , fontWeight : "normal" , overflowX : 'hidden' , backgroundImage : `url('/assets/bg-section-3-black.png')` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
       >
         {
-          Menuitems.menu.map((value,key) =>{
+            Menuitems.menu.map((value,key) =>{
             return(
                 value.title ?
                     <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : 'white' , fontSize : '1rem', fontWeight : 'normal'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
