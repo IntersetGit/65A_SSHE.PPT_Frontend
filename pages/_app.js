@@ -7,6 +7,8 @@ import _localStorage from "../utils/BrowserLocalstorage";
 import Config from "../config";
 import Theme from "../components/Themeswitch/Theme";
 
+import '../styles/AppLayout.css'
+
 import { Provider } from 'react-redux';
 import { store } from '../redux/store'
 

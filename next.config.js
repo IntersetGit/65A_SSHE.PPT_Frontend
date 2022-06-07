@@ -6,6 +6,7 @@ const cssLoader = require('css-loader/dist/utils');
 const withCss = require('@zeit/next-css');
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 const withOptimizedImages = require('next-optimized-images');
+const withAntdALess = require('next-plugin-antd-less')
 
 /** Unused comment */
 // const withSass = require('@zeit/next-sass');
@@ -26,12 +27,30 @@ const withAntdTheme = generateTheme({
 
 
 const css = [withCss, {
-  cssModules: false, 
+  cssModules: true, 
   cssLoaderOptions: { 
     localIdentName: '[local]',
     importLoaders: 2
   }
 }]
+
+const antdLess = withAntdALess({
+  modifyVars: { '@primary-color': '#04f' }, // optional
+  lessVarsFilePath: './src/styles/variables.less', // optional 
+  lessVarsFilePathAppendToEndOfContent: false, // optional
+  // optional https://github.com/webpack-contrib/css-loader#object
+  cssLoaderOptions: {
+    // ... 
+    mode: "local",
+    localIdentName: prod ? "[local]--[hash:base64:4]" : "[hash:base64:8]", // invalid! for Unify getLocalIdent (Next.js / CRA), Cannot set it, but you can rewritten getLocalIdentFn
+    exportLocalsConvention: "camelCase",
+    exportOnlyLocals: false,
+    // ...
+    getLocalIdent: (context, localIdentName, localName, options) => {
+      return "antd-less";
+    },
+  },
+})
 
 const withoptimizedImg = [withOptimizedImages,{
 
@@ -99,6 +118,7 @@ module.exports = withPlugins(
     css,withoptimizedImg
   ],
   {
+    
     webpack5: false,
     reactStrictMode: false,
     trailingSlash: true,
@@ -119,6 +139,7 @@ module.exports = withPlugins(
     }
   }
 );
+
 
 /**
  * TO KNOW

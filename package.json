@@ -17,7 +17,8 @@
     "@ant-design/icons": "^4.7.0",
     "@ant-design/maps": "0.0.7",
     "@ant-design/plots": "^1.0.9",
-    "@ant-design/pro-table": "^2.74.1",
+    "@ant-design/pro-components": "^1.1.5",
+    "@ant-design/pro-table": "^2.76.3",
     "@reduxjs/toolkit": "^1.8.0",
     "antd": "^4.19.3",
     "axios": "^0.26.1",
@@ -28,6 +29,7 @@
     "next": "^11.1.4",
     "next-dynamic-antd-theme": "^0.1.0",
     "next-optimized-images": "^2.6.2",
+    "next-plugin-antd-less": "^1.8.0",
     "react": "17.0.2",
     "react-cookie": "^4.1.1",
     "react-dom": "17.0.2",
@@ -51,6 +53,7 @@
     "less-loader": "^5.0.0",
     "next-compose-plugins": "^2.2.1",
     "next-transpile-modules": "^9.0.0",
+    "null-loader": "^4.0.1",
     "webpack": "^4.46.0",
     "webpack-filter-warnings-plugin": "^1.2.1"
   }
