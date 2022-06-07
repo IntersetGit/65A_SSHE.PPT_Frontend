@@ -8,8 +8,7 @@
           {
               "libraryName": "antd" ,
               "style": true
-          },
-          "@ant-design"
+          }
       ]
   ]
 }
