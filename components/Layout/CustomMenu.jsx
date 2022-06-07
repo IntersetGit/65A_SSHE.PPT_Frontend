@@ -32,7 +32,7 @@ const CustomMenu = ({Menuitems}) => {
             defaultOpenKeys={['sshe_analysis_submenu']}
             defaultSelectedKeys={selectedKeys}
             selectedKeys={selectedKeys}
-            style={{ height: "100%", borderRight: 0, fontSize: "1rem" , fontWeight : "normal" , overflowX : 'hidden' , backgroundImage : `url(${PTTBACKGROUND})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
+            style={{ height: "100%", borderRight: 0, fontSize: "1rem" , fontWeight : "normal" , overflowX : 'hidden' , backgroundImage : `url(${Menuitems.BACK_GROUND_IMAGES})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
       >
         {
             Menuitems.menu.map((value,key) =>{

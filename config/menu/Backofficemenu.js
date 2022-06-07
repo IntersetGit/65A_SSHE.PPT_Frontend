@@ -1,8 +1,9 @@
 import { project , user2 , contractor2 , Impact , activity2 , mitigation , procedure , security , mitigation2 , health ,enviroment } from './pictureicon'
-
+import PTTBACKGROUND from '../../public/assets/bg-section-3-black.png'
 
 const  Backoffice_menu = {
     pathname : 'Backoffice',
+    BACK_GROUND_IMAGES : PTTBACKGROUND,
     redirectPage : `/Backoffice/contractor_company_mange`,
     menu : [
         {

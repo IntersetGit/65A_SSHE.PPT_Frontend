@@ -1,7 +1,9 @@
 import { SSHE_Analysis , Risk_Assessment , Risk_Identification , Risk_Register , sshe_issue , SSHE_Incident , Analysis_Report , SSHE_Statistic , SSHE_Graph  } from "./pictureicon";
+import PTTBACKGROUND from '../../public/assets/frontoficebg.png'
 
 const  Frontoffice_menu = {
     pathname : 'Frontoffice',
+    BACK_GROUND_IMAGES : PTTBACKGROUND,
     redirectPage : `/Frontoffice/analysis_graph`,
     menu : [
         {
