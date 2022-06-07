@@ -85,7 +85,7 @@ const AppLayout = ({children}) =>{
               </Content>
 
               <Footer style={{padding : '10px'  , background : 'linear-gradient(to right,#247CB3 0%,#247CB3 80%,#68BE58 100%)' }}>
-                <div style={{ color : 'white', fontWeight:'bold' , height : '100%' , width : '100%' , display : 'flex' , justifyItems : 'center' , justifyContent : 'space-between' , alignItems : 'center'  }}>
+              <div style={{ color : 'white', fontWeight:'bold' , height : '100%' , width : '100%' , display : 'flex' , justifyItems : 'center' , justifyContent : 'space-between' , alignItems : 'center'  }}>
                     <div style={{width : '50%'}}>
                     <img
                         src={ImageLoader(`/assets/white-logo.png`)}

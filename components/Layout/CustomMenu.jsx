@@ -26,18 +26,19 @@ const CustomMenu = ({Menuitems}) => {
       <Menu
             //multiple
             //selectable
+            selectable
             theme="dark"
             mode="inline"
             defaultOpenKeys={['sshe_analysis_submenu']}
             defaultSelectedKeys={selectedKeys}
             selectedKeys={selectedKeys}
-            style={{ height: "100%", borderRight: 0, fontSize: "0.9rem" , fontWeight : "200" , overflowX : 'hidden' , backgroundImage : `url(${PTTBACKGROUND})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
+            style={{ height: "100%", borderRight: 0, fontSize: "1rem" , fontWeight : "normal" , overflowX : 'hidden' , backgroundImage : `url(${PTTBACKGROUND})` , backgroundRepeat : 'no-repeat' , backgroundSize : 'cover' , backgroundPosition : 'center' }}
       >
         {
             Menuitems.menu.map((value,key) =>{
             return(
                 value.title ?
-                    <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : 'white' , fontWeight : '300'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
+                <Menu.ItemGroup key={`${Menuitems.pathname}-${key}`} title={<span style={{color : 'white' , fontSize : '1rem', fontWeight : 'normal'  , padding : '3px 6px 6px 6px' , borderRadius : '10px'}}>{value.title}</span>}>
                         {value.list.map((v , k) =>{
                             return(
                                 v.type === 'menu' ?
