@@ -223,7 +223,7 @@ const ProjectManage = (props) => {
                 closable={true}
                 maskClosable={false}
                 keyboard={false}
-                size='large'
+                width="40%"
             >
                 <Form
                     {...formItemLayout}

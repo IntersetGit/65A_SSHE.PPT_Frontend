@@ -3,6 +3,7 @@ import { Button, Drawer, Form, Input, Select, Space, Dropdown, Menu} from 'antd'
 import { PlusOutlined , MoreOutlined , EditOutlined , DeleteOutlined } from '@ant-design/icons';
 import { group_roles } from '../../config/group_roles';
 import { com_id } from '../../config/com_id';
+import UseradDrawer from './user_ad_drawer';
 
 const { Option } = Select
 
@@ -33,10 +34,21 @@ const UsernonadDrawer = (props) => {
     hideModal()
     }  
 
+    const formItemLayout = {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 24 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 24 },
+        },
+      };
+
     return(
         <>
         {props.type === 1 ?
-            <Button></Button>
+            <UseradDrawer />
             : props.type === 2 ? 
                 <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ float: 'right' }} onClick={() => showModal(1)}>เพิ่มผู้ใช้ระบบนอก AD</Button>
                 : <Dropdown.Button icon={<MoreOutlined />} type="text"
@@ -60,9 +72,10 @@ const UsernonadDrawer = (props) => {
                 size='large'
             >
                 <Form
+                    {...formItemLayout}
+                    layout="vertical"
                     size="large"
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 14 }}
+                    labelCol={{ span: 24 }}
                     onFinish={onFinish}
                     scrollToFirstError
                     initialValues={{

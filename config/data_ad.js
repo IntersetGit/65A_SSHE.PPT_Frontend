@@ -1,5 +1,6 @@
 export const datas = [
     {
+      id: 1,
       key: 1,
       company_id : '01',
       number: '1',
@@ -11,6 +12,7 @@ export const datas = [
       is_ad: 'Non-AD'
     },
     {
+      id: 2,
       key: 2,
       company_id : '01',
       number: '2',
@@ -22,6 +24,7 @@ export const datas = [
       is_ad: 'Non-AD'
     },
     {
+      id: 3,
       key: 3,
       company_id : '01',
       number: '3',

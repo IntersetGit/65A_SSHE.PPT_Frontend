@@ -1,7 +1,6 @@
 import React, { useState , useEffect } from 'react'
 import { Card, Menu, Input, Dropdown, Table, Col, Button, Drawer, Form, Select, Space, Tabs} from 'antd';
 import { EditOutlined, DeleteOutlined, MoreOutlined, } from '@ant-design/icons';
-import UsernonadDrawer from '../../components/Drawers/user_non_ad_drawer';
 import { group_roles } from '../../config/group_roles';
 import { com_id } from '../../config/com_id';
 import { datas } from '../../config/data_ad';
@@ -12,7 +11,7 @@ const onSearch = (values,e) => {
 }
 const NonadUsermanage = (props) => {
     const [adusermanage,setadusermanage] = useState(datas);
-    const [isShowModal, setShowModal] = useState(false)
+    const [isShowDrawer, setShowDrawer] = useState(false)
     const [drawerType, setdrawerType] = useState(1)
     const [selectedrow,setselectedrow] = useState(null)
     const [form] = Form.useForm()
@@ -48,16 +47,16 @@ const NonadUsermanage = (props) => {
         }
       }
 
-      const showModal = (type) => {
+      const showDrawerr = (type) => {
         setdrawerType(type)
-        setShowModal(true)
+        setShowDrawer(true)
       }
 
-      const hideModal = () => {
+      const hideDrawer = () => {
         form.resetFields()
         formAD.resetFields()
         setselectedrow(null)
-        setShowModal(false)
+        setShowDrawer(false)
       }
 
       const onFinish = (values) => {
@@ -66,8 +65,17 @@ const NonadUsermanage = (props) => {
           }else if (drawerType == 2) { 
             AddAdData("UPDATE", {...selectedrow , ...values})
           }
-          hideModal()
+          hideDrawer()
       }
+
+      const handleOk = (form) => {
+        if (form === "formCreate") {
+          form.submit();
+        }
+        if (form === "formAD") {
+          formAD.submit();
+        }
+      };
 
       const onFinishAD = (values) => {
 
@@ -86,7 +94,7 @@ const NonadUsermanage = (props) => {
 
       const columns = [
         {
-          title: <b>ลำดับ</b>,
+          title: 'ลำดับ',
           dataIndex: 'number',
           key: 'number',
           render: (record) => {
@@ -94,27 +102,27 @@ const NonadUsermanage = (props) => {
           }
         },
         {
-          title: <b>ชื่อเข้าใช้ระบบ</b>,
+          title: 'ชื่อเข้าใช้ระบบ',
           dataIndex: 'user_name',
           key: 'user_name',
         },
         {
-          title: <b>ชื่อ-นามสกุล</b>,
+          title: 'ชื่อ-นามสกุล',
           dataIndex: 'firstlast',
           key: 'firstlast',
         },
         {
-          title: <b>อีเมล์</b>,
+          title: 'อีเมล์',
           dataIndex: 'e_mail',
           key: 'e_mail',
         },
         {
-          title: <b>กลุ่มผู้ใช้งาน</b>,
+          title: 'กลุ่มผู้ใช้งาน',
           dataIndex: 'roles_name',
           key: 'roles_name',
         },
         {
-          title: <b>แหล่งที่มาจากผู้ใช้งาน</b>,
+          title: 'แหล่งที่มาจากผู้ใช้งาน',
           dataIndex: 'is_ad',
           key: 'is_ad',
           render: (record) => {
@@ -122,16 +130,18 @@ const NonadUsermanage = (props) => {
         }
         },
         {
-          title: <b>จัดการ</b>,
+          title: 'จัดการ',
           render: (record) => (
             <Dropdown.Button icon={<MoreOutlined/>} type='text' overlay={ 
               <Menu>
                 <Menu.Item key="1" icon={<EditOutlined />} onClick={() => {
-                  showModal(2)
+                  showDrawerr(2)
                   setselectedrow(record)
                   form.setFieldsValue(record)
                 }}>แก้ไข</Menu.Item>
-                <Menu.Item key="2" icon={<DeleteOutlined />} onClick={() => AddAdData("DELETE", record)}>ลบ</Menu.Item>
+                <Menu.Item key="2" icon={<DeleteOutlined />} onClick={() => {
+                  AddAdData("DELETE" , record)
+                }}>ลบ</Menu.Item>
               </Menu>
             
               }>
@@ -151,7 +161,7 @@ const NonadUsermanage = (props) => {
               onSearch={onSearch}
               style={{ width: 400 }}
           />
-          <Button style={{ float : 'right' }} type='primary' onClick={() => showModal(1)}>+ เพิ่มผู้ใช้ระบบ</Button>
+          <Button style={{ float : 'right' }} type='primary' onClick={() => showDrawerr(1)}>+ เพิ่มผู้ใช้ระบบ</Button>
           <Col span={24}>
             <div>
               <Table 
@@ -169,28 +179,29 @@ const NonadUsermanage = (props) => {
           </Card>
 
           <Drawer
-                onClose={hideModal}
-                onCancel={hideModal}
-                visible={isShowModal}
+                onClose={hideDrawer}
+                onCancel={hideDrawer}
+                visible={isShowDrawer}
                 closable={true}
                 maskClosable={false}
                 keyboard={false}
-                size='large'
+                width="40%"
             >
-                <Form
-                    {...formItemLayout}
-                    layout="vertical"
-                    name="nonadform"
-                    id="nonadform"
-                    onFinish={onFinish}
-                    form={form}
-                    size="large"
-                    initialValues={{
-                        
-                    }}
-                >
-                  <Tabs defaultActiveKey="1">
-                    <TabPane tab="นอก AD" key="1">
+                <Tabs defaultActiveKey="1">
+                  <TabPane tab="นอก AD" key="1">
+                    <Form
+                      {...formItemLayout}
+                      layout="vertical"
+                      name="nonadform"
+                      id="nonadform"
+                      onFinish={onFinish}
+                      form={form}
+                      size="large"
+                      initialValues={{
+                          
+                      }}
+                    >
+
                     <Form.Item
                         label="รหัสบริษัท"
                         name="company_id"
@@ -265,57 +276,16 @@ const NonadUsermanage = (props) => {
                     <Form.Item>
                         <Space style={{ float: 'right'}}>
                             <Button type='primary' htmlType='sumbit'>ตกลง</Button>
-                            <Button type='primary' onClick={hideModal}>ยกเลิก</Button>
-                        </Space>
-                    </Form.Item>
-                    </TabPane>
-
-                    <TabPane tab="AD" key="2">
-                    <Form
-                      {...formItemLayout}
-                      layout="vertical"
-                      name="adform"
-                      id="adform"
-                      onFinish={onFinishAD}
-                      form={formAD}
-                      size="large"
-                      initialValues={{
-                          
-                      }}
-                    >
-                    
-                    <Form.Item
-                    name="username"
-                    label="Username"
-                    rules={[{ required: true }]}
-                    >
-                        <Search
-                        placeholder="Username"
-                        enterButton="ค้นหา"
-                        onSearch={onSearch}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                    name="roles_id"
-                    label="กลุ่มผู้ใช้งาน"
-                    rules={[
-                    { required: true, message: "กรุณากรอกข้อมูล กลุ่มผู้ใช้งาน" },
-                    ]}
-                    >
-                        <Select placeholder="กลุ่มผู้ใช้งาน" options={group_roles} >
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Space style={{ float: 'right'}}>
-                            <Button type='primary' htmlType='sumbit'>ตกลง</Button>
-                            <Button type='primary' onClick={hideModal}>ยกเลิก</Button>
+                            <Button type='primary' onClick={hideDrawer}>ยกเลิก</Button>
                         </Space>
                     </Form.Item>
                     </Form>
                     </TabPane>
+
+                    <TabPane tab="AD" key="2">
+                  
+                    </TabPane>
                   </Tabs>
-                </Form>
           </Drawer>
       </>
       

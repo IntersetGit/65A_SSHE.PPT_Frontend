@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Drawer, Form, Select, Input } from 'antd';
+import { Button, Drawer, Form, Select, Input, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { group_roles } from '../../config/group_roles';
 
@@ -8,6 +8,7 @@ const { Option } = Select
 
 const UseradDrawer = (props) => {
     const [isShowModal, setShowModal] = useState(false)
+    
 
     const showModal = () => {
         setShowModal(true)
@@ -25,6 +26,17 @@ const UseradDrawer = (props) => {
         console.log(values)
     }
 
+    const formItemLayout = {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 24 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 24 },
+        },
+      };
+
     return (
         <>
         <Button icon={<PlusOutlined/>} size='large' type='primary' style={{ marginLeft : 10 , float: 'right' }} onClick={showModal}>เพิ่มผู้ใช้ระบบจาก AD</Button>
@@ -40,9 +52,10 @@ const UseradDrawer = (props) => {
                 size='large'
             >
                 <Form
+                    {...formItemLayout}
+                    layout="vertical"
                     size="large"
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 14 }}
+                    labelCol={{ span: 24 }}
                     onFinish={onFinish}
                     scrollToFirstError
                     initialValues={{

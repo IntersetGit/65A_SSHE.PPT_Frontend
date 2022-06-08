@@ -120,7 +120,7 @@ const LocationDrawer = (props) => {
                 closable={true}
                 maskClosable={false}
                 keyboard={false}
-                size='large'
+                width="40%"
             >
                 <Form
                     {...formItemLayout}
@@ -131,7 +131,7 @@ const LocationDrawer = (props) => {
                     size="large"
                     initialValues={{
                         key : props.data && props.data.key,
-                        reg_company_id : props.data ? props.data.reg_company_id : '',
+                        reg_company_id : props.data && props.data.reg_company_id,
                         company_level_id : props.data && props.data.company_level_id,
                         company_name_th : props.data ? props.data.company_name_th : '',
                         village_building_th : props.data ? props.data.village_building_th : '',
@@ -219,7 +219,7 @@ const LocationDrawer = (props) => {
                             <Button size='medium' type='primary' onClick={hideModal}>ยกเลิก</Button>
                         </Space>
                     </Form.Item>
-                            
+
                 </Form>
         </Drawer>        
           </>
