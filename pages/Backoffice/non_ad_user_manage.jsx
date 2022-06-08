@@ -4,6 +4,7 @@ import { EditOutlined, DeleteOutlined, MoreOutlined, } from '@ant-design/icons';
 import { group_roles } from '../../config/group_roles';
 import { com_id } from '../../config/com_id';
 import { datas } from '../../config/data_ad';
+import Swal from 'sweetalert2';
 const { Search } = Input;
 const { TabPane } = Tabs;
 const onSearch = (values,e) => {
@@ -39,7 +40,7 @@ const NonadUsermanage = (props) => {
         case "DELETE":
           console.log(_data)
           const newState = [...adusermanage]
-          const newArr = newState.filter(e => e.key != _data)
+          const newArr = newState.filter(e => e.key != _data.key)
           setadusermanage(newArr)
           break;
           default:
@@ -139,9 +140,26 @@ const NonadUsermanage = (props) => {
                   setselectedrow(record)
                   form.setFieldsValue(record)
                 }}>แก้ไข</Menu.Item>
-                <Menu.Item key="2" icon={<DeleteOutlined />} onClick={() => {
-                  AddAdData("DELETE" , record)
-                }}>ลบ</Menu.Item>
+                <Menu.Item key="2" icon={<DeleteOutlined />} onClick={() => 
+                  Swal.fire({
+                      title: 'ลบข้อมูล',
+                      text: "ยืนยันการลบข้อมูล",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'ยืนยัน',
+                      cancelButtonText: 'ยกเลิก'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                    AddAdData("DELETE", record)
+                    Swal.fire(
+                      'ลบข้อมูลสำเร็จ',
+                      '',
+                      'success'
+                  )
+                }
+                })}>ลบ</Menu.Item>
               </Menu>
             
               }>
@@ -283,7 +301,49 @@ const NonadUsermanage = (props) => {
                     </TabPane>
 
                     <TabPane tab="AD" key="2">
-                  
+                    <Form
+                      {...formItemLayout}
+                      layout="vertical"
+                      name="nonadform"
+                      id="nonadform"
+                      // onFinish={onFinish}
+                      form={formAD}
+                      size="large"
+                      initialValues={{
+                          
+                      }}
+                    >
+                      <Form.Item
+                        name="username"
+                        label="Username"
+                        rules={[{ required: true }]}
+                        >
+                        <Search
+                        placeholder="Username"
+                        enterButton="ค้นหา"
+                        onSearch={onSearch}
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        name="roles_id"
+                        label="กลุ่มผู้ใช้งาน"
+                        rules={[
+                        { required: true, message: "กรุณากรอกข้อมูล กลุ่มผู้ใช้งาน" },
+                        ]}
+                        >
+                        <Select placeholder="กลุ่มผู้ใช้งาน" options={group_roles} >
+                        </Select>
+                      </Form.Item>
+
+                      <Form.Item>
+                        <Space style={{ float: 'right'}}>
+                            <Button type='primary' htmlType='sumbit'>ตกลง</Button>
+                            <Button type='primary' onClick={hideDrawer}>ยกเลิก</Button>
+                        </Space>
+                      </Form.Item>
+
+                    </Form>
                     </TabPane>
                   </Tabs>
           </Drawer>
