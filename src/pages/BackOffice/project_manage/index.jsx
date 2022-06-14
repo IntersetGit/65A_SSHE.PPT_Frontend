@@ -13,13 +13,17 @@ import {
   Input,
   Menu,
   Radio,
+  Select,
   Space,
   Table,
   Tabs,
 } from 'antd';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import { constractor_company } from '../../../../dummy_data/constractor_company';
+import { constractor_data } from '../../../../dummy_data/constractor_data';
 import { project_data } from '../../../../dummy_data/project_company';
+
 const { Search } = Input;
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -29,7 +33,7 @@ const ProjectManage = (props) => {
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
-  const [form] = Form.useForm();
+  const [form, formCT] = Form.useForm();
   const [value, setValue] = useState('Active');
 
   const AddProject = (type, _data = {}) => {
@@ -41,7 +45,7 @@ const ProjectManage = (props) => {
           {
             id: projectdata.length + 1,
             key: projectdata.length + 1,
-            project_id: `Rp-00${projectdata.length + 1}`,
+            number: `${projectdata.length + 1}`,
             ..._data,
           },
         ]);
@@ -50,7 +54,7 @@ const ProjectManage = (props) => {
           {
             id: projectdata.length + 1,
             key: projectdata.length + 1,
-            project_id: `Rp-00${projectdata.length + 1}`,
+            number: `${projectdata.length + 1}`,
             ..._data,
           },
         ]);
@@ -160,12 +164,30 @@ const ProjectManage = (props) => {
     },
   ];
 
+  const column = [
+    {
+      title: 'ชื่อผู้รับเหมา',
+      dataIndex: 'constractor_name',
+      key: 'constractor_name',
+      align: 'center',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      align: 'center',
+      render: (record) => {
+        return <Button type="danger">-</Button>;
+      },
+    },
+  ];
+
   const columns = [
     {
-      title: 'Project ID',
-      dataIndex: 'project_id',
-      key: 'project_id',
+      title: 'ลำดับ',
+      dataIndex: 'number',
+      key: 'number',
       align: 'center',
+      sorter: (a, b) => a.number - b.number,
     },
     {
       title: 'Project Name',
@@ -267,18 +289,18 @@ const ProjectManage = (props) => {
         keyboard={false}
         width="40%"
       >
-        <Form
-          {...formItemLayout}
-          layout="vertical"
-          form={form}
-          name="projectform"
-          id="projectform"
-          onFinish={onFinish}
-          size="large"
-          initialValues={{}}
-        >
-          <Tabs defaultActiveKey="1">
-            <TabPane tab="โครงการ" key="1">
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="โครงการ" key="1">
+            <Form
+              {...formItemLayout}
+              layout="vertical"
+              form={form}
+              name="projectform"
+              id="projectform"
+              onFinish={onFinish}
+              size="large"
+              initialValues={{}}
+            >
               <Form.Item
                 label="ชื่อโครงการ"
                 name="project_name"
@@ -299,22 +321,63 @@ const ProjectManage = (props) => {
                   optionType="button"
                 />
               </Form.Item>
-            </TabPane>
 
-            <TabPane tab="บริษัทผู้รับเหมา" key="2"></TabPane>
-          </Tabs>
+              <Form.Item>
+                <Space style={{ float: 'right' }}>
+                  <Button type="primary" htmlType="sumbit">
+                    ตกลง
+                  </Button>
+                  <Button type="primary" onClick={hideModal}>
+                    ยกเลิก
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </TabPane>
 
-          <Form.Item>
-            <Space style={{ float: 'right' }}>
-              <Button type="primary" htmlType="sumbit">
-                ตกลง
-              </Button>
-              <Button type="primary" onClick={hideModal}>
-                ยกเลิก
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
+          <TabPane tab="บริษัทผู้รับเหมา" key="2">
+            <Form
+              {...formItemLayout}
+              layout="vertical"
+              form={formCT}
+              name="projectform"
+              id="projectform"
+              onFinish={onFinish}
+              size="large"
+              initialValues={{}}
+            >
+              <Form.Item label="เพิ่มผู้รับเหมา" name="add_contractor">
+                <Select options={constractor_company}></Select>
+              </Form.Item>
+
+              <Form.Item>
+                <Table
+                  columns={column}
+                  dataSource={constractor_data}
+                  expandable
+                  size={'middle'}
+                  scroll={{
+                    y: 240,
+                  }}
+                  pagination={{
+                    pageSize: 8,
+                  }}
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Space style={{ float: 'right' }}>
+                  <Button type="primary" htmlType="sumbit">
+                    ตกลง
+                  </Button>
+                  <Button type="primary" onClick={hideModal}>
+                    ยกเลิก
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </TabPane>
+        </Tabs>
       </Drawer>
     </>
   );
