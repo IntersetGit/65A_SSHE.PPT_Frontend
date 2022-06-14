@@ -1,33 +1,32 @@
 export const procedurejsea_data = [
-    {
-        id : 'PJ1',
-        key : '1',
-        procedurejsea : 'Enviroment Monitoring',
-        status : 'Active',
-    },
-    {
-        id : 'PJ2',
-        key : '2',
-        procedurejsea : 'Confined Space Entry',
-        status : 'Active',
-    },
-    {
-        id : 'PJ3',
-        key : '3',
-        procedurejsea : 'Emergency Response',
-        status : 'Active',
-    },
-    {
-        id : 'PJ4',
-        key : '4',
-        procedurejsea : 'Inspection of Equipment and Machine',
-        status : 'Active',
-    },
-    {
-        id : 'PJ5',
-        key : '5',
-        procedurejsea : 'Personal Protective Equipment',
-        status : 'Active',
-    },
-    
-]
+  {
+    number: '1',
+    key: '1',
+    procedurejsea: 'Enviroment Monitoring',
+    status: 'Active',
+  },
+  {
+    number: '2',
+    key: '2',
+    procedurejsea: 'Confined Space Entry',
+    status: 'Active',
+  },
+  {
+    number: '3',
+    key: '3',
+    procedurejsea: 'Emergency Response',
+    status: 'Active',
+  },
+  {
+    number: '4',
+    key: '4',
+    procedurejsea: 'Inspection of Equipment and Machine',
+    status: 'Active',
+  },
+  {
+    number: '5',
+    key: '5',
+    procedurejsea: 'Personal Protective Equipment',
+    status: 'Active',
+  },
+];
