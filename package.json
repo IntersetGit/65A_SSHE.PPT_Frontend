@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "umi dev",
+    "start": "set PORT=3000&&umi dev",
     "build": "umi build",
     "plugs:list": "umi plugin list",
     "plugs:list:k": "umi plugin list --key",
