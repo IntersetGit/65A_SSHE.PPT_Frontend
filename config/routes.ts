@@ -16,21 +16,22 @@ export interface Route {
 
 export const routes = [
   {
-    path: '/', redirect: '/login'
+    path: '/',
+    redirect: '/frontoffice/risk/risk_register_and_action_plan',
   },
   {
-    path : '/login',
-    name : 'เข้าสู่ระบบ',
-    component : 'login'
+    path: '/login',
+    name: 'เข้าสู่ระบบ',
+    component: 'login',
   },
   ...frontoffice_menu.ROUTES,
   ...backoffice_menu.ROUTES,
   {
-    name : '404',
-    path : '/404',
-    component : '404'
+    name: '404',
+    path: '/404',
+    component: '404',
   },
   {
-    component : '404'
-  }
+    component: '404',
+  },
 ];

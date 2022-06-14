@@ -6,7 +6,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@dummy/*" : ["dummy_data/*"],
+      "@dummy/*": ["dummy_data/*"],
+      "@types/*": ["types/*"]
     }
   }
 }

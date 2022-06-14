@@ -1,3 +1,4 @@
+import JWTCLASS from '@/jwt';
 import { DownOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import { stringify } from 'querystring';
@@ -5,24 +6,31 @@ import { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { history, useModel } from 'umi';
 
-const logOutMethod = async () => {
-  const { query = {}, search, pathname } = history.location;
-  const { redirect } = query;
-  // Note: There may be security issues, please note
-  if (window.location.pathname !== '/login' && !redirect) {
-    history.replace({
-      pathname: '/login',
-      search: stringify({
-        redirect: pathname + search,
-      }),
-    });
-  }
-};
+const JWT = new JWTCLASS();
 
 const AvatarDropdown: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   console.log(initialState);
+
+  const logOutMethod = async () => {
+    const { query = {}, search, pathname } = history.location;
+    const { redirect } = query;
+    // Note: There may be security issues, please note
+
+    if (window.location.pathname !== '/login' && !redirect) {
+      setInitialState((s) => ({ ...s, userInfo: undefined }));
+
+      await JWT.removeAllJWT();
+
+      history.replace({
+        pathname: '/login',
+        search: stringify({
+          redirect: pathname + search,
+        }),
+      });
+    }
+  };
 
   const onMenuClick = useCallback(
     (event: MenuInfo) => {
@@ -50,7 +58,11 @@ const AvatarDropdown: React.FC = () => {
           style={{ textAlign: 'center', cursor: 'pointer', color: 'white' }}
           onClick={(e) => e.preventDefault()}
         >
-          <UserOutlined /> Administrator <DownOutlined />
+          <UserOutlined />{' '}
+          {initialState?.userInfo
+            ? initialState.userInfo?.e_mail
+            : 'Administrator'}{' '}
+          <DownOutlined />
         </p>
       </Dropdown>
     </>

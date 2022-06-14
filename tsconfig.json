@@ -20,16 +20,22 @@
     "strict": true,
     "paths": {
       "@/*": ["src/*"],
-      "@dummy/*" : ["dummy_data/*"],
-      "@@/*": ["src/.umi/*"]
-    },
+      "@dummy/*": ["dummy_data/*"],
+      "@@/*": ["src/.umi/*"],
+      "@types/*": ["types/*"]
+    }
   },
   "include": [
     "mock/**/*",
     "src/**/*",
     "config/**/*",
     ".umirc.ts",
-    "typings.d.ts"
+    "typings.d.ts",
+    "types/**/*",
+    "dummy_data/**/*",
+    ".prettierrc",
+    ".prettierrc.js",
+    ".stylelintrc.js"
   ],
   "exclude": [
     "node_modules",
