@@ -7,11 +7,13 @@ const backoffice_menu = {
       path: '/backoffice',
       name: 'BACKOFFICE',
       component: '../layouts/BaseLayout',
+      icon: 'blockoutline',
       routes: [
         {
           path: '/backoffice/manage',
           type: 'group',
           name: 'จัดการข้อมูลใช้งาน',
+          icon: 'blockoutline',
           routes: [
             {
               path: '/backoffice/manage/project_manage',
@@ -40,27 +42,28 @@ const backoffice_menu = {
           path: '/backoffice/risk-manage',
           type: 'group',
           name: 'ข้อมูล Risk Identification',
+          icon: 'blockoutline',
           routes: [
             {
               path: '/backoffice/risk-manage/activity_manage',
               icon: 'activity2',
-              name: 'Activity',
+              name: 'Works Activity',
               component: 'BackOffice/activity_manage',
             },
             {
               path: '/backoffice/risk-manage/impact_manage',
               icon: 'impact',
-              name: 'Impact/Hazard',
+              name: 'Hazard',
               component: 'BackOffice/impact_manage',
             },
             {
               path: '/backoffice/risk-manage/mitigration_manage',
               icon: 'mitigation',
-              name: 'Mitigration/Control',
+              name: 'Existing controls',
               component: 'BackOffice/mitigration_manage',
             },
             {
-              path: '/backoffice/risk-manage/procedure_jsea_manage',
+              path: '/backoffice/risk-manage/treatment_plan',
               icon: 'procedure',
               name: 'Treatment Plan',
               component: 'BackOffice/procedure_jsea_manage',
@@ -70,31 +73,71 @@ const backoffice_menu = {
             },
           ],
         },
+        {
+          path: '/backoffice/sshe_issue',
+          type: 'group',
+          name: 'ข้อมูล SSHE ISSUE',
+          icon: 'blockoutline',
+          routes: [
+            {
+              path: '/backoffice/sshe_issue/issue_type',
+              icon: 'security',
+              name: 'ISSUE TYPE',
+              component: 'BackOffice/activity_manage',
+            },
+            {
+              path: '/backoffice/sshe_issue/hazard',
+              icon: 'mitigation2',
+              name: 'Hazard',
+              component: 'BackOffice/impact_manage',
+            },
+            {
+              component: '404',
+            },
+          ],
+        },
+        {
+          path: '/backoffice/settings',
+          type: 'group',
+          name: 'Setting',
+          icon: 'blockoutline',
+          routes: [
+            {
+              path: '/backoffice/settings/alert',
+              icon: 'redalarm',
+              name: 'Alert',
+              component: 'BackOffice/activity_manage',
+            },
+            {
+              component: '404',
+            },
+          ],
+        },
 
-        {
-          path: '/backoffice/security_manage',
-          icon: 'security',
-          name: 'Security',
-          component: 'FrontOffice/analysis_graph',
-        },
-        {
-          path: '/backoffice/safety_manage',
-          icon: 'mitigation2',
-          name: 'Safety',
-          component: 'FrontOffice/analysis_graph',
-        },
-        {
-          path: '/backoffice/health_manage',
-          icon: 'health',
-          name: 'Health',
-          component: 'FrontOffice/analysis_graph',
-        },
-        {
-          path: '/backoffice/environment_manage',
-          icon: 'enviroment',
-          name: 'Environment',
-          component: 'FrontOffice/analysis_graph',
-        },
+        // {
+        //   path: '/backoffice/security_manage',
+        //   icon: 'security',
+        //   name: 'Security',
+        //   component: 'FrontOffice/analysis_graph',
+        // },
+        // {
+        //   path: '/backoffice/safety_manage',
+        //   icon: 'mitigation2',
+        //   name: 'Safety',
+        //   component: 'FrontOffice/analysis_graph',
+        // },
+        // {
+        //   path: '/backoffice/health_manage',
+        //   icon: 'health',
+        //   name: 'Health',
+        //   component: 'FrontOffice/analysis_graph',
+        // },
+        // {
+        //   path: '/backoffice/environment_manage',
+        //   icon: 'enviroment',
+        //   name: 'Environment',
+        //   component: 'FrontOffice/analysis_graph',
+        // },
         {
           component: '404',
         },

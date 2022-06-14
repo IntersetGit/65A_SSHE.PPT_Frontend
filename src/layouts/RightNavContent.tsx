@@ -11,7 +11,7 @@ const RightNavContent = () => {
         <Tooltip title={'Front office'}>
           <p onClick={() => history.push(frontoffice_menu.REDIRECT_PATH)}>
             <img
-              src="/assets/sshe.png"
+              src="/assets/sshe 64x64.png"
               width={40}
               height={40}
               alt="frontoffice-icon"
@@ -21,7 +21,7 @@ const RightNavContent = () => {
         <Tooltip title={'Back office'}>
           <p onClick={() => history.push(backoffice_menu.REDIRECT_PATH)}>
             <img
-              src="/assets/backoffice.png"
+              src="/assets/backoffice 64x64.png"
               width={40}
               height={40}
               alt="backoffice-icon"
@@ -31,7 +31,7 @@ const RightNavContent = () => {
         <Tooltip title={'Manual'}>
           <p>
             <img
-              src="/assets/manual.png"
+              src="/assets/manual 64x64.png"
               width={40}
               height={40}
               alt="manual-icon"

@@ -11,8 +11,6 @@ const JWT = new JWTCLASS();
 const AvatarDropdown: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  console.log(initialState);
-
   const logOutMethod = async () => {
     const { query = {}, search, pathname } = history.location;
     const { redirect } = query;
