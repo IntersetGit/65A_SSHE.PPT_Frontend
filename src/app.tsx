@@ -86,7 +86,7 @@ const responseInterceptor = async (
   response: Response,
   options: RequestOptionsInit,
 ) => {
-  const accessTokenExpired = response.status === 401;
+  const accessTokenExpired = response.status == 401 || 403;
   if (accessTokenExpired) {
     try {
       if (!refreshTokenRequest) {

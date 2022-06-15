@@ -1,15 +1,20 @@
-import type { BasicLayoutProps as ProLayoutProps,  MenuDataItem,  Settings  } from "@ant-design/pro-layout"
-import {PageContainer , ProLayout } from "@ant-design/pro-layout"
-import type { MenuProps } from "antd"
-import React from "react"
-import { Link , history  } from "umi"
-import defaultSettings from "../../config/defaultSettings"
-import HeaderTitle from "./HeaderTitle"
-import ICONMAP from "@/components/Iconmap "
-import Footer from "./Footer"
-import RightNavContent from "./RightNavContent"
-import { ConfigProvider } from "antd";
+import ICONMAP from '@/components/Iconmap ';
+import {
+  BasicLayoutProps as ProLayoutProps,
+  MenuDataItem,
+  PageContainer,
+  ProLayout,
+  SettingDrawer,
+  Settings,
+} from '@ant-design/pro-layout';
+import type { MenuProps } from 'antd';
+import { ConfigProvider } from 'antd';
 import enUS from 'antd/lib/locale/en_US';
+import React from 'react';
+import { history, Link, useModel } from 'umi';
+import Footer from './Footer';
+import HeaderTitle from './HeaderTitle';
+import RightNavContent from './RightNavContent';
 
 export type BasicLayoutProps = {
   breadcrumbNameMap: Record<string, MenuDataItem>;
@@ -23,52 +28,55 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumbNameMap: Record<string, MenuDataItem>;
 };
 
-const BasicLayout: React.FC<BasicLayoutProps> = (props) =>{
-  const [isCollapsed ,setCollased] = React.useState<boolean>(false)
+const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
+  const [isCollapsed, setCollased] = React.useState<boolean>(false);
+  const { initialState, setInitialState } = useModel('@@initialState');
   const {
-    children , 
+    children,
     location = {
-      pathname: '/'
-    }
-  } = props
+      pathname: '/',
+    },
+  } = props;
 
   const MenuPropsSettings: MenuProps = {
-    mode : 'inline',
-    style : {
-      backgroundImage : `url(${location.pathname.split('/')[1] === 'frontoffice' ? '/assets/frontoficebg.png' : '/assets/bg-section-3-black.png' })`,
-      backgroundRepeat : 'no-repeat',
-      backgroundSize : 'cover',
-      backgroundPosition : 'center',
-      fontSize : '1rem',
-      color: 'white'
+    mode: 'inline',
+    style: {
+      backgroundImage: `url(${
+        location.pathname.split('/')[1] === 'frontoffice'
+          ? '/assets/frontoficebg.png'
+          : '/assets/bg-section-3-black.png'
+      })`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      fontSize: '1rem',
+      color: 'white',
     },
-    inlineIndent : 15
-  }
+    inlineIndent: 15,
+  };
 
   const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map((item) => {
-    // console.log(item)
-    return {
-      ...item,
-      icon : item.icon && ICONMAP[item.icon as string],
-      children: item.children ? menuDataRender(item.children) : undefined,
-    };
-  });
+    menuList.map((item) => {
+      // console.log(item)
+      return {
+        ...item,
+        icon: item.icon && ICONMAP[item.icon as string],
+        children: item.children ? menuDataRender(item.children) : undefined,
+      };
+    });
 
   // console.log(location.pathname.split('/')[1])
   return (
     <ProLayout
-      {...defaultSettings}
-      {...props} 
+      {...initialState?.settings}
+      {...props}
       collapsed={isCollapsed}
-      onCollapse={(iscollaped) =>{
-        setCollased(iscollaped)
+      onCollapse={(iscollaped) => {
+        setCollased(iscollaped);
       }}
-      rightContentRender={() => <RightNavContent/>}
+      rightContentRender={() => <RightNavContent />}
       onMenuHeaderClick={() => history.push('/')}
-      breadcrumbRender={(routers = []) => [
-        ...routers,
-      ]}
+      breadcrumbRender={(routers = []) => [...routers]}
       itemRender={(route, params, routes) => {
         const first = routes.indexOf(route) === 0;
         return first ? (
@@ -87,24 +95,49 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) =>{
           !menuItemProps.path ||
           location.pathname === menuItemProps.path
         ) {
-          return <>{menuItemProps.icon} {menuItemProps.name}</>;
+          return (
+            <>
+              {menuItemProps.icon} {menuItemProps.name}
+            </>
+          );
         }
-        return <><Link to={menuItemProps.path}>{menuItemProps.icon} { menuItemProps.name}</Link></>;
+        return (
+          <>
+            <Link to={menuItemProps.path}>
+              {menuItemProps.icon} {menuItemProps.name}
+            </Link>
+          </>
+        );
       }}
       menuDataRender={menuDataRender}
       disableContentMargin
       // @ts-ignore: Unreachable code error
-      headerTitleRender={(logo: string  , title: string , props : BasicLayoutProps ) => <HeaderTitle logo={logo} title={title} props={props}/>}
+      headerTitleRender={(
+        logo: string,
+        title: string,
+        props: BasicLayoutProps,
+      ) => <HeaderTitle logo={logo} title={title} props={props} />}
       menuProps={MenuPropsSettings}
-      footerRender={() => <Footer/>}
+      footerRender={() => <Footer />}
     >
       <PageContainer>
         <ConfigProvider locale={enUS}>
           {children}
+          <SettingDrawer
+            disableUrlParams
+            enableDarkTheme
+            settings={initialState?.settings}
+            onSettingChange={(settings) => {
+              setInitialState((preInitialState) => ({
+                ...preInitialState,
+                settings,
+              }));
+            }}
+          />
         </ConfigProvider>
       </PageContainer>
     </ProLayout>
-  )
-}
+  );
+};
 
-export default BasicLayout
+export default BasicLayout;

@@ -4,9 +4,9 @@ import {
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProTable } from '@ant-design/pro-components';
 import {
   Button,
-  Card,
   Drawer,
   Dropdown,
   Form,
@@ -186,11 +186,12 @@ const ProjectManage = (props) => {
       title: 'ลำดับ',
       dataIndex: 'number',
       key: 'number',
+      hideInSearch: true,
       align: 'center',
       sorter: (a, b) => a.number - b.number,
     },
     {
-      title: 'Project Name',
+      title: 'ชี่อโปรเจค',
       dataIndex: 'project_name',
       key: 'Project Name',
       align: 'center',
@@ -198,6 +199,7 @@ const ProjectManage = (props) => {
     {
       title: 'Action',
       key: 'action',
+      valueType: 'option',
       align: 'center',
       render: (text, record) => (
         <Dropdown.Button
@@ -248,8 +250,8 @@ const ProjectManage = (props) => {
 
   return (
     <>
-      <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูลโครงการ</h1>
+      {/* <Card style={{ marginTop: '1rem' }} bordered={true}> */}
+      {/* <h1>จัดการข้อมูลโครงการ</h1>
         <Space>
           <p>ชื่อโครงการ</p>
           <Search
@@ -265,20 +267,30 @@ const ProjectManage = (props) => {
           onClick={() => showModal(1)}
         >
           เพิ่ม
-        </Button>
-        <Table
-          columns={columns}
-          dataSource={projectdata}
-          expandable
-          size={'middle'}
-          scroll={{
-            y: 240,
-          }}
-          pagination={{
-            pageSize: 8,
-          }}
-        />
-      </Card>
+        </Button> */}
+      <ProTable
+        columns={columns}
+        dataSource={projectdata}
+        expandable
+        size={'middle'}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            style={{ float: 'right' }}
+            icon={<PlusOutlined />}
+            onClick={() => showModal(1)}
+          >
+            เพิ่มข้อมูลโครงการ
+          </Button>,
+        ]}
+        // scroll={{
+        //   y: 240,
+        // }}
+        pagination={{
+          pageSize: 8,
+        }}
+      />
+      {/* </Card> */}
 
       <Drawer
         onClose={hideModal}
@@ -347,7 +359,8 @@ const ProjectManage = (props) => {
               initialValues={{}}
             >
               <Form.Item label="เพิ่มผู้รับเหมา" name="add_contractor">
-                <Select options={constractor_company}></Select>
+                <Select options={constractor_company} />
+                <Button type="primary" icon={<PlusOutlined />} />
               </Form.Item>
 
               <Form.Item>
@@ -367,7 +380,7 @@ const ProjectManage = (props) => {
 
               <Form.Item>
                 <Space style={{ float: 'right' }}>
-                  <Button type="primary" htmlType="sumbit">
+                  <Button type="primary" htmlType="submit">
                     ตกลง
                   </Button>
                   <Button type="primary" onClick={hideModal}>
