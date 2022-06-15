@@ -1,5 +1,5 @@
 import { Cookies } from 'react-cookie';
-import request from 'umi-request';
+import { request } from 'umi';
 
 export default class JWT {
   private Cookies = new Cookies();
@@ -9,7 +9,7 @@ export default class JWT {
   }
 
   public setAccess(access: string): void {
-    this.Cookies.set('access', access);
+    this.Cookies.set('access', access, { path: '/' });
   }
 
   public removeAccess(): void {
@@ -21,7 +21,7 @@ export default class JWT {
   }
 
   public setRefresh(refresh: string): void {
-    this.Cookies.set('refresh_token', refresh);
+    this.Cookies.set('refresh_token', refresh, { path: '/' });
   }
 
   public removeRefresh(): void {
@@ -34,7 +34,8 @@ export default class JWT {
   }
 
   public refreshAccessToken(token: string) {
-    return request.get('provider/refreshToken', {
+    return request('provider/refreshToken', {
+      method: 'get',
       headers: { Authorization: `Bearer ${token}` },
     });
   }

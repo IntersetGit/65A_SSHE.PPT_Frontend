@@ -30,6 +30,7 @@ const Login = () => {
   const onFinish = async (values) => {
     request('provider/login', { method: 'post', data: values })
       .then(async (res) => {
+        console.log(res);
         if (res.status_code === 200) {
           JWT.setAccess(res.items.access_token);
           JWT.setRefresh(res.items.refresh_token);

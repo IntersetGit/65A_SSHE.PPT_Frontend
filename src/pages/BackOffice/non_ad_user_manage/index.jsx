@@ -1,4 +1,9 @@
-import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  MoreOutlined,
+  RedoOutlined,
+} from '@ant-design/icons';
 import {
   Button,
   Card,
@@ -13,8 +18,9 @@ import {
   Table,
   Tabs,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { request } from 'umi';
 import { com_id } from '../../../../dummy_data/com_id';
 import { datas } from '../../../../dummy_data/data_ad';
 import { group_roles } from '../../../../dummy_data/group_roles';
@@ -24,131 +30,102 @@ const onSearch = (values, e) => {
   if (values === datas) return datas;
 };
 const NonadUsermanage = (props) => {
-  const [adusermanage, setadusermanage] = useState(datas);
-  const [isShowDrawer, setShowDrawer] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [roles, setRoles] = useState([]);
+  const [data, setData] = useState([]);
+  const [dataEdit, setDataEdit] = useState([]);
+  const [statusValidation, setStatusValidation] = useState([]);
+  const [isShowDrawer, setShowDrawer] = useState({
+    create: false,
+    edit: false,
+  });
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
-  const [form] = Form.useForm();
-  const [formAD] = Form.useForm();
+  const [formCrete, formEdit] = Form.useForm();
 
-  const AddAdData = (type, _data = {}) => {
-    console.log('onSaveData', type);
-    switch (type) {
-      case 'ADD':
-        const _num = `${adusermanage.length + 1}`;
-        console.log([
-          ...adusermanage,
-          {
-            key: adusermanage.length + 1,
-            number: _num,
-            is_ad: 'Non-AD',
-            ..._data,
-          },
-        ]);
-        setadusermanage([
-          ...adusermanage,
-          {
-            key: adusermanage.length + 1,
-            number: _num,
-            is_ad: 'Non-AD',
-            ..._data,
-          },
-        ]);
-        break;
-      case 'UPDATE':
-        console.log(_data, adusermanage);
-        const indexs = adusermanage.findIndex((e) => e.key == _data.key);
-        if (indexs != -1) {
-          let arr = [...adusermanage];
+  // const AddAdData = (type, _data = {}) => {
+  //   console.log('onSaveData', type);
+  //   switch (type) {
+  //     case 'ADD':
+  //       const _num = `${adusermanage.length + 1}`;
+  //       console.log([
+  //         ...adusermanage,
+  //         {
+  //           key: adusermanage.length + 1,
+  //           number: _num,
+  //           is_ad: 'Non-AD',
+  //           ..._data,
+  //         },
+  //       ]);
+  //       setadusermanage([
+  //         ...adusermanage,
+  //         {
+  //           key: adusermanage.length + 1,
+  //           number: _num,
+  //           is_ad: 'Non-AD',
+  //           ..._data,
+  //         },
+  //       ]);
+  //       break;
+  //     case 'UPDATE':
+  //       console.log(_data, adusermanage);
+  //       const indexs = adusermanage.findIndex((e) => e.key == _data.key);
+  //       if (indexs != -1) {
+  //         let arr = [...adusermanage];
 
-          arr[indexs] = _data;
-          setadusermanage(arr);
-          console.log(arr);
-        }
-        break;
-      case 'DELETE':
-        console.log(_data);
-        const newState = [...adusermanage];
-        const newArr = newState.filter((e) => e.key != _data.key);
-        setadusermanage(newArr);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const showDrawerr = (type) => {
-    setdrawerType(type);
-    setShowDrawer(true);
-  };
-
-  const hideDrawer = () => {
-    form.resetFields();
-    formAD.resetFields();
-    setselectedrow(null);
-    setShowDrawer(false);
-  };
-
-  const onFinish = (values) => {
-    if (drawerType == 1) {
-      AddAdData('ADD', values);
-    } else if (drawerType == 2) {
-      AddAdData('UPDATE', { ...selectedrow, ...values });
-    }
-    hideDrawer();
-  };
-
-  const handleOk = (form) => {
-    if (form === 'formCreate') {
-      form.submit();
-    }
-    if (form === 'formAD') {
-      formAD.submit();
-    }
-  };
-
-  const onFinishAD = (values) => {};
-
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 24 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 24 },
-    },
-  };
+  //         arr[indexs] = _data;
+  //         setadusermanage(arr);
+  //         console.log(arr);
+  //       }
+  //       break;
+  //     case 'DELETE':
+  //       console.log(_data);
+  //       const newState = [...adusermanage];
+  //       const newArr = newState.filter((e) => e.key != _data.key);
+  //       setadusermanage(newArr);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const columns = [
     {
       title: 'ลำดับ',
       dataIndex: 'number',
-      key: 'number',
-      sorter: (a, b) => a.number - b.number,
-      render: (record) => {
-        return <p>{record}</p>;
+      key: '1',
+      sorter: (record1, record2) => {
+        return record1.number > record2.number;
       },
     },
     {
       title: 'ชื่อเข้าใช้ระบบ',
       dataIndex: 'user_name',
-      key: 'user_name',
+      key: '2',
+      sorter: (record1, record2) => {
+        return record1.user_name > record2.user_name;
+      },
     },
     {
       title: 'ชื่อ-นามสกุล',
       dataIndex: 'firstlast',
-      key: 'firstlast',
+      key: '3',
+      sorter: (record1, record2) => {
+        return record1.firstlast > record2.firstlast;
+      },
     },
     {
       title: 'อีเมล์',
       dataIndex: 'e_mail',
-      key: 'e_mail',
+      key: '4',
+      sorter: (record1, record2) => {
+        return record1.e_mail > record2.e_mail;
+      },
     },
     {
       title: 'กลุ่มผู้ใช้งาน',
       dataIndex: 'roles_name',
-      key: 'roles_name',
+      key: '5',
       filters: [
         {
           text: 'Administrator',
@@ -164,14 +141,14 @@ const NonadUsermanage = (props) => {
         },
       ],
       onFilter: (value, record) => record.roles_name.indexOf(value) === 0,
-      render: (record) => {
-        return <p>{record}</p>;
+      sorter: (record1, record2) => {
+        return record1.roles_name > record2.roles_name;
       },
     },
     {
       title: 'แหล่งที่มาจากผู้ใช้งาน',
       dataIndex: 'is_ad',
-      key: 'is_ad',
+      key: '6',
       filters: [
         {
           text: 'AD',
@@ -183,13 +160,13 @@ const NonadUsermanage = (props) => {
         },
       ],
       onFilter: (value, record) => record.is_ad.indexOf(value) === 0,
-      render: (record) => {
-        return <p>{record}</p>;
-      },
+      render: (item1, item2) =>
+        item1 ? 'AD' : <span style={{ color: 'red' }}>Non AD</span>,
     },
     {
       title: 'จัดการ',
-      render: (record) => (
+      key: '7',
+      render: (id) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
           type="text"
@@ -198,10 +175,9 @@ const NonadUsermanage = (props) => {
               <Menu.Item
                 key="1"
                 icon={<EditOutlined />}
-                onClick={() => {
-                  showDrawerr(2);
-                  setselectedrow(record);
-                  form.setFieldsValue(record);
+                onClick={async () => {
+                  await handleCancel();
+                  await handelEdit(id);
                 }}
               >
                 แก้ไข
@@ -209,23 +185,7 @@ const NonadUsermanage = (props) => {
               <Menu.Item
                 key="2"
                 icon={<DeleteOutlined />}
-                onClick={() =>
-                  Swal.fire({
-                    title: 'ลบข้อมูล',
-                    text: 'ยืนยันการลบข้อมูล',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'ยืนยัน',
-                    cancelButtonText: 'ยกเลิก',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      AddAdData('DELETE', record);
-                      Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-                    }
-                  })
-                }
+                onClick={() => handelDelete(id)}
               >
                 ลบ
               </Menu.Item>
@@ -235,6 +195,248 @@ const NonadUsermanage = (props) => {
       ),
     },
   ];
+
+  const reload = (search = null) => {
+    request(
+      'provider/getSearchUser',
+      { method: 'get', params: { search: search } },
+      // search != null ? { search: search } : {}
+    )
+      .then((res) => {
+        let tempDataArray = [];
+        res.items.forEach((data, key) => {
+          tempDataArray = [
+            ...tempDataArray,
+            {
+              number: key + 1,
+              ...data,
+            },
+          ];
+        });
+        request('system/users/info', { method: 'get' }).then((res) => {
+          console.log(res);
+          setRoles(res.items.users);
+        });
+        setData(tempDataArray);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    reload();
+  }, []);
+
+  const showDrawerr = (value) => {
+    setShowDrawer((data) => {
+      return { ...data, [value]: true };
+    });
+  };
+
+  const handleOk = (form) => {
+    if (form === 'formCreate') {
+      formCrete.submit();
+    }
+    if (form === 'formAD') {
+      formEdit.submit();
+    }
+  };
+
+  const handleCancel = () => {
+    setShowDrawer({ create: false, edit: false });
+    setStatusValidation({
+      validateStatus: '',
+      help: '',
+    });
+    formCrete.resetFields();
+    formEdit.resetFields();
+    setLoading(false);
+  };
+
+  const onFinishCrete = async (value) => {
+    let filterRoles = await roles.find(
+      (data) => data,
+      roles_name === value.roles_id,
+    );
+    setLoading(true);
+    request(
+      'system/addUserAD',
+      { medthod: 'post' },
+      {
+        username: value.username,
+        roles_id: filterRoles.id,
+        is_ad: true,
+      },
+    )
+      .then((res) => {
+        Swal.fire('', 'บันทึกข้อมูลสำเร็จ', 'success');
+        setStatusValidation([]);
+        setShowDrawer({ create: false, edit: false });
+        setLoading(false);
+        formCrete.resetFields();
+        reload();
+      })
+      .catch((error) => {
+        Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
+        console.log(error);
+        setStatusValidation([]);
+        setShowDrawer({ create: false, edit: false });
+        setLoading(false);
+        formCrete.resetFields();
+        reload();
+      });
+  };
+
+  const onFinishEdit = async (value) => {
+    try {
+      let filterRoles = await roles.find(
+        (data) => data.roles_name === value.roles_id,
+      );
+      Swal.fire({
+        title: 'กรุณายืนยันการแก้ไขข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#218838',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let resp = await request(
+            'system/updateRoleUser',
+            { method: 'put' },
+            {
+              id: dataEdit.id,
+              roles_id: filterRoles.id,
+            },
+          );
+          await Swal.fire('', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
+          reload();
+          handleCancel();
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire('', 'มีบางอย่างผิดพลาด', 'success');
+    }
+  };
+
+  const onSearch = async (value) => {
+    setStatusValidation({
+      help: `กำลังโหลดข้อมูล...`,
+    });
+    setLoading(true);
+    request(`system/findUserAD?username=${value}`, { method: 'get' }).then(
+      (res) => {
+        setStatusValidation({
+          help: `${res.data.items.displayName}`,
+        });
+        setLoading(false);
+      },
+    );
+  };
+
+  const handleEdit = async (id) => {
+    let filterData = data.find((data) => data.id === id);
+    setIdUser(id);
+    if (filterData.is_ad) {
+      setDataEdit(filterData);
+      showDrawerr('edit');
+    } else {
+      setMode('edit');
+      setIsModalVisibleAS(true);
+      filterData.username = filterData.user_name;
+      formAD.setFieldsValue(filterData);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      Swal.fire({
+        title: 'กรุณายืนยันการลบข้อมูล?',
+        text: 'เมื่อยืนยันแล้วจะไม่สามารถเรียกคืนได้',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#218838',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const resp = await request('/system/delUserAD/' + id, {
+            medthod: 'post',
+          });
+          console.log(resp);
+          reload();
+          Swal.fire('', 'ลบข้อมูลเรียบร้อยแล้ว', 'success');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire('', 'มีบางอย่างผิดพลาด', 'error');
+    }
+  };
+
+  /**
+   * โหมด add , edit , view
+   * @type {String} mode
+   */
+  const [mode, setMode] = useState('add');
+  const [idUser, setIdUser] = useState(null);
+
+  const [formAD] = Form.useForm();
+
+  const [isShowDrawerAD, setShowDrawerAD] = useState(false);
+
+  const handleOkAD = () => {
+    formAD.submit();
+
+    const handleCancelAD = () => {
+      formAD.resetFields();
+      setShowDrawerAD(false);
+      setIdUser(null);
+    };
+
+    /**
+     * Submit Form
+     * @param {{username: String, roles_id: String, first_name: String, last_name: String, e_mail: String}} value
+     */
+    const onFinishAD = async (value) => {
+      try {
+        // console.log('value :>> ', value);
+        value.is_ad = false;
+        if (mode == 'edit') {
+          value.id = idUser;
+          await request('/system/editUser', { method: 'put' }, value);
+        } else {
+          await request('/system/addUserAD', { method: 'post' }, value);
+        }
+        Swal.fire('', 'บันทึกข้อมูลเรียบร้อย', 'success');
+        handleCancelAD();
+        reload();
+      } catch (error) {
+        Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
+      }
+    };
+  };
+
+  const onFinishFailedAD = (error) => {
+    console.log('error :>> ', error);
+  };
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 24 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 24 },
+    },
+  };
+
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
@@ -245,13 +447,23 @@ const NonadUsermanage = (props) => {
           placeholder="input search text"
           allowClear
           enterButton
-          onSearch={onSearch}
+          onSearch={(search) => {
+            reload(search);
+          }}
           style={{ width: 400 }}
         />
         <Button
+          onClick={() => {
+            reload();
+          }}
+        >
+          <RedoOutlined />
+        </Button>
+
+        <Button
           style={{ float: 'right' }}
           type="primary"
-          onClick={() => showDrawerr(1)}
+          onClick={() => showModal('create')}
         >
           + เพิ่มผู้ใช้ระบบ
         </Button>
@@ -259,7 +471,7 @@ const NonadUsermanage = (props) => {
           <div>
             <Table
               columns={columns}
-              dataSource={adusermanage}
+              dataSource={data}
               style={{ marginTop: 20 }}
               scroll={{
                 y: 240,
@@ -271,9 +483,9 @@ const NonadUsermanage = (props) => {
       </Card>
 
       <Drawer
-        onClose={hideDrawer}
-        onCancel={hideDrawer}
-        visible={isShowDrawer}
+        onClose={handleCancel}
+        onCancel={handleCancel}
+        visible={isShowDrawer.create}
         closable={true}
         maskClosable={false}
         keyboard={false}
@@ -286,8 +498,6 @@ const NonadUsermanage = (props) => {
               layout="vertical"
               name="nonadform"
               id="nonadform"
-              onFinish={onFinish}
-              form={form}
               size="large"
               initialValues={{}}
             >
@@ -356,7 +566,7 @@ const NonadUsermanage = (props) => {
                   <Button type="primary" htmlType="sumbit">
                     ตกลง
                   </Button>
-                  <Button type="primary" onClick={hideDrawer}>
+                  <Button type="primary" onClick={handleCancel}>
                     ยกเลิก
                   </Button>
                 </Space>
@@ -405,7 +615,7 @@ const NonadUsermanage = (props) => {
                   <Button type="primary" htmlType="sumbit">
                     ตกลง
                   </Button>
-                  <Button type="primary" onClick={hideDrawer}>
+                  <Button type="primary" onClick={handleCancel}>
                     ยกเลิก
                   </Button>
                 </Space>

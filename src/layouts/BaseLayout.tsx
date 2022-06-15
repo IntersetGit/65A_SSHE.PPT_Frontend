@@ -1,17 +1,16 @@
 import ICONMAP from '@/components/Iconmap ';
-import {
+import type {
   BasicLayoutProps as ProLayoutProps,
   MenuDataItem,
-  PageContainer,
-  ProLayout,
-  SettingDrawer,
   Settings,
 } from '@ant-design/pro-layout';
+import { PageContainer, ProLayout } from '@ant-design/pro-layout';
 import type { MenuProps } from 'antd';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/lib/locale/en_US';
 import React from 'react';
-import { history, Link, useModel } from 'umi';
+import { history, Link } from 'umi';
+import defaultSettings from '../../config/defaultSettings';
 import Footer from './Footer';
 import HeaderTitle from './HeaderTitle';
 import RightNavContent from './RightNavContent';
@@ -30,7 +29,6 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const [isCollapsed, setCollased] = React.useState<boolean>(false);
-  const { initialState, setInitialState } = useModel('@@initialState');
   const {
     children,
     location = {
@@ -68,7 +66,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   // console.log(location.pathname.split('/')[1])
   return (
     <ProLayout
-      {...initialState?.settings}
+      {...defaultSettings}
       {...props}
       collapsed={isCollapsed}
       onCollapse={(iscollaped) => {
@@ -121,20 +119,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       footerRender={() => <Footer />}
     >
       <PageContainer>
-        <ConfigProvider locale={enUS}>
-          {children}
-          <SettingDrawer
-            disableUrlParams
-            enableDarkTheme
-            settings={initialState?.settings}
-            onSettingChange={(settings) => {
-              setInitialState((preInitialState) => ({
-                ...preInitialState,
-                settings,
-              }));
-            }}
-          />
-        </ConfigProvider>
+        <ConfigProvider locale={enUS}>{children}</ConfigProvider>
       </PageContainer>
     </ProLayout>
   );
