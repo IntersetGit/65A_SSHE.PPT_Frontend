@@ -17,7 +17,7 @@ export default class JWT {
   }
 
   public getRefresh(): string {
-    return this.Cookies.get('refresh');
+    return this.Cookies.get('refresh_token');
   }
 
   public setRefresh(refresh: string): void {

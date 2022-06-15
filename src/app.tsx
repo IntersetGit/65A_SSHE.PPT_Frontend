@@ -1,5 +1,6 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'; //SettingDrawer, BasicLayoutProps
 import PageLoading from '@ant-design/pro-layout';
+import { isJwtExpired } from 'jwt-check-expiration';
 import jwtDecode from 'jwt-decode';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
@@ -86,25 +87,25 @@ const responseInterceptor = async (
   response: Response,
   options: RequestOptionsInit,
 ) => {
-  const accessTokenExpired = response.status === 401;
-  if (accessTokenExpired) {
+  const accessTokenExpired = response.status == 401 || 403;
+  // if(JWT.getAccess()) {
+  //   console.log(isJwtExpired(JWT.getAccess()))
+  // }
+  if (isJwtExpired(JWT.getAccess())) {
     try {
       if (!refreshTokenRequest) {
         refreshTokenRequest = JWT.refreshAccessToken(JWT.getRefresh());
       }
-
-      if (JWT.getRefresh()) {
-        const res = await refreshTokenRequest;
-        if (!res) throw new Error();
-        if (res.items.access) JWT.setAccess(res.items.access);
-        if (res.items.refresh) JWT.setRefresh(res.items.refresh);
-        return requestUmi(
-          response.url,
-          merge(cloneDeep(options), {
-            headers: { Authorization: `Bearer ${res.items.access}` },
-          }),
-        );
-      }
+      const res = await refreshTokenRequest;
+      if (!res) throw new Error();
+      if (res.items.access) JWT.setAccess(res.items.access);
+      if (res.items.refresh) JWT.setRefresh(res.items.refresh);
+      return requestUmi(
+        response.url,
+        merge(cloneDeep(options), {
+          headers: { Authorization: `Bearer ${res.items.access}` },
+        }),
+      );
     } catch (err) {
       JWT.removeAllJWT();
       cancel('Session time out.');
