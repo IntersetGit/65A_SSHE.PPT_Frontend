@@ -34,7 +34,6 @@ export default class JWT {
   }
 
   public refreshAccessToken(token: string) {
-    console.log('sdsd');
     return request.get('provider/refreshToken', {
       headers: { Authorization: `Bearer ${token}` },
     });
