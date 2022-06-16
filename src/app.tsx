@@ -1,6 +1,5 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'; //SettingDrawer, BasicLayoutProps
 import PageLoading from '@ant-design/pro-layout';
-import { isJwtExpired } from 'jwt-check-expiration';
 import jwtDecode from 'jwt-decode';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
@@ -87,11 +86,11 @@ const responseInterceptor = async (
   response: Response,
   options: RequestOptionsInit,
 ) => {
-  const accessTokenExpired = response.status == 401 || 403;
+  const accessTokenExpired = response.status === 401;
   // if(JWT.getAccess()) {
   //   console.log(isJwtExpired(JWT.getAccess()))
   // }
-  if (isJwtExpired(JWT.getAccess())) {
+  if (accessTokenExpired) {
     try {
       if (!refreshTokenRequest) {
         refreshTokenRequest = JWT.refreshAccessToken(JWT.getRefresh());

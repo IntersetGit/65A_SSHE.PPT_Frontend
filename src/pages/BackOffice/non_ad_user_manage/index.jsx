@@ -23,7 +23,6 @@ import Swal from 'sweetalert2';
 import { request } from 'umi';
 import { com_id } from '../../../../dummy_data/com_id';
 import { datas } from '../../../../dummy_data/data_ad';
-import { group_roles } from '../../../../dummy_data/group_roles';
 const { Search } = Input;
 const { TabPane } = Tabs;
 const onSearch = (values, e) => {
@@ -35,13 +34,13 @@ const NonadUsermanage = (props) => {
   const [data, setData] = useState([]);
   const [dataEdit, setDataEdit] = useState([]);
   const [statusValidation, setStatusValidation] = useState([]);
-  const [isShowDrawer, setShowDrawer] = useState({
-    create: false,
-    edit: false,
-  });
+  const [isShowDrawer, setShowDrawer] = useState(false);
+
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
-  const [formCrete, formEdit] = Form.useForm();
+  const [formCrete] = Form.useForm();
+  const [formEdit] = Form.useForm();
+  const [usertype, setusertype] = useState(undefined);
 
   // const AddAdData = (type, _data = {}) => {
   //   console.log('onSaveData', type);
@@ -89,6 +88,30 @@ const NonadUsermanage = (props) => {
   //   }
   // };
 
+  const menus = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: 'แก้ไข',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'ลบ',
+    },
+  ];
+
+  const onMenuClick = async (event, id) => {
+    const { key } = event;
+    if (key === 'edit') {
+      await handleCancel();
+      await setMode('edit');
+      await handleEdit(id);
+    } else {
+      handleDelete(id);
+    }
+  };
+
   const columns = [
     {
       title: 'ลำดับ',
@@ -132,6 +155,14 @@ const NonadUsermanage = (props) => {
           value: 'Administrator',
         },
         {
+          text: 'Superadmin',
+          value: 'Superadmin',
+        },
+        {
+          text: 'Contractor',
+          value: 'Contractor',
+        },
+        {
           text: 'Viewer',
           value: 'Viewer',
         },
@@ -166,31 +197,11 @@ const NonadUsermanage = (props) => {
     {
       title: 'จัดการ',
       key: '7',
-      render: (id) => (
+      render: ({ id }) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
           type="text"
-          overlay={
-            <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EditOutlined />}
-                onClick={async () => {
-                  await handleCancel();
-                  await handelEdit(id);
-                }}
-              >
-                แก้ไข
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<DeleteOutlined />}
-                onClick={() => handelDelete(id)}
-              >
-                ลบ
-              </Menu.Item>
-            </Menu>
-          }
+          overlay={<Menu items={menus} onClick={(e) => onMenuClick(e, id)} />}
         ></Dropdown.Button>
       ),
     },
@@ -209,13 +220,19 @@ const NonadUsermanage = (props) => {
             ...tempDataArray,
             {
               number: key + 1,
+              key: key + 1,
               ...data,
             },
           ];
         });
         request('system/users/info', { method: 'get' }).then((res) => {
-          console.log(res);
-          setRoles(res.items.users);
+          let arrData = [];
+          res.items.users.forEach((v, k) => {
+            console.log(v);
+            arrData.push({ label: v.roles_name, value: v.roles_id });
+          });
+          console.log(arrData);
+          setRoles(arrData);
         });
         setData(tempDataArray);
         setLoading(false);
@@ -229,11 +246,15 @@ const NonadUsermanage = (props) => {
     reload();
   }, []);
 
-  const showDrawerr = (value) => {
-    setShowDrawer((data) => {
-      return { ...data, [value]: true };
-    });
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
+
+  // const showDrawerr = (value) => {
+  //   setShowDrawer((data) => {
+  //     return { ...data, [value]: true };
+  //   });
+  // };
 
   const handleOk = (form) => {
     if (form === 'formCreate') {
@@ -245,7 +266,7 @@ const NonadUsermanage = (props) => {
   };
 
   const handleCancel = () => {
-    setShowDrawer({ create: false, edit: false });
+    setShowDrawer(false);
     setStatusValidation({
       validateStatus: '',
       help: '',
@@ -273,7 +294,7 @@ const NonadUsermanage = (props) => {
       .then((res) => {
         Swal.fire('', 'บันทึกข้อมูลสำเร็จ', 'success');
         setStatusValidation([]);
-        setShowDrawer({ create: false, edit: false });
+        setShowDrawer(false);
         setLoading(false);
         formCrete.resetFields();
         reload();
@@ -282,7 +303,7 @@ const NonadUsermanage = (props) => {
         Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
         console.log(error);
         setStatusValidation([]);
-        setShowDrawer({ create: false, edit: false });
+        setShowDrawer(false);
         setLoading(false);
         formCrete.resetFields();
         reload();
@@ -330,9 +351,11 @@ const NonadUsermanage = (props) => {
     setLoading(true);
     request(`system/findUserAD?username=${value}`, { method: 'get' }).then(
       (res) => {
+        console.log(res);
         setStatusValidation({
-          help: `${res.data.items.displayName}`,
+          help: `${res.data.items.username}`,
         });
+        console.log(res);
         setLoading(false);
       },
     );
@@ -341,12 +364,16 @@ const NonadUsermanage = (props) => {
   const handleEdit = async (id) => {
     let filterData = data.find((data) => data.id === id);
     setIdUser(id);
+    console.log(id);
+    console.log(filterData);
     if (filterData.is_ad) {
       setDataEdit(filterData);
-      showDrawerr('edit');
+      showDrawer('edit');
+      setusertype('ad');
     } else {
+      setusertype('nonad');
       setMode('edit');
-      setIsModalVisibleAS(true);
+      showDrawer(true);
       filterData.username = filterData.user_name;
       formAD.setFieldsValue(filterData);
     }
@@ -388,38 +415,37 @@ const NonadUsermanage = (props) => {
 
   const [formAD] = Form.useForm();
 
-  const [isShowDrawerAD, setShowDrawerAD] = useState(false);
-
   const handleOkAD = () => {
     formAD.submit();
+  };
 
-    const handleCancelAD = () => {
-      formAD.resetFields();
-      setShowDrawerAD(false);
-      setIdUser(null);
-    };
+  const handleCancelAD = () => {
+    formAD.resetFields();
+    setShowDrawer(false);
+    setIdUser(null);
+  };
 
-    /**
-     * Submit Form
-     * @param {{username: String, roles_id: String, first_name: String, last_name: String, e_mail: String}} value
-     */
-    const onFinishAD = async (value) => {
-      try {
-        // console.log('value :>> ', value);
-        value.is_ad = false;
-        if (mode == 'edit') {
-          value.id = idUser;
-          await request('/system/editUser', { method: 'put' }, value);
-        } else {
-          await request('/system/addUserAD', { method: 'post' }, value);
-        }
-        Swal.fire('', 'บันทึกข้อมูลเรียบร้อย', 'success');
-        handleCancelAD();
-        reload();
-      } catch (error) {
-        Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
+  /**
+   * Submit Form
+   * @param {{username: String, roles_id: String, password: String, e_mail: String}} value
+   */
+  const onFinishAD = async (value) => {
+    try {
+      // console.log('value :>> ', value);
+      value.is_ad = false;
+      if (mode == 'edit') {
+        value.id = idUser;
+
+        await request('system/editUser', { method: 'put' }, value);
+      } else {
+        await request('system/addUserAD', { method: 'post', data: value });
       }
-    };
+      Swal.fire('', 'บันทึกข้อมูลเรียบร้อย', 'success');
+      handleCancelAD();
+      reload();
+    } catch (error) {
+      Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
+    }
   };
 
   const onFinishFailedAD = (error) => {
@@ -463,7 +489,10 @@ const NonadUsermanage = (props) => {
         <Button
           style={{ float: 'right' }}
           type="primary"
-          onClick={() => showModal('create')}
+          onClick={() => {
+            setMode('add');
+            showDrawer();
+          }}
         >
           + เพิ่มผู้ใช้ระบบ
         </Button>
@@ -485,143 +514,203 @@ const NonadUsermanage = (props) => {
       <Drawer
         onClose={handleCancel}
         onCancel={handleCancel}
-        visible={isShowDrawer.create}
+        visible={isShowDrawer}
         closable={true}
         maskClosable={false}
         keyboard={false}
         width="40%"
       >
         <Tabs defaultActiveKey="1">
-          <TabPane tab="นอก AD" key="1">
-            <Form
-              {...formItemLayout}
-              layout="vertical"
-              name="nonadform"
-              id="nonadform"
-              size="large"
-              initialValues={{}}
-            >
-              <Form.Item
-                label="รหัสบริษัท"
-                name="company_id"
-                rules={[{ required: true, message: 'กรุณากรอกรหัสบริษัท' }]}
+          {(mode === 'add' || usertype === 'nonad') && (
+            <TabPane tab="นอก AD" key="1">
+              <Form
+                {...formItemLayout}
+                layout="vertical"
+                name="nonadform"
+                id="nonadform"
+                size="large"
+                form={formCrete}
+                onFinish={onFinishAD}
+                initialValues={{}}
               >
-                <Select placeholder="รหัสบริษัท" options={com_id}></Select>
-              </Form.Item>
+                <Form.Item
+                  label="รหัสบริษัท"
+                  name="company_id"
+                  rules={[{ required: true, message: 'กรุณากรอกรหัสบริษัท' }]}
+                >
+                  <Select placeholder="รหัสบริษัท" options={com_id}></Select>
+                </Form.Item>
 
-              <Form.Item
-                label="ชื่อผู้ใช้"
-                name="user_name"
-                rules={[{ required: true, message: 'กรุณากรอกข้อมูล' }]}
-              >
-                <Input />
-              </Form.Item>
+                <Form.Item
+                  label="ชื่อผู้ใช้"
+                  name="username"
+                  rules={[{ required: true, message: 'กรุณากรอกข้อมูล' }]}
+                >
+                  <Input />
+                </Form.Item>
 
-              <Form.Item
-                label="รหัสผ่าน"
-                name="password"
-                rules={[
-                  { required: true, message: 'กรุณากรอกรหัสผ่าน' },
-                  { min: 8, message: 'รหัสผ่านมีความยาวอย่างน้อย 8 ตัวอักษร' },
-                ]}
-                hasFeedback
-              >
-                <Input.Password />
-              </Form.Item>
+                <Form.Item
+                  label="รหัสผ่าน"
+                  name="password"
+                  rules={[
+                    { required: true, message: 'กรุณากรอกรหัสผ่าน' },
+                    {
+                      min: 8,
+                      message: 'รหัสผ่านมีความยาวอย่างน้อย 8 ตัวอักษร',
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password />
+                </Form.Item>
 
-              <Form.Item
-                label="ยืนยันรหัสผ่าน"
-                name="confirm_password"
-                rules={[{ required: true, message: 'กรุณากรอกยืนยันรหัสผ่าน' }]}
-                hasFeedback
-              >
-                <Input.Password />
-              </Form.Item>
+                <Form.Item
+                  label="ยืนยันรหัสผ่าน"
+                  name="confirm_password"
+                  rules={[
+                    { required: true, message: 'กรุณากรอกยืนยันรหัสผ่าน' },
+                  ]}
+                  hasFeedback
+                >
+                  <Input.Password />
+                </Form.Item>
 
-              <Form.Item
-                label="ชื่อจริง-นามสกุล"
-                name="firstlast"
-                rules={[{ required: true, message: 'กรุณากรอกข้อมูล' }]}
-              >
-                <Input />
-              </Form.Item>
+                <Form.Item
+                  label="ชื่อจริง"
+                  name="first_name"
+                  rules={[{ required: true, message: 'กรุณากรอกข้อมูล' }]}
+                >
+                  <Input />
+                </Form.Item>
 
-              <Form.Item label="Email" name="e_mail">
-                <Input />
-              </Form.Item>
+                <Form.Item
+                  label="นามสกุล"
+                  name="last_name"
+                  rules={[{ required: true, message: 'กรุณากรอกข้อมูล' }]}
+                >
+                  <Input />
+                </Form.Item>
 
-              <Form.Item
-                name="roles_name"
-                label="กลุ่มผู้ใช้งาน"
-                rules={[{ required: true, message: 'กรุณาเลือกข้อมูล' }]}
-              >
-                <Select
-                  placeholder="กลุ่มผู้ใช้งาน"
-                  options={group_roles}
-                ></Select>
-              </Form.Item>
+                <Form.Item label="Email" name="e_mail">
+                  <Input />
+                </Form.Item>
 
-              <Form.Item>
-                <Space style={{ float: 'right' }}>
-                  <Button type="primary" htmlType="sumbit">
-                    ตกลง
-                  </Button>
-                  <Button type="primary" onClick={handleCancel}>
-                    ยกเลิก
-                  </Button>
-                </Space>
-              </Form.Item>
-            </Form>
-          </TabPane>
+                <Form.Item
+                  name="roles_id"
+                  label="กลุ่มผู้ใช้งาน"
+                  rules={[{ required: true, message: 'กรุณาเลือกข้อมูล' }]}
+                >
+                  <Select placeholder="กลุ่มผู้ใช้งาน" options={roles} />
+                </Form.Item>
 
-          <TabPane tab="AD" key="2">
-            <Form
-              {...formItemLayout}
-              layout="vertical"
-              name="nonadform"
-              id="nonadform"
-              // onFinish={onFinish}
-              form={formAD}
-              size="large"
-              initialValues={{}}
-            >
-              <Form.Item
-                name="username"
-                label="Username"
-                rules={[{ required: true }]}
-              >
-                <Search
-                  placeholder="Username"
-                  enterButton="ค้นหา"
-                  onSearch={onSearch}
-                />
-              </Form.Item>
+                <Form.Item>
+                  <Space style={{ float: 'right' }}>
+                    <Button type="primary" htmlType="sumbit">
+                      ตกลง
+                    </Button>
+                    <Button type="primary" onClick={handleCancelAD}>
+                      ยกเลิก
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Form>
+            </TabPane>
+          )}
 
-              <Form.Item
-                name="roles_id"
-                label="กลุ่มผู้ใช้งาน"
-                rules={[
-                  { required: true, message: 'กรุณากรอกข้อมูล กลุ่มผู้ใช้งาน' },
-                ]}
-              >
-                <Select
-                  placeholder="กลุ่มผู้ใช้งาน"
-                  options={group_roles}
-                ></Select>
-              </Form.Item>
+          {(mode === 'add' || usertype === 'ad') && (
+            <TabPane tab="AD" key="2">
+              {mode === 'add' ? (
+                <>
+                  <Form
+                    {...formItemLayout}
+                    layout="vertical"
+                    name="adform"
+                    id="adform"
+                    form={formAD}
+                    onFinish={onFinishCrete}
+                    size="large"
+                    initialValues={{}}
+                  >
+                    <Form.Item
+                      name="username"
+                      label="Username"
+                      rules={[{ required: true }]}
+                    >
+                      <Search
+                        placeholder="Username"
+                        enterButton="ค้นหา"
+                        onSearch={onSearch}
+                      />
+                    </Form.Item>
 
-              <Form.Item>
-                <Space style={{ float: 'right' }}>
-                  <Button type="primary" htmlType="sumbit">
-                    ตกลง
-                  </Button>
-                  <Button type="primary" onClick={handleCancel}>
-                    ยกเลิก
-                  </Button>
-                </Space>
-              </Form.Item>
-            </Form>
-          </TabPane>
+                    <Form.Item
+                      name="roles_id"
+                      label="กลุ่มผู้ใช้งาน"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'กรุณากรอกข้อมูล กลุ่มผู้ใช้งาน',
+                        },
+                      ]}
+                    >
+                      <Select placeholder="กลุ่มผู้ใช้งาน" options={roles} />
+                    </Form.Item>
+
+                    <Form.Item>
+                      <Space style={{ float: 'right' }}>
+                        <Button type="primary" htmlType="sumbit">
+                          ตกลง
+                        </Button>
+                        <Button type="primary" onClick={handleCancel}>
+                          ยกเลิก
+                        </Button>
+                      </Space>
+                    </Form.Item>
+                  </Form>
+                </>
+              ) : (
+                <>
+                  <Form
+                    form={formEdit}
+                    layout="vertical"
+                    onFinish={onFinishEdit}
+                    onFinishFailed={onFinishFailedAD}
+                    initialValues={{
+                      username: dataEdit.username,
+                      roles_id: dataEdit.roles_name,
+                    }}
+                  >
+                    <Form.Item label="รหัสผู้ใช้ (AD)" name="username">
+                      <Input disabled={true} />
+                    </Form.Item>
+                    <Form.Item
+                      name="roles_id"
+                      label="กลุ่มผู้ใช้งาน"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'กรุณากรอกข้อมูล กลุ่มผู้ใช้งาน',
+                        },
+                      ]}
+                    >
+                      <Select placeholder="กลุ่มผู้ใช้งาน" options={roles} />
+                    </Form.Item>
+
+                    <Form.Item>
+                      <Space style={{ float: 'right' }}>
+                        <Button type="primary" htmlType="sumbit">
+                          ตกลง
+                        </Button>
+                        <Button type="primary" onClick={handleCancel}>
+                          ยกเลิก
+                        </Button>
+                      </Space>
+                    </Form.Item>
+                  </Form>
+                </>
+              )}
+            </TabPane>
+          )}
         </Tabs>
       </Drawer>
     </>
