@@ -92,6 +92,12 @@ const backoffice_menu = {
               component: 'BackOffice/impact_manage',
             },
             {
+              path: '/backoffice/sshe_issue/incident_type',
+              icon: 'incidenttype',
+              name: 'Incident Type',
+              component: 'BackOffice/impact_manage',
+            },
+            {
               component: '404',
             },
           ],

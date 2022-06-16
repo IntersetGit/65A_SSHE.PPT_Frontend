@@ -1,4 +1,5 @@
-import { Card, Input, Space, Table } from 'antd';
+import { ProTable } from '@ant-design/pro-components';
+import { Card, Input, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { request } from 'umi';
 import { dataz } from '../../../../dummy_data/data_company';
@@ -10,13 +11,15 @@ const ContractorCompanyManage = (props) => {
   const [comusermanage, setcomusermanage] = useState(dataz);
 
   useEffect(() => {
-    request('master/getCompany', { method: 'get' }).then((res) => {
-      console.log(res);
-      res.items.forEach((v, k) => {
-        v.key = k + 1;
-      });
-      setcomusermanage(res.items);
-    });
+    request('master/getCompany', { method: 'get' })
+      .then((res) => {
+        console.log(res);
+        res.items.forEach((v, k) => {
+          v.key = k + 1;
+        });
+        setcomusermanage(res.items);
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   const AddComData = (type, _data) => {
@@ -111,7 +114,7 @@ const ContractorCompanyManage = (props) => {
           />
         </Space>
         <LocationDrawer type={1} onSave={AddComData} />
-        <Table
+        <ProTable
           columns={columns}
           dataSource={comusermanage}
           expandable

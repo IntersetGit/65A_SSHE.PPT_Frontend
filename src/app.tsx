@@ -1,6 +1,6 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'; //SettingDrawer, BasicLayoutProps
 import PageLoading from '@ant-design/pro-layout';
-import { isJwtExpired } from 'jwt-check-expiration';
+import { AxiosPromise } from 'axios';
 import jwtDecode from 'jwt-decode';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
@@ -59,11 +59,11 @@ export async function getInitialState(): Promise<{
   };
 }
 
-//** ===== API CONFIGURATION ===== **/
+//** ====== API CONFIGURATION ====== **/
 
 namespace API {
   export interface LoginResult {
-    items: Partial<{ access: string; refresh: string }>;
+    items: Partial<{ access_token: string; refresh_token: string }>;
   }
 }
 
@@ -75,35 +75,42 @@ const requestInterceptor: RequestInterceptor = (url, options) => {
   return {
     url,
     options: merge(cloneDeep(options), {
+      prefix: '',
       headers: { Authorization: `Bearer ${JWT.getAccess()}` },
     }),
   };
 };
 
 const { cancel } = Requests.CancelToken.source();
-let refreshTokenRequest: Promise<API.LoginResult> | null = null;
+let refreshTokenRequest: AxiosPromise<API.LoginResult> | null = null;
 
 const responseInterceptor = async (
   response: Response,
   options: RequestOptionsInit,
 ) => {
-  const accessTokenExpired = response.status == 401 || 403;
+  const token_decode: { exp: number; iat: number; token: APITypes.UserInfo } =
+    jwtDecode(JWT.getAccess());
+  const accessTokenExpired = token_decode.exp < Date.now() / 1000;
+
   // if(JWT.getAccess()) {
   //   console.log(isJwtExpired(JWT.getAccess()))
   // }
-  if (isJwtExpired(JWT.getAccess())) {
+  if (accessTokenExpired) {
     try {
       if (!refreshTokenRequest) {
-        refreshTokenRequest = JWT.refreshAccessToken(JWT.getRefresh());
+        refreshTokenRequest = JWT.refreshAccessToken();
       }
       const res = await refreshTokenRequest;
       if (!res) throw new Error();
-      if (res.items.access) JWT.setAccess(res.items.access);
-      if (res.items.refresh) JWT.setRefresh(res.items.refresh);
+      if (res.data.items.access_token)
+        JWT.setAccess(res.data.items.access_token);
+      if (res.data.items.refresh_token)
+        JWT.setRefresh(res.data.items.refresh_token);
+      console.log(response.url);
       return requestUmi(
         response.url,
         merge(cloneDeep(options), {
-          headers: { Authorization: `Bearer ${res.items.access}` },
+          headers: { Authorization: `Bearer ${res.data.items.access_token}` },
         }),
       );
     } catch (err) {

@@ -62,6 +62,9 @@ const SSHEStatistic: React.FC = () => (
 const User: React.FC = () => <PictureLoader source="user.png" />;
 const User2: React.FC = () => <PictureLoader source="user2.png" />;
 const redalarm: React.FC = () => <PictureLoader source="Red-Alarm.png" />;
+const IncidentType: React.FC = () => (
+  <PictureLoader source="SSHE-Incident2.png" />
+);
 
 let ICONMAP: IconMaptype = {
   enviroment: (
@@ -132,6 +135,9 @@ let ICONMAP: IconMaptype = {
     <Icon component={redalarm as React.ForwardRefExoticComponent<any>} />
   ),
   blockoutline: <BlockOutlined />,
+  incidenttype: (
+    <Icon component={IncidentType as React.ForwardRefExoticComponent<any>} />
+  ),
 };
 
 export default ICONMAP;

@@ -1,5 +1,10 @@
+import axios from 'axios';
 import { Cookies } from 'react-cookie';
-import { request } from 'umi';
+
+const API_PATH = {
+  DEVELOPMENT: 'http://localhost:8000/api/',
+  PRODUCTION: 'https://sshe.hrconnext.co/api/',
+};
 
 export default class JWT {
   private Cookies = new Cookies();
@@ -33,10 +38,23 @@ export default class JWT {
     this.removeRefresh();
   }
 
-  public refreshAccessToken(token: string) {
-    return request('provider/refreshToken', {
+  public refreshAccessToken() {
+    return axios({
+      url: `${
+        process.env.NODE_ENV === 'development'
+          ? API_PATH.DEVELOPMENT
+          : API_PATH.PRODUCTION
+      }provider/refreshToken`,
       method: 'get',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: 'Bearer ' + this.getRefresh() },
     });
+
+    // request.get('provider/refreshToken', {
+    //     prefix: process.env.NODE_ENV === 'development' ? API_PATH.DEVELOPMENT : API_PATH.PRODUCTION,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `Bearer ${this.getRefresh()}`
+    //     }
+    // })
   }
 }
