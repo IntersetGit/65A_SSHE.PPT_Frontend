@@ -105,7 +105,6 @@ const responseInterceptor = async (
           JWT.setAccess(res.data.items.access_token);
         if (res.data.items.refresh_token)
           JWT.setRefresh(res.data.items.refresh_token);
-        console.log(response.url);
         return requestUmi(
           response.url,
           merge(cloneDeep(options), {
@@ -114,7 +113,7 @@ const responseInterceptor = async (
         );
       } catch (err) {
         JWT.removeAllJWT();
-        cancel('Session time out.');
+        cancel('เซสชั่นหมดอายุ');
         throw err;
       } finally {
         refreshTokenRequest = null;
@@ -139,6 +138,33 @@ export const request: RequestConfig = {
   requestInterceptors: [requestInterceptor],
   responseInterceptors: [responseInterceptor],
 };
+
+/** REFRESHTOKEN THREAD  */
+setInterval(async () => {
+  if (JWT.getAccess()) {
+    const token_decode: { exp: number; iat: number; token: APITypes.UserInfo } =
+      jwtDecode(JWT.getAccess());
+    const accessTokenExpired = token_decode.exp < Date.now() / 1000;
+
+    if (accessTokenExpired) {
+      try {
+        if (!refreshTokenRequest) {
+          refreshTokenRequest = JWT.refreshAccessToken();
+        }
+        const res = await refreshTokenRequest;
+        if (!res) throw new Error();
+        if (res.data.items.access_token)
+          JWT.setAccess(res.data.items.access_token);
+        if (res.data.items.refresh_token)
+          JWT.setRefresh(res.data.items.refresh_token);
+      } catch (error) {
+        JWT.removeAccess();
+        cancel('เซสชั่นหมดอายุ');
+        throw error;
+      }
+    }
+  }
+}, 1000);
 
 /* ===================================== */
 
