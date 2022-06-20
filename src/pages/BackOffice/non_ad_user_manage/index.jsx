@@ -209,13 +209,13 @@ const NonadUsermanage = (props) => {
 
   const reload = (search = null) => {
     request(
-      'provider/getSearchUser',
+      'system/users/info',
       { method: 'get', params: { search: search } },
       // search != null ? { search: search } : {}
     )
       .then((res) => {
         let tempDataArray = [];
-        res.items.forEach((data, key) => {
+        res.items.users.forEach((data, key) => {
           tempDataArray = [
             ...tempDataArray,
             {
