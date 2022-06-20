@@ -32,6 +32,7 @@ export async function getInitialState(): Promise<{
     try {
       const _token = JWT.getAccess();
       if (_token) {
+        console.log('Has token');
         const {
           token,
         }: Partial<{ token: APITypes.UserInfo; exp: number; iat: number }> =
@@ -88,37 +89,36 @@ const responseInterceptor = async (
   response: Response,
   options: RequestOptionsInit,
 ) => {
-  const token_decode: { exp: number; iat: number; token: APITypes.UserInfo } =
-    jwtDecode(JWT.getAccess());
-  const accessTokenExpired = token_decode.exp < Date.now() / 1000;
+  if (JWT.getAccess()) {
+    const token_decode: { exp: number; iat: number; token: APITypes.UserInfo } =
+      jwtDecode(JWT.getAccess());
+    const accessTokenExpired = token_decode.exp < Date.now() / 1000;
 
-  // if(JWT.getAccess()) {
-  //   console.log(isJwtExpired(JWT.getAccess()))
-  // }
-  if (accessTokenExpired) {
-    try {
-      if (!refreshTokenRequest) {
-        refreshTokenRequest = JWT.refreshAccessToken();
+    if (accessTokenExpired) {
+      try {
+        if (!refreshTokenRequest) {
+          refreshTokenRequest = JWT.refreshAccessToken();
+        }
+        const res = await refreshTokenRequest;
+        if (!res) throw new Error();
+        if (res.data.items.access_token)
+          JWT.setAccess(res.data.items.access_token);
+        if (res.data.items.refresh_token)
+          JWT.setRefresh(res.data.items.refresh_token);
+        console.log(response.url);
+        return requestUmi(
+          response.url,
+          merge(cloneDeep(options), {
+            headers: { Authorization: `Bearer ${res.data.items.access_token}` },
+          }),
+        );
+      } catch (err) {
+        JWT.removeAllJWT();
+        cancel('Session time out.');
+        throw err;
+      } finally {
+        refreshTokenRequest = null;
       }
-      const res = await refreshTokenRequest;
-      if (!res) throw new Error();
-      if (res.data.items.access_token)
-        JWT.setAccess(res.data.items.access_token);
-      if (res.data.items.refresh_token)
-        JWT.setRefresh(res.data.items.refresh_token);
-      console.log(response.url);
-      return requestUmi(
-        response.url,
-        merge(cloneDeep(options), {
-          headers: { Authorization: `Bearer ${res.data.items.access_token}` },
-        }),
-      );
-    } catch (err) {
-      JWT.removeAllJWT();
-      cancel('Session time out.');
-      throw err;
-    } finally {
-      refreshTokenRequest = null;
     }
   }
 

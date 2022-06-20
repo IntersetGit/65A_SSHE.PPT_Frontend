@@ -13,6 +13,9 @@
 # misc
 .DS_Store
 
+#build path
+/dist
+
 # umi
 /src/.umi
 /src/.umi-production
