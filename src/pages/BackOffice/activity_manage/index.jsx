@@ -17,8 +17,9 @@ import {
   Table,
 } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { request } from 'umi';
 import { activity_data } from '../../../../dummy_data/activity_data';
 
 const { Search } = Input;
@@ -31,23 +32,36 @@ const ActivityManage = (props) => {
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
 
+  useEffect(() => {
+    request('risk/getdata/risk', { medthod: 'get' })
+      .then((res) => {
+        res.items.activity.forEach((v, k) => {
+          v.number = k + 1;
+          v.key = k + 1;
+          v.status = 'Active';
+        });
+        setactivity(res.items.activity);
+        console.log(res.items);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
   const AddActivity = (type, _data = {}) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
-        const _num = `${activity.length + 1}`;
         console.log([
           ...activity,
-          { key: activity.length + 1, id: _num, status: 'Active', ..._data },
+          { key: activity.length + 1, status: 'Active', ..._data },
         ]);
         setactivity([
           ...activity,
-          { key: activity.length + 1, id: _num, status: 'Active', ..._data },
+          { key: activity.length + 1, status: 'Active', ..._data },
         ]);
         break;
 
       case 'UPDATE':
-        const indexs = activity.findIndex((e) => e.key == _data.key);
+        const indexs = activity.findIndex((e) => e.id == _data.id);
         if (indexs != -1) {
           let arr = [...activity];
 
@@ -95,8 +109,20 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddActivity('ADD', values);
-          Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+          request('risk/addActivitice', {
+            method: 'post',
+            data: values,
+          }).then((res) => {
+            if (res.status_code) {
+              AddActivity('ADD', {
+                id: res.items,
+                key: res.items,
+                number: res.items,
+                ...values,
+              });
+              Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     } else if (drawerType == 2) {
@@ -111,8 +137,23 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddActivity('UPDATE', { ...selectedrow, ...values });
-          Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          request('risk/updateActivites', {
+            method: 'post',
+            data: {
+              ...values,
+              id: selectedrow.id,
+            },
+          }).then((res) => {
+            if (res.status_code === 200) {
+              AddActivity('UPDATE', {
+                ...values,
+                key: selectedrow.key,
+                id: selectedrow.id,
+                number: selectedrow.number,
+              });
+              Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     }
@@ -130,9 +171,53 @@ const ActivityManage = (props) => {
     },
   };
 
+  const menus = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: 'แก้ไข',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'ลบ',
+    },
+  ];
+
+  const onMenuClick = async (event, record) => {
+    const { key } = event;
+    if (key === 'edit') {
+      showModal(2);
+      setselectedrow(record);
+      form.setFieldsValue(record);
+    } else {
+      Swal.fire({
+        title: 'ลบข้อมูล',
+        text: 'ยืนยันการลบข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          request(`risk/deleteActivites/${record.id}`, {
+            method: 'delete',
+          }).then((res) => {
+            if (res.status_code == 200) {
+              AddActivity('DELETE', record);
+              Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            }
+          });
+        }
+      });
+    }
+  };
+
   const columns = [
     {
-      title: 'ลำดับ',
+      title: 'ID',
       dataIndex: 'number',
       key: 'number',
       align: 'center',
@@ -140,8 +225,8 @@ const ActivityManage = (props) => {
     },
     {
       title: 'Activity',
-      dataIndex: 'activity',
-      key: 'activity',
+      dataIndex: 'name',
+      key: 'name',
       align: 'center',
     },
     {
@@ -160,52 +245,20 @@ const ActivityManage = (props) => {
         },
       ],
       onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (record) => {
+        return <p>{record ? 'Active' : 'Non Active'}</p>;
+      },
     },
     {
       title: 'Action',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
           type="text"
           overlay={
-            <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  showModal(2);
-                  setselectedrow(record);
-                  form.setFieldsValue(record);
-                }}
-              >
-                แก้ไข
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<DeleteOutlined />}
-                onClick={() =>
-                  Swal.fire({
-                    title: 'ลบข้อมูล',
-                    text: 'ยืนยันการลบข้อมูล',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'ยืนยัน',
-                    cancelButtonText: 'ยกเลิก',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      AddActivity('DELETE', record);
-                      Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-                    }
-                  })
-                }
-              >
-                ลบ
-              </Menu.Item>
-            </Menu>
+            <Menu items={menus} onClick={(e) => onMenuClick(e, record)} />
           }
         ></Dropdown.Button>
       ),
@@ -269,13 +322,13 @@ const ActivityManage = (props) => {
         >
           <Form.Item
             label="Activity"
-            name="activity"
+            name="name"
             rules={[{ required: true, message: 'กรุณาใส่ชื่อ Activity' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="คำอธิบาย" name="activity_detail">
+          <Form.Item label="คำอธิบาย" name="description">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 

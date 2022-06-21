@@ -139,7 +139,7 @@ const Mitigration = (props) => {
       sorter: (a, b) => a.number - b.number,
     },
     {
-      title: 'Mitigration',
+      title: 'Existing Control',
       dataIndex: 'mitigration',
       key: 'mitigration',
       align: 'center',
@@ -215,7 +215,7 @@ const Mitigration = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูล Mitigration</h1>
+        <h1>จัดการข้อมูล Existing Control</h1>
         <Space>
           <p>ค้นหาด้วยชื่อ</p>
           <Search
@@ -230,7 +230,7 @@ const Mitigration = (props) => {
           icon={<PlusOutlined />}
           onClick={() => showModal(1)}
         >
-          เพิ่ม Mitigration
+          เพิ่ม Existing Control
         </Button>
         <Table
           columns={columns}
@@ -247,7 +247,7 @@ const Mitigration = (props) => {
       </Card>
 
       <Drawer
-        title="Mitigration"
+        title="Existing Control"
         headerStyle={{ textAlign: 'center' }}
         onClose={hideModal}
         onCancel={hideModal}
@@ -268,9 +268,11 @@ const Mitigration = (props) => {
           initialValues={{}}
         >
           <Form.Item
-            label="Mitigration"
+            label="Existing Control"
             name="mitigration"
-            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Mitigration' }]}
+            rules={[
+              { required: true, message: 'กรุณาใส่ชื่อ Existing Control' },
+            ]}
           >
             <Input />
           </Form.Item>

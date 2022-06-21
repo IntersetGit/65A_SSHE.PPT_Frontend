@@ -24,59 +24,59 @@ import { request } from 'umi';
 const { Search } = Input;
 const { TextArea } = Input;
 
-const Impact = (props) => {
-  const [impact, setimpact] = useState([]);
+const ActivityManage = (props) => {
+  const [projecttype, setprojecttype] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
 
   useEffect(() => {
-    request('risk/getdata/risk', { medthod: 'get' })
+    request('master/getProjecttype', { medthod: 'get' })
       .then((res) => {
-        res.items.impacts.forEach((v, k) => {
+        let arrData = [];
+        res.items.forEach((v, k) => {
           v.number = k + 1;
           v.key = k + 1;
-          v.status = 'Active';
         });
-        setimpact(res.items.impacts);
-        console.log(res.items.impacts);
+        setprojecttype(res.items);
+        console.log(res.items);
       })
       .catch((err) => console.error(err));
   }, []);
 
-  const AddImpact = (type, _data = {}) => {
+  const AddProjectType = (type, _data = {}) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
         console.log([
-          ...impact,
-          { key: impact.length + 1, status: 'Active', ..._data },
+          ...projecttype,
+          { key: projecttype.length + 1, ..._data },
         ]);
-        setimpact([
-          ...impact,
-          { key: impact.length + 1, status: 'Active', ..._data },
+        setprojecttype([
+          ...projecttype,
+          { key: projecttype.length + 1, ..._data },
         ]);
         break;
 
       case 'UPDATE':
-        const indexs = impact.findIndex((e) => e.id == _data.id);
+        const indexs = projecttype.findIndex((e) => e.id == _data.id);
         if (indexs != -1) {
-          let arr = [...impact];
+          let arr = [...projecttype];
 
           arr[indexs] = _data;
 
-          setimpact(arr);
+          setprojecttype(arr);
           console.log(arr);
         }
         break;
 
       case 'DELETE':
         console.log(_data);
-        const newState = [...impact];
+        const newState = [...projecttype];
         const newArr = newState.filter((e) => e.key != _data.key);
 
-        setimpact(newArr);
+        setprojecttype(newArr);
         break;
 
       default:
@@ -108,12 +108,12 @@ const Impact = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request('risk/addImpact', {
+          request('master/manageProjecttype', {
             method: 'post',
             data: values,
           }).then((res) => {
             if (res.status_code) {
-              AddActivity('ADD', {
+              AddProjectType('ADD', {
                 id: res.items,
                 key: res.items,
                 number: res.items,
@@ -136,8 +136,23 @@ const Impact = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddImpact('UPDATE', { ...selectedrow, ...values });
-          Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          request('master/manageProjecttype', {
+            method: 'post',
+            data: {
+              ...values,
+              id: selectedrow.id,
+            },
+          }).then((res) => {
+            if (res.status_code === 201) {
+              AddProjectType('UPDATE', {
+                ...values,
+                key: selectedrow.key,
+                id: selectedrow.id,
+                number: selectedrow.number,
+              });
+              Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     }
@@ -186,11 +201,11 @@ const Impact = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request(`risk/deleteActivites/${record.id}`, {
+          request(`master/deleteProjecttype/${record.id}`, {
             method: 'delete',
           }).then((res) => {
             if (res.status_code == 200) {
-              AddActivity('DELETE', record);
+              AddProjectType('DELETE', record);
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -201,34 +216,17 @@ const Impact = (props) => {
 
   const columns = [
     {
-      title: 'ID',
+      title: 'Project Type ID',
       dataIndex: 'number',
       key: 'number',
       align: 'center',
       sorter: (a, b) => a.number - b.number,
     },
     {
-      title: 'Hazard',
+      title: 'Project Type Name',
       dataIndex: 'name',
       key: 'name',
       align: 'center',
-    },
-    {
-      title: 'สถานะ',
-      dataIndex: 'status',
-      key: 'status',
-      align: 'center',
-      filters: [
-        {
-          text: 'Active',
-          value: 'Active',
-        },
-        {
-          text: 'Non Active',
-          value: 'Non Active',
-        },
-      ],
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
     },
     {
       title: 'Action',
@@ -249,7 +247,7 @@ const Impact = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูล Hazard</h1>
+        <h1>จัดการข้อมูล ประเภทโครงการ</h1>
         <Space>
           <p>ค้นหาด้วยชื่อ</p>
           <Search
@@ -264,11 +262,11 @@ const Impact = (props) => {
           icon={<PlusOutlined />}
           onClick={() => showModal(1)}
         >
-          เพิ่ม Hazard
+          เพิ่ม ประเภท
         </Button>
         <Table
           columns={columns}
-          dataSource={impact}
+          dataSource={projecttype}
           expandable
           size={'middle'}
           scroll={{
@@ -281,7 +279,7 @@ const Impact = (props) => {
       </Card>
 
       <Drawer
-        title="Hazard"
+        title="Project Type"
         headerStyle={{ textAlign: 'center' }}
         onClose={hideModal}
         onCancel={hideModal}
@@ -294,29 +292,29 @@ const Impact = (props) => {
         <Form
           {...formItemLayout}
           layout="vertical"
-          name="impactform"
-          id="impactform"
+          name="projecttypeform"
+          id="projecttypeform"
           form={form}
           onFinish={onFinish}
           size="large"
           initialValues={{}}
         >
           <Form.Item
-            label="Hazard"
+            label="Project Type Name"
             name="name"
-            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Impact' }]}
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Activity' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="คำอธิบาย" name="description">
+          <Form.Item label="คำอธิบาย" name="activity_detail">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="status" label="สถานะ">
+          <Form.Item name="active" label="สถานะ">
             <Radio.Group>
-              <Radio.Button value="Active">Active</Radio.Button>
-              <Radio.Button value="Non Active">Non Active</Radio.Button>
+              <Radio.Button value="1">Active</Radio.Button>
+              <Radio.Button value="2">Non Active</Radio.Button>
             </Radio.Group>
           </Form.Item>
 
@@ -336,4 +334,4 @@ const Impact = (props) => {
   );
 };
 
-export default Impact;
+export default ActivityManage;

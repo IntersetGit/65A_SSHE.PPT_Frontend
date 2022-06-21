@@ -17,19 +17,33 @@ import {
   Table,
 } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { procedurejsea_data } from '../../../../dummy_data/procedurejsea_data';
+import { request } from 'umi';
 
 const { Search } = Input;
 const { TextArea } = Input;
 
 const ProcedureJsea = (props) => {
-  const [procedurejsea, setprocedurejsea] = useState(procedurejsea_data);
+  const [procedurejsea, setprocedurejsea] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
+
+  useEffect(() => {
+    request('risk/getdata/risk', { medthod: 'get' })
+      .then((res) => {
+        res.items.procedures.forEach((v, k) => {
+          v.number = k + 1;
+          v.key = k + 1;
+          v.status = 'Active';
+        });
+        setprocedurejsea(res.items.procedures);
+        console.log(res.items);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const AddProcedureJsea = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -149,9 +163,9 @@ const ProcedureJsea = (props) => {
       sorter: (a, b) => a.number - b.number,
     },
     {
-      title: 'Procedure & Jsea',
-      dataIndex: 'procedurejsea',
-      key: 'procedurejsea',
+      title: 'Treatment Plan',
+      dataIndex: 'name',
+      key: 'name',
       align: 'center',
     },
     {
@@ -225,7 +239,7 @@ const ProcedureJsea = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูล Procedure & Jsea</h1>
+        <h1>จัดการข้อมูล Treatment Plan</h1>
         <Space>
           <p>ค้นหาด้วยชื่อ</p>
           <Search
@@ -240,7 +254,7 @@ const ProcedureJsea = (props) => {
           icon={<PlusOutlined />}
           onClick={() => showModal(1)}
         >
-          เพิ่ม Procedure & Jsea
+          เพิ่ม Treatment Plan
         </Button>
         <Table
           columns={columns}
@@ -257,7 +271,7 @@ const ProcedureJsea = (props) => {
       </Card>
 
       <Drawer
-        title="Procedure & Jsea"
+        title="Treatment Plan"
         headerStyle={{ textAlign: 'center' }}
         onClose={hideModal}
         onCancel={hideModal}
@@ -278,11 +292,9 @@ const ProcedureJsea = (props) => {
           initialValues={{}}
         >
           <Form.Item
-            label="Procedure & Jsea"
+            label="Treatment Plan"
             name="procedurejsea"
-            rules={[
-              { required: true, message: 'กรุณาใส่ชื่อ Procedure & Jsea' },
-            ]}
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Treatment Plan' }]}
           >
             <Input />
           </Form.Item>

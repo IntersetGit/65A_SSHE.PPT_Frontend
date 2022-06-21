@@ -18,23 +18,49 @@ import {
   Table,
   Tabs,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import { request } from 'umi';
 import { constractor_company } from '../../../../dummy_data/constractor_company';
 import { constractor_data } from '../../../../dummy_data/constractor_data';
-import { project_data } from '../../../../dummy_data/project_company';
 
 const { Search } = Input;
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 
 const ProjectManage = (props) => {
-  const [projectdata, setprojectdata] = useState(project_data);
+  const [projectdata, setprojectdata] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form, formCT] = Form.useForm();
   const [value, setValue] = useState('Active');
+  const [values, setValues] = useState('Favorite');
+  const [project, setproject] = useState([]);
+
+  useEffect(() => {
+    request('master/getProject', { method: 'get' })
+      .then((res) => {
+        console.log(res);
+        res.items.forEach((v, k) => {
+          v.key = k + 1;
+          v.number = k + 1;
+        });
+        setprojectdata(res.items);
+      })
+      .catch((err) => console.error(err));
+
+    request('master/getProjecttype', { medthod: 'get' })
+      .then((res) => {
+        let arrData = [];
+        res.items.forEach((v, k) => {
+          arrData.push({ label: v.name, value: v.id });
+        });
+        setproject(arrData);
+        console.log(arrData);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const AddProject = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -43,7 +69,6 @@ const ProjectManage = (props) => {
         console.log([
           ...projectdata,
           {
-            id: projectdata.length + 1,
             key: projectdata.length + 1,
             number: `${projectdata.length + 1}`,
             ..._data,
@@ -52,7 +77,6 @@ const ProjectManage = (props) => {
         setprojectdata([
           ...projectdata,
           {
-            id: projectdata.length + 1,
             key: projectdata.length + 1,
             number: `${projectdata.length + 1}`,
             ..._data,
@@ -113,8 +137,15 @@ const ProjectManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddProject('ADD', values);
-          Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+          request('master/manageProject', {
+            method: 'post',
+            data: values,
+          }).then((res) => {
+            if (res.status_code) {
+              AddProject('ADD', { id: res.items, ...values });
+              Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     } else if (drawerType == 2) {
@@ -153,14 +184,30 @@ const ProjectManage = (props) => {
     setValue(value);
   };
 
+  const RadioFavorite = ({ target: { value } }) => {
+    console.log(value);
+    setValues(value);
+  };
+
   const options = [
     {
       label: 'Active',
-      value: 'Active',
+      value: '1',
     },
     {
       label: 'Non Active',
-      value: 'Non Active',
+      value: '2',
+    },
+  ];
+
+  const optionsF = [
+    {
+      label: 'Favorite',
+      value: '1',
+    },
+    {
+      label: 'Non Favorite',
+      value: '2',
     },
   ];
 
@@ -309,7 +356,11 @@ const ProjectManage = (props) => {
                 <Input />
               </Form.Item>
 
-              <Form.Item label="รายละเอียด" name="project_detail">
+              <Form.Item label="ประเภทโครงการ" name="project_type_id">
+                <Select options={project}></Select>
+              </Form.Item>
+
+              <Form.Item label="รายละเอียด" name="description">
                 <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
               </Form.Item>
 
@@ -318,6 +369,15 @@ const ProjectManage = (props) => {
                   options={options}
                   onChange={RadioonChange}
                   value={value}
+                  optionType="button"
+                />
+              </Form.Item>
+
+              <Form.Item label="Favorite" name="favorite_status">
+                <Radio.Group
+                  options={optionsF}
+                  onChange={RadioFavorite}
+                  value={values}
                   optionType="button"
                 />
               </Form.Item>

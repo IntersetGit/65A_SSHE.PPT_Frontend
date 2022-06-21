@@ -45,6 +45,12 @@ const backoffice_menu = {
           icon: 'blockoutline',
           routes: [
             {
+              path: '/backoffice/risk-manage/projecttype_manage',
+              icon: 'project2',
+              name: 'Project Type',
+              component: 'BackOffice/projecttype_manage',
+            },
+            {
               path: '/backoffice/risk-manage/activity_manage',
               icon: 'activity2',
               name: 'Works Activity',
@@ -83,19 +89,19 @@ const backoffice_menu = {
               path: '/backoffice/sshe_issue/issue_type',
               icon: 'security',
               name: 'ISSUE TYPE',
-              component: 'BackOffice/activity_manage',
+              component: 'BackOffice/issue_type_manage',
             },
             {
               path: '/backoffice/sshe_issue/hazard',
               icon: 'mitigation2',
               name: 'Hazard',
-              component: 'BackOffice/impact_manage',
+              component: 'BackOffice/hazard_manage',
             },
             {
               path: '/backoffice/sshe_issue/incident_type',
               icon: 'incidenttype',
               name: 'Incident Type',
-              component: 'BackOffice/impact_manage',
+              component: 'BackOffice/incident_type_manage',
             },
             {
               component: '404',
