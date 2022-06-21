@@ -5,32 +5,8 @@ import { Button, Form } from 'antd';
 import React, { useRef, useState } from 'react';
 import { simple_data } from './simple_data';
 
-export type RiskRegisterType = {
-  consequence: string;
-  existing_control: Array<string>;
-  hazard: Array<string>;
-  index: number;
-  initial_risk: string;
-  keys: React.Key;
-  likelihood: string;
-  opp_threat: string;
-  overall_control_effectiveness: string;
-  review_comments: string;
-  review_days_to_due_date: string;
-  review_risk: string;
-  review_risk_status: string;
-  risk_action_Party: string;
-  risk_consequence: string;
-  risk_due_date: string;
-  risk_likelihood: string;
-  risk_no: number;
-  risk_residual_Risk: string;
-  risk_treatment_plan: string;
-  work_activity: string;
-};
-
 const RiskRegisterAndAction: React.FC = () => {
-  const columns: ProColumns<RiskRegisterType>[] = [
+  const columns: ProColumns<APITypes.RiskRegisterType>[] = [
     {
       title: 'Risk No.',
       key: 'risk_no',
@@ -366,11 +342,11 @@ const RiskRegisterAndAction: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<RiskRegisterType[]>([]);
+  const [dataSource, setDataSource] = useState<APITypes.RiskRegisterType[]>([]);
   const [form] = Form.useForm();
   return (
     <>
-      <EditableProTable<RiskRegisterType>
+      <EditableProTable<APITypes.RiskRegisterType>
         headerTitle="Risk Register and Action Plan Data"
         rowKey="keys"
         bordered

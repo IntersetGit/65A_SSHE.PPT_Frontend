@@ -133,8 +133,10 @@ const Login = () => {
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox disabled={isBlock || loading}>Remember me</Checkbox>
               </Form.Item>
+              <Button style={{ float: 'right' }} type="link">
+                Forgot Password
+              </Button>
             </Form.Item>
-
             <Form.Item>
               <Button
                 type="primary"

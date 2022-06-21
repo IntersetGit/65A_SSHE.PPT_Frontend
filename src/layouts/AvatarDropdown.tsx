@@ -35,6 +35,8 @@ const AvatarDropdown: React.FC = () => {
       const { key } = event;
       if (key === 'logout') {
         logOutMethod();
+      } else if (key === 'myprofile') {
+        history.push('/frontoffice/user-profile');
       }
     },
     [setInitialState],
@@ -42,9 +44,14 @@ const AvatarDropdown: React.FC = () => {
 
   const menuItems = [
     {
+      key: 'myprofile',
+      icon: <UserOutlined />,
+      label: 'My Profile',
+    },
+    {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: 'ออกจากระบบ',
+      label: 'Logout',
     },
   ];
 

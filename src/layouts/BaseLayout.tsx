@@ -50,7 +50,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       fontSize: '1rem',
       color: 'white',
     },
-    inlineIndent: 15,
+    inlineIndent: 4,
   };
 
   const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
@@ -87,7 +87,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       }}
       menuItemRender={(menuItemProps: MenuDataItem) => {
         // DEBUG //
-        //console.log('menuItemProps =>',menuItemProps,'\ndefaultDom =>',defaultDom)
+        // console.log('menuItemProps =>',menuItemProps)
+        // if(menuItemProps.exact === false) return
         if (
           menuItemProps.isUrl ||
           !menuItemProps.path ||

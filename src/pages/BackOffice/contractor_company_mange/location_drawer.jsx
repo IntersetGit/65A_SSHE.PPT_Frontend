@@ -81,16 +81,12 @@ const LocationDrawer = (props) => {
           cancelButtonText: 'ยกเลิก',
         }).then((result) => {
           if (result.isConfirmed) {
-            request('master/CreateCompany', {
+            request('master/manageCompany', {
               method: 'post',
-              data: {
-                address: values.address,
-                name: values.company_name,
-                type: values.company_type,
-              },
+              data: values,
             }).then((res) => {
               if (res.status_code) {
-                props.onSave('ADD', { ...res.items });
+                props.onSave('ADD', { id: res.items, ...values });
                 console.log(res);
                 Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
               }
@@ -108,17 +104,15 @@ const LocationDrawer = (props) => {
           cancelButtonText: 'ยกเลิก',
         }).then((result) => {
           if (result.isConfirmed) {
-            request('master/updateCompany', {
+            request('master/manageCompany', {
               method: 'post',
               data: {
-                address: values.address,
-                name: values.company_name,
-                type: values.company_type,
+                ...values,
                 id: props.data.id,
               },
             }).then((res) => {
               console.log(res);
-              if (res.status_code === 200) {
+              if (res.status_code === 204) {
                 props.onSave('UPDATE', {
                   ...values,
                   key: props.data.key,
