@@ -38,4 +38,15 @@ declare namespace APITypes {
     risk_treatment_plan: string;
     work_activity: string;
   };
+
+  type RiskIdentifierTemplateType = {
+    keys: React.Key;
+    key?: React.Key;
+    index?: number;
+    risk_no?: number;
+    hazard?: string;
+    existingControl?: Array<string>;
+    work_activity?: string;
+    children?: RiskIdentifierTemplateType[];
+  };
 }

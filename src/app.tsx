@@ -32,7 +32,6 @@ export async function getInitialState(): Promise<{
     try {
       const _token = JWT.getAccess();
       if (_token) {
-        console.log('Has token');
         const {
           token,
         }: Partial<{ token: APITypes.UserInfo; exp: number; iat: number }> =
