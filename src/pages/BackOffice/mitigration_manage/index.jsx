@@ -17,19 +17,33 @@ import {
   Table,
 } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { mitigration_data } from '../../../../dummy_data/mitigration_data';
+import { request } from 'umi';
 
 const { Search } = Input;
 const { TextArea } = Input;
 
 const Mitigration = (props) => {
-  const [mitigration, setmitigration] = useState(mitigration_data);
+  const [mitigration, setmitigration] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
+
+  useEffect(() => {
+    request('risk/getdata/risk', { medthod: 'get' })
+      .then((res) => {
+        res.items.mitigations.forEach((v, k) => {
+          v.number = `ExC${k + 1}`;
+          v.key = k + 1;
+          v.status = 'Active';
+        });
+        setmitigration(res.items.mitigations);
+        console.log(res.items.mitigations);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   const AddMitigration = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -95,8 +109,20 @@ const Mitigration = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddMitigration('ADD', values);
-          Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+          request('risk/addMitigation', {
+            method: 'post',
+            data: values,
+          }).then((res) => {
+            if (res.status_code) {
+              AddMitigration('ADD', {
+                id: res.items,
+                key: res.items,
+                number: `ExC${mitigration.length + 1}`,
+                ...values,
+              });
+              Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     } else if (drawerType == 2) {
@@ -111,8 +137,23 @@ const Mitigration = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddMitigration('UPDATE', { ...selectedrow, ...values });
-          Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          request('risk/updateMitigation', {
+            method: 'post',
+            data: {
+              ...values,
+              id: selectedrow.id,
+            },
+          }).then((res) => {
+            if (res.status_code === 200) {
+              AddMitigration('UPDATE', {
+                ...values,
+                key: selectedrow.key,
+                id: selectedrow.id,
+                number: selectedrow.number,
+              });
+              Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     }
@@ -130,9 +171,53 @@ const Mitigration = (props) => {
     },
   };
 
+  const menus = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: 'แก้ไข',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'ลบ',
+    },
+  ];
+
+  const onMenuClick = async (event, record) => {
+    const { key } = event;
+    if (key === 'edit') {
+      showModal(2);
+      setselectedrow(record);
+      form.setFieldsValue(record);
+    } else {
+      Swal.fire({
+        title: 'ลบข้อมูล',
+        text: 'ยืนยันการลบข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          request(`risk/deleteMitigation/${record.id}`, {
+            method: 'delete',
+          }).then((res) => {
+            if (res.status_code == 200) {
+              AddMitigration('DELETE', record);
+              Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            }
+          });
+        }
+      });
+    }
+  };
+
   const columns = [
     {
-      title: 'ลำดับ',
+      title: 'ID',
       dataIndex: 'number',
       key: 'number',
       align: 'center',
@@ -140,8 +225,8 @@ const Mitigration = (props) => {
     },
     {
       title: 'Existing Control',
-      dataIndex: 'mitigration',
-      key: 'mitigration',
+      dataIndex: 'name',
+      key: 'name',
       align: 'center',
     },
     {
@@ -165,47 +250,12 @@ const Mitigration = (props) => {
       title: 'Action',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
           type="text"
           overlay={
-            <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  showModal(2);
-                  setselectedrow(record);
-                  form.setFieldsValue(record);
-                }}
-              >
-                แก้ไข
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<DeleteOutlined />}
-                onClick={() =>
-                  Swal.fire({
-                    title: 'ลบข้อมูล',
-                    text: 'ยืนยันการลบข้อมูล',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'ยืนยัน',
-                    cancelButtonText: 'ยกเลิก',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      AddMitigration('DELETE', record);
-                      Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-                    }
-                  })
-                }
-              >
-                ลบ
-              </Menu.Item>
-            </Menu>
+            <Menu items={menus} onClick={(e) => onMenuClick(e, record)} />
           }
         ></Dropdown.Button>
       ),
@@ -269,7 +319,7 @@ const Mitigration = (props) => {
         >
           <Form.Item
             label="Existing Control"
-            name="mitigration"
+            name="name"
             rules={[
               { required: true, message: 'กรุณาใส่ชื่อ Existing Control' },
             ]}
@@ -277,7 +327,7 @@ const Mitigration = (props) => {
             <Input />
           </Form.Item>
 
-          <Form.Item label="คำอธิบาย" name="mitigration_detail">
+          <Form.Item label="คำอธิบาย" name="description">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 

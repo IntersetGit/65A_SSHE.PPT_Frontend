@@ -117,6 +117,7 @@ const NonadUsermanage = (props) => {
       title: 'ลำดับ',
       dataIndex: 'number',
       key: '1',
+      align: 'center',
       sorter: (record1, record2) => {
         return record1.number > record2.number;
       },
@@ -125,6 +126,7 @@ const NonadUsermanage = (props) => {
       title: 'ชื่อเข้าใช้ระบบ',
       dataIndex: 'user_name',
       key: '2',
+      align: 'center',
       sorter: (record1, record2) => {
         return record1.user_name > record2.user_name;
       },
@@ -133,6 +135,7 @@ const NonadUsermanage = (props) => {
       title: 'ชื่อ-นามสกุล',
       dataIndex: 'firstlast',
       key: '3',
+      align: 'center',
       sorter: (record1, record2) => {
         return record1.firstlast > record2.firstlast;
       },
@@ -141,6 +144,7 @@ const NonadUsermanage = (props) => {
       title: 'อีเมล์',
       dataIndex: 'e_mail',
       key: '4',
+      align: 'center',
       sorter: (record1, record2) => {
         return record1.e_mail > record2.e_mail;
       },
@@ -149,6 +153,7 @@ const NonadUsermanage = (props) => {
       title: 'กลุ่มผู้ใช้งาน',
       dataIndex: 'roles_name',
       key: '5',
+      align: 'center',
       filters: [
         {
           text: 'Administrator',

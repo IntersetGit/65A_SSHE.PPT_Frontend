@@ -13,6 +13,7 @@ import {
   Input,
   Menu,
   Radio,
+  Select,
   Space,
   Table,
 } from 'antd';
@@ -36,7 +37,7 @@ const HazardManage = (props) => {
     request('master/getHazardIssue', { medthod: 'get' })
       .then((res) => {
         res.items.forEach((v, k) => {
-          v.number = k + 1;
+          v.number = `ST-00${k + 1}`;
           v.key = k + 1;
           v.status = 'Active';
         });
@@ -49,7 +50,7 @@ const HazardManage = (props) => {
       .then((res) => {
         let arrData = [];
         res.items.forEach((v, k) => {
-          arrData.push({ label: v.issue_type_name, value: v.issue_type_id });
+          arrData.push({ label: v.issue_type_name, value: v.id });
         });
         settype(arrData);
         console.log(arrData);
@@ -120,15 +121,18 @@ const HazardManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request('master/manageIssueType', {
+          request('master/manageHazardIssue', {
             method: 'post',
             data: values,
           }).then((res) => {
             if (res.status_code) {
-              AddIssueType('ADD', {
+              AddHazard('ADD', {
                 id: res.items,
                 key: res.items,
-                number: res.items,
+                number: `ST-00${hazard.length + 1}`,
+                issue_type_name: type.find(
+                  (e) => e.value === values.issue_type_id,
+                ).label,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
@@ -148,7 +152,7 @@ const HazardManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request('master/manageIssueType', {
+          request('master/manageHazardIssue', {
             method: 'post',
             data: {
               ...values,
@@ -156,11 +160,14 @@ const HazardManage = (props) => {
             },
           }).then((res) => {
             if (res.status_code === 201) {
-              AddIssueType('UPDATE', {
+              AddHazard('UPDATE', {
                 ...values,
                 key: selectedrow.key,
                 id: selectedrow.id,
                 number: selectedrow.number,
+                issue_type_name: type.find(
+                  (e) => e.value === values.issue_type_id,
+                ).label,
               });
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
@@ -213,11 +220,11 @@ const HazardManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request(`master/deleteIssueType/${record.id}`, {
+          request(`master/deleteHazardIssue/${record.id}`, {
             method: 'delete',
           }).then((res) => {
             if (res.status_code == 200) {
-              AddIssueType('DELETE', record);
+              AddHazard('DELETE', record);
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -244,6 +251,7 @@ const HazardManage = (props) => {
       title: 'Hazard',
       dataIndex: 'hazard_name',
       key: 'hazard_id',
+      align: 'center',
     },
     {
       title: 'สถานะ',
@@ -342,6 +350,10 @@ const HazardManage = (props) => {
             rules={[{ required: true, message: 'กรุณาใส่ชื่อ Hazard' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item label="Issue Type" name="issue_type_id">
+            <Select options={type}></Select>
           </Form.Item>
 
           <Form.Item label="คำอธิบาย" name="description">

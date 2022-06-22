@@ -35,7 +35,7 @@ const Impact = (props) => {
     request('risk/getdata/risk', { medthod: 'get' })
       .then((res) => {
         res.items.impacts.forEach((v, k) => {
-          v.number = k + 1;
+          v.number = `Hz${k + 1}`;
           v.key = k + 1;
           v.status = 'Active';
         });
@@ -113,10 +113,10 @@ const Impact = (props) => {
             data: values,
           }).then((res) => {
             if (res.status_code) {
-              AddActivity('ADD', {
+              AddImpact('ADD', {
                 id: res.items,
                 key: res.items,
-                number: res.items,
+                number: `Hz${impact.length + 1}`,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
@@ -136,8 +136,23 @@ const Impact = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddImpact('UPDATE', { ...selectedrow, ...values });
-          Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          request('risk/updateImpact', {
+            method: 'post',
+            data: {
+              ...values,
+              id: selectedrow.id,
+            },
+          }).then((res) => {
+            if (res.status_code === 200) {
+              AddImpact('UPDATE', {
+                ...values,
+                key: selectedrow.key,
+                id: selectedrow.id,
+                number: selectedrow.number,
+              });
+              Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     }
@@ -186,11 +201,11 @@ const Impact = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request(`risk/deleteActivites/${record.id}`, {
+          request(`risk/deleteImpact/${record.id}`, {
             method: 'delete',
           }).then((res) => {
             if (res.status_code == 200) {
-              AddActivity('DELETE', record);
+              AddImpact('DELETE', record);
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });

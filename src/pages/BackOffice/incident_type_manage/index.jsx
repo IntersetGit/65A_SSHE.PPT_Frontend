@@ -35,7 +35,7 @@ const IncidentofTypeManage = (props) => {
     request('master/getIncidentType', { medthod: 'get' })
       .then((res) => {
         res.items.forEach((v, k) => {
-          v.number = k + 1;
+          v.number = `IT-00${k + 1}`;
           v.key = k + 1;
           v.status = 'Active';
         });
@@ -116,7 +116,7 @@ const IncidentofTypeManage = (props) => {
               AddIncidentType('ADD', {
                 id: res.items,
                 key: res.items,
-                number: incidenttype.length + 1,
+                number: `IT-00${incidenttype.length + 1}`,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');

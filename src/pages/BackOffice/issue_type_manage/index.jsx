@@ -35,7 +35,7 @@ const IssueTypeManage = (props) => {
     request('master/getIssueType', { medthod: 'get' })
       .then((res) => {
         res.items.forEach((v, k) => {
-          v.number = k + 1;
+          v.number = `ST-00${k + 1}`;
           v.key = k + 1;
           v.status = 'Active';
         });
@@ -116,7 +116,7 @@ const IssueTypeManage = (props) => {
               AddIssueType('ADD', {
                 id: res.items,
                 key: res.items,
-                number: res.items,
+                number: `ST-00${issue.length + 1}`,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');

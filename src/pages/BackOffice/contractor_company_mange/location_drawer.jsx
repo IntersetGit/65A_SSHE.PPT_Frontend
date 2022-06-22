@@ -112,7 +112,7 @@ const LocationDrawer = (props) => {
               },
             }).then((res) => {
               console.log(res);
-              if (res.status_code === 204) {
+              if (res.status_code === 201) {
                 props.onSave('UPDATE', {
                   ...values,
                   key: props.data.key,

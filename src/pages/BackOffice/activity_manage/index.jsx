@@ -36,7 +36,7 @@ const ActivityManage = (props) => {
     request('risk/getdata/risk', { medthod: 'get' })
       .then((res) => {
         res.items.activity.forEach((v, k) => {
-          v.number = k + 1;
+          v.number = `Ac${k + 1}`;
           v.key = k + 1;
           v.status = 'Active';
         });
@@ -117,7 +117,7 @@ const ActivityManage = (props) => {
               AddActivity('ADD', {
                 id: res.items,
                 key: res.items,
-                number: res.items,
+                number: `Ac${activity.length + 1}`,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');

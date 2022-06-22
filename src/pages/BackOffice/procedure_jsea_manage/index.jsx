@@ -156,7 +156,7 @@ const ProcedureJsea = (props) => {
 
   const columns = [
     {
-      title: 'ลำดับ',
+      title: 'ID',
       dataIndex: 'number',
       key: 'number',
       align: 'center',

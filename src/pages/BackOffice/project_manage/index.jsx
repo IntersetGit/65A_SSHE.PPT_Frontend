@@ -21,7 +21,6 @@ import {
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
-import { constractor_company } from '../../../../dummy_data/constractor_company';
 import { constractor_data } from '../../../../dummy_data/constractor_data';
 
 const { Search } = Input;
@@ -33,6 +32,7 @@ const ProjectManage = (props) => {
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
+  const [data, setdata] = useState([]);
   const [form, formCT] = Form.useForm();
   const [value, setValue] = useState('Active');
   const [values, setValues] = useState('Favorite');
@@ -58,6 +58,17 @@ const ProjectManage = (props) => {
         });
         setproject(arrData);
         console.log(arrData);
+      })
+      .catch((err) => console.error(err));
+
+    request('master/getCompany', { method: 'get' })
+      .then((res) => {
+        console.log(res);
+        let arrData = [];
+        res.items.forEach((v, k) => {
+          arrData.push({ label: v.company_name, value: v.id });
+        });
+        setdata(arrData);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -230,7 +241,7 @@ const ProjectManage = (props) => {
 
   const columns = [
     {
-      title: 'ลำดับ',
+      title: 'Project ID',
       dataIndex: 'number',
       key: 'number',
       align: 'center',
@@ -407,7 +418,7 @@ const ProjectManage = (props) => {
               initialValues={{}}
             >
               <Form.Item label="เพิ่มผู้รับเหมา" name="add_contractor">
-                <Select options={constractor_company}></Select>
+                <Select options={data}></Select>
               </Form.Item>
 
               <Form.Item>
@@ -415,6 +426,7 @@ const ProjectManage = (props) => {
                   columns={column}
                   dataSource={constractor_data}
                   expandable
+                  showHeader={false}
                   size={'middle'}
                   scroll={{
                     y: 240,

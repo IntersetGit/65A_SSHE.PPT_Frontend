@@ -36,7 +36,7 @@ const ActivityManage = (props) => {
       .then((res) => {
         let arrData = [];
         res.items.forEach((v, k) => {
-          v.number = k + 1;
+          v.number = `PT-${k + 1}`;
           v.key = k + 1;
         });
         setprojecttype(res.items);
@@ -116,7 +116,7 @@ const ActivityManage = (props) => {
               AddProjectType('ADD', {
                 id: res.items,
                 key: res.items,
-                number: res.items,
+                number: `PT-${projecttype.length + 1}`,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
