@@ -299,7 +299,7 @@ const IssueTypeManage = (props) => {
       </Card>
 
       <Drawer
-        title="Activity"
+        title="Issue Type"
         headerStyle={{ textAlign: 'center' }}
         onClose={hideModal}
         onCancel={hideModal}
@@ -312,8 +312,8 @@ const IssueTypeManage = (props) => {
         <Form
           {...formItemLayout}
           layout="vertical"
-          name="activityform"
-          id="activityform"
+          name="issueform"
+          id="issueform"
           form={form}
           onFinish={onFinish}
           size="large"

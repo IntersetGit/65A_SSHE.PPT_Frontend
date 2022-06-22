@@ -46,7 +46,7 @@ const backoffice_menu = {
           routes: [
             {
               path: '/backoffice/risk-manage/projecttype_manage',
-              icon: 'project',
+              icon: 'project2',
               name: 'Project Type',
               component: 'BackOffice/projecttype_manage',
             },
