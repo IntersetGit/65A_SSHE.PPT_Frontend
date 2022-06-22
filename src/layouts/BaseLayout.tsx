@@ -50,7 +50,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       fontSize: '1rem',
       color: 'white',
     },
-    inlineIndent: 4,
+    inlineIndent: 35,
   };
 
   const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
@@ -96,14 +96,16 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         ) {
           return (
             <>
-              {menuItemProps.icon} {menuItemProps.name}
+              {menuItemProps.icon}{' '}
+              <span style={{ marginLeft: '7px' }}>{menuItemProps.name}</span>
             </>
           );
         }
         return (
           <>
             <Link to={menuItemProps.path}>
-              {menuItemProps.icon} {menuItemProps.name}
+              {menuItemProps.icon}{' '}
+              <span style={{ marginLeft: '7px' }}>{menuItemProps.name}</span>
             </Link>
           </>
         );
