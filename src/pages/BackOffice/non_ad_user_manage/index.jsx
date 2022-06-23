@@ -191,8 +191,8 @@ const NonadUsermanage = (props) => {
           value: 'AD',
         },
         {
-          text: 'Non_AD',
-          value: 'Non_AD',
+          text: 'Non AD',
+          value: 'Non AD',
         },
       ],
       onFilter: (value, record) => record.is_ad.indexOf(value) === 0,
@@ -566,18 +566,7 @@ const NonadUsermanage = (props) => {
                   ]}
                   hasFeedback
                 >
-                  <Input.Password />
-                </Form.Item>
-
-                <Form.Item
-                  label="ยืนยันรหัสผ่าน"
-                  name="confirm_password"
-                  rules={[
-                    { required: true, message: 'กรุณากรอกยืนยันรหัสผ่าน' },
-                  ]}
-                  hasFeedback
-                >
-                  <Input.Password />
+                  <Input.Password defaultValue={'user@123!!!'} />
                 </Form.Item>
 
                 <Form.Item

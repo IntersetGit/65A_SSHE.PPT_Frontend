@@ -1,14 +1,38 @@
+import {
+  DeleteOutlined,
+  EditOutlined,
+  MoreOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { ProTable } from '@ant-design/pro-components';
-import { Card, Input, Space } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Drawer,
+  Dropdown,
+  Form,
+  Input,
+  Menu,
+  Radio,
+  Select,
+  Space,
+} from 'antd';
 import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { request } from 'umi';
-import { dataz } from '../../../../dummy_data/data_company';
-import LocationDrawer from './location_drawer';
+import { office_type } from '../../../../dummy_data/office_type';
 
 const { Search } = Input;
+const { Option } = Select;
+const { TextArea } = Input;
 
 const ContractorCompanyManage = (props) => {
-  const [comusermanage, setcomusermanage] = useState(dataz);
+  const [comusermanage, setcomusermanage] = useState([]);
+  const [isShowModal, setShowModal] = useState(false);
+  const [drawerType, setdrawerType] = useState(1);
+  const [selectedrow, setselectedrow] = useState(null);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     request('master/getCompany', { method: 'get' })
@@ -16,6 +40,7 @@ const ContractorCompanyManage = (props) => {
         console.log(res);
         res.items.forEach((v, k) => {
           v.key = k + 1;
+          v.number = `Rp-00${k + 1}`;
         });
         setcomusermanage(res.items);
       })
@@ -28,17 +53,17 @@ const ContractorCompanyManage = (props) => {
       case 'ADD':
         console.log([
           ...comusermanage,
-          { key: Math.floor(Math.random() * 1000), ..._data },
+          { key: comusermanage.length + 1, ..._data },
         ]);
         setcomusermanage([
           ...comusermanage,
-          { key: Math.floor(Math.random() * 1000), ..._data },
+          { key: comusermanage.length + 1, ..._data },
         ]);
         break;
 
       case 'UPDATE':
         console.log(_data);
-        const indexs = comusermanage.findIndex((e) => e.id == _data.id);
+        const indexs = comusermanage.findIndex((e) => e.key == _data.key);
         if (indexs != -1) {
           let arr = [...comusermanage];
 
@@ -62,11 +87,137 @@ const ContractorCompanyManage = (props) => {
     }
   };
 
+  const showModal = (type) => {
+    setdrawerType(type);
+    setShowModal(true);
+  };
+
+  const hideModal = () => {
+    setShowModal(false);
+  };
+
+  const onFinish = (values) => {
+    drawerType === 1
+      ? Swal.fire({
+          title: 'บันทึกข้อมูล',
+          text: 'ยืนยันการบันทึกข้อมูล',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'ยืนยัน',
+          cancelButtonText: 'ยกเลิก',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            request('master/manageCompany', {
+              method: 'post',
+              data: values,
+            }).then((res) => {
+              if (res.status_code) {
+                AddComData('ADD', {
+                  id: res.items,
+                  number: `Rp-00${comusermanage.length + 1}`,
+                  ...values,
+                });
+                console.log(res);
+                Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+              }
+            });
+          }
+        })
+      : Swal.fire({
+          title: 'แก้ไขข้อมูล',
+          text: 'ยืนยันการแก้ไขข้อมูล',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'ยืนยัน',
+          cancelButtonText: 'ยกเลิก',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            request('master/manageCompany', {
+              method: 'post',
+              data: {
+                ...values,
+                id: selectedrow.id,
+              },
+            }).then((res) => {
+              console.log(res);
+              if (res.status_code === 201) {
+                AddComData('UPDATE', {
+                  ...values,
+                  key: selectedrow.key,
+                  id: selectedrow.id,
+                });
+                Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+              }
+            });
+          }
+        });
+    hideModal();
+  };
+
+  const formItemLayout = {
+    labelCol: {
+      xs: { span: 24 },
+      sm: { span: 24 },
+    },
+    wrapperCol: {
+      xs: { span: 24 },
+      sm: { span: 24 },
+    },
+  };
+
+  const menus = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: 'แก้ไข',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'ลบ',
+    },
+  ];
+
+  const onMenuClick = async (event, record) => {
+    const { key } = event;
+    if (key === 'edit') {
+      showModal(2);
+      setselectedrow(record);
+      form.setFieldsValue(record);
+    } else {
+      Swal.fire({
+        title: 'ลบข้อมูล',
+        text: 'ยืนยันการลบข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          request(`master/updateCompany/${record.id}`, {
+            method: 'delete',
+          }).then((res) => {
+            if (res.status_code == 200) {
+              AddComData('DELETE', record);
+              Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            }
+          });
+        }
+      });
+    }
+  };
+
   const columns = [
     {
       title: 'Company ID',
-      dataIndex: 'key',
-      key: 'key',
+      dataIndex: 'number',
+      key: 'number',
       align: 'center',
     },
     {
@@ -95,9 +246,15 @@ const ContractorCompanyManage = (props) => {
       title: 'จัดการ',
       key: 'จัดการ',
       align: 'center',
-      render: (record) => {
-        return <LocationDrawer data={record} type={2} onSave={AddComData} />;
-      },
+      render: (record) => (
+        <Dropdown.Button
+          icon={<MoreOutlined />}
+          type="text"
+          overlay={
+            <Menu items={menus} onClick={(e) => onMenuClick(e, record)} />
+          }
+        ></Dropdown.Button>
+      ),
     },
   ];
 
@@ -113,7 +270,14 @@ const ContractorCompanyManage = (props) => {
             enterButton
           />
         </Space>
-        <LocationDrawer type={1} onSave={AddComData} />
+        <Button
+          type="primary"
+          style={{ float: 'right' }}
+          icon={<PlusOutlined />}
+          onClick={() => showModal(1)}
+        >
+          เพิ่ม
+        </Button>
         <ProTable
           columns={columns}
           dataSource={comusermanage}
@@ -124,6 +288,117 @@ const ContractorCompanyManage = (props) => {
           }}
         />
       </Card>
+
+      <Drawer
+        title="บริษัทผู้รับเหมา"
+        headerStyle={{ textAlign: 'center' }}
+        onClose={hideModal}
+        onCancel={hideModal}
+        visible={isShowModal}
+        closable={true}
+        maskClosable={false}
+        keyboard={false}
+        width="40%"
+      >
+        <Form
+          {...formItemLayout}
+          layout="vertical"
+          name="complocform"
+          id="complocform"
+          form={form}
+          onFinish={onFinish}
+          size="large"
+          initialValues={
+            {
+              // key: props.data && props.data.key,
+              // id: props.data && props.data.id,
+              // company_type: props.data && props.data.company_type,
+              // company_name: props.data ? props.data.company_name : '',
+              // address: props.data ? props.data.address : '',
+              // status: props.data ? props.data.status : '',
+            }
+          }
+        >
+          <Col>
+            <Form.Item label="">
+              <Form.Item
+                name="company_name"
+                label="ชื่อบริษัท (TH) :"
+                labelCol={{ span: 24 }}
+                style={{
+                  display: 'inline-block',
+                  width: 'calc(100% - 12px)',
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'กรุณาระบุชื่อบริษัท',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Form.Item>
+          </Col>
+
+          <Col>
+            <Form.Item label="">
+              <Form.Item
+                name="company_type"
+                label="สำนักงานใหญ๋/สาขา :"
+                labelCol={{ span: 24 }}
+                style={{
+                  display: 'inline-block',
+                  width: 'calc(100% - 12px)',
+                }}
+              >
+                <Select options={office_type}></Select>
+              </Form.Item>
+            </Form.Item>
+          </Col>
+
+          <Col>
+            <Form.Item label="">
+              <Form.Item
+                name="address"
+                label="ที่อยู่ (TH)"
+                labelCol={{ span: 24 }}
+                style={{
+                  display: 'inline-block',
+                  width: 'calc(100% - 12px)',
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'กรุณาระบุที่อยู่บริษัท',
+                  },
+                ]}
+              >
+                <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
+              </Form.Item>
+            </Form.Item>
+          </Col>
+          <Col>
+            <Form.Item name="status" label="สถานะ">
+              <Radio.Group>
+                <Radio.Button value="Active">Active</Radio.Button>
+                <Radio.Button value="Non Active">Non Active</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+
+          <Form.Item>
+            <Space style={{ float: 'right' }}>
+              <Button size="medium" type="primary" htmlType="sumbit">
+                ตกลง
+              </Button>
+              <Button size="medium" type="primary" onClick={hideModal}>
+                ยกเลิก
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Drawer>
     </>
   );
 };

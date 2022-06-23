@@ -117,7 +117,7 @@ const backoffice_menu = {
             {
               path: '/backoffice/settings/alert',
               icon: 'redalarm',
-              name: 'Alert',
+              name: 'Incident Info',
               component: 'BackOffice/activity_manage',
             },
             {

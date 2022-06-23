@@ -1,6 +1,7 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  MinusOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -21,7 +22,6 @@ import {
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
-import { constractor_data } from '../../../../dummy_data/constractor_data';
 
 const { Search } = Input;
 const { TabPane } = Tabs;
@@ -33,7 +33,8 @@ const ProjectManage = (props) => {
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [data, setdata] = useState([]);
-  const [form, formCT] = Form.useForm();
+  const [form] = Form.useForm();
+  const [formCT] = Form.useForm();
   const [value, setValue] = useState('Active');
   const [values, setValues] = useState('Favorite');
   const [project, setproject] = useState([]);
@@ -44,7 +45,7 @@ const ProjectManage = (props) => {
         console.log(res);
         res.items.forEach((v, k) => {
           v.key = k + 1;
-          v.number = k + 1;
+          v.number = `Rp-00${k + 1}`;
         });
         setprojectdata(res.items);
       })
@@ -81,7 +82,6 @@ const ProjectManage = (props) => {
           ...projectdata,
           {
             key: projectdata.length + 1,
-            number: `${projectdata.length + 1}`,
             ..._data,
           },
         ]);
@@ -89,14 +89,13 @@ const ProjectManage = (props) => {
           ...projectdata,
           {
             key: projectdata.length + 1,
-            number: `${projectdata.length + 1}`,
             ..._data,
           },
         ]);
         break;
 
       case 'UPDATE':
-        const indexs = projectdata.findIndex((e) => e.key == _data.key);
+        const indexs = projectdata.findIndex((e) => e.id == _data.id);
         if (indexs != -1) {
           let arr = [...projectdata];
 
@@ -153,7 +152,11 @@ const ProjectManage = (props) => {
             data: values,
           }).then((res) => {
             if (res.status_code) {
-              AddProject('ADD', { id: res.items, ...values });
+              AddProject('ADD', {
+                id: res.items,
+                number: `Rp-00${projectdata.length + 1}`,
+                ...values,
+              });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -225,19 +228,92 @@ const ProjectManage = (props) => {
   const column = [
     {
       title: 'ชื่อผู้รับเหมา',
-      dataIndex: 'constractor_name',
-      key: 'constractor_name',
+      dataIndex: 'company_name',
+      key: 'company_name',
       align: 'center',
     },
     {
       title: 'Action',
-      dataIndex: 'action',
       align: 'center',
       render: (record) => {
-        return <Button type="danger">-</Button>;
+        return (
+          <Button
+            icon={<MinusOutlined />}
+            type="danger"
+            onClick={() => DeleteCon(record)}
+          ></Button>
+        );
       },
     },
   ];
+
+  const menus = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: 'แก้ไข',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'ลบ',
+    },
+  ];
+
+  const onMenuClick = async (event, record) => {
+    const { key } = event;
+    if (key === 'edit') {
+      showModal(2);
+      setselectedrow(record);
+      form.setFieldsValue(record);
+    } else {
+      Swal.fire({
+        title: 'ลบข้อมูล',
+        text: 'ยืนยันการลบข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          request(`master/deleteProject/${record.id}`, {
+            method: 'delete',
+          }).then((res) => {
+            if (res.status_code == 200) {
+              AddProject('DELETE', record);
+              Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            }
+          });
+        }
+      });
+    }
+  };
+
+  const DeleteCon = (record) => {
+    Swal.fire({
+      title: 'ลบข้อมูล',
+      text: 'ยืนยันการลบข้อมูล',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // request(`master/deleteProject/${record.company_id}`, {
+        //   method: 'delete',
+        // }).then((res) => {
+        //   if (res.status_code == 200) {
+        //     AddProject('DELETE', record);
+        //     Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+        //   }
+        // });
+      }
+    });
+  };
 
   const columns = [
     {
@@ -257,47 +333,12 @@ const ProjectManage = (props) => {
       title: 'Action',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
           type="text"
           overlay={
-            <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  showModal(2);
-                  setselectedrow(record);
-                  form.setFieldsValue(record);
-                }}
-              >
-                แก้ไข
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<DeleteOutlined />}
-                onClick={() =>
-                  Swal.fire({
-                    title: 'ลบข้อมูล',
-                    text: 'ยืนยันการลบข้อมูล',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'ยืนยัน',
-                    cancelButtonText: 'ยกเลิก',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      AddProject('DELETE', record);
-                      Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-                    }
-                  })
-                }
-              >
-                ลบ
-              </Menu.Item>
-            </Menu>
+            <Menu items={menus} onClick={(e) => onMenuClick(e, record)} />
           }
         ></Dropdown.Button>
       ),
@@ -347,18 +388,18 @@ const ProjectManage = (props) => {
         keyboard={false}
         width="40%"
       >
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="โครงการ" key="1">
-            <Form
-              {...formItemLayout}
-              layout="vertical"
-              form={form}
-              name="projectform"
-              id="projectform"
-              onFinish={onFinish}
-              size="large"
-              initialValues={{}}
-            >
+        <Form
+          {...formItemLayout}
+          layout="vertical"
+          form={form}
+          name="projectform"
+          id="projectform"
+          onFinish={onFinish}
+          size="large"
+          initialValues={{}}
+        >
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="โครงการ" key="1">
               <Form.Item
                 label="ชื่อโครงการ"
                 name="project_name"
@@ -403,29 +444,18 @@ const ProjectManage = (props) => {
                   </Button>
                 </Space>
               </Form.Item>
-            </Form>
-          </TabPane>
+            </TabPane>
 
-          <TabPane tab="บริษัทผู้รับเหมา" key="2">
-            <Form
-              {...formItemLayout}
-              layout="vertical"
-              form={formCT}
-              name="projectform"
-              id="projectform"
-              onFinish={onFinish}
-              size="large"
-              initialValues={{}}
-            >
-              <Form.Item label="เพิ่มผู้รับเหมา" name="add_contractor">
-                <Select options={data}></Select>
+            <TabPane tab="บริษัทผู้รับเหมา" key="2">
+              <Form.Item label="เพิ่มผู้รับเหมา" name="company_id">
+                <Select options={data} mode="multiple" allowClear></Select>
               </Form.Item>
 
               <Form.Item>
                 <Table
                   columns={column}
-                  dataSource={constractor_data}
                   expandable
+                  dataSource={selectedrow?.company}
                   showHeader={false}
                   size={'middle'}
                   scroll={{
@@ -447,9 +477,9 @@ const ProjectManage = (props) => {
                   </Button>
                 </Space>
               </Form.Item>
-            </Form>
-          </TabPane>
-        </Tabs>
+            </TabPane>
+          </Tabs>
+        </Form>
       </Drawer>
     </>
   );

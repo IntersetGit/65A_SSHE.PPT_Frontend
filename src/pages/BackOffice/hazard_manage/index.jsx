@@ -235,7 +235,7 @@ const HazardManage = (props) => {
 
   const columns = [
     {
-      title: 'IssueType ID',
+      title: 'Hazard ID',
       dataIndex: 'number',
       key: 'number',
       align: 'center',

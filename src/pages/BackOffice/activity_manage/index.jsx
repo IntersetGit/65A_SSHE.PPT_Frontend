@@ -16,7 +16,6 @@ import {
   Space,
   Table,
 } from 'antd';
-import { useForm } from 'antd/lib/form/Form';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
@@ -30,7 +29,7 @@ const ActivityManage = (props) => {
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
-  const [form] = useForm();
+  const [form] = Form.useForm();
 
   useEffect(() => {
     request('risk/getdata/risk', { medthod: 'get' })
