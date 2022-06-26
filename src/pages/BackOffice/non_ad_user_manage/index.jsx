@@ -22,12 +22,9 @@ import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
 import { com_id } from '../../../../dummy_data/com_id';
-import { datas } from '../../../../dummy_data/data_ad';
 const { Search } = Input;
 const { TabPane } = Tabs;
-const onSearch = (values, e) => {
-  if (values === datas) return datas;
-};
+
 const NonadUsermanage = (props) => {
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
@@ -566,7 +563,7 @@ const NonadUsermanage = (props) => {
                   ]}
                   hasFeedback
                 >
-                  <Input.Password defaultValue={'user@123!!!'} disabled />
+                  <Input.Password defaultValue={'user@123!!!'} />
                 </Form.Item>
 
                 <Form.Item
