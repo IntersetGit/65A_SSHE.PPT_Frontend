@@ -566,7 +566,7 @@ const NonadUsermanage = (props) => {
                   ]}
                   hasFeedback
                 >
-                  <Input.Password defaultValue={'user@123!!!'} />
+                  <Input.Password defaultValue={'user@123!!!'} disabled />
                 </Form.Item>
 
                 <Form.Item
