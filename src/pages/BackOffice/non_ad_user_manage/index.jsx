@@ -21,13 +21,13 @@ import {
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
-import { com_id } from '../../../../dummy_data/com_id';
 const { Search } = Input;
 const { TabPane } = Tabs;
 
 const NonadUsermanage = (props) => {
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
+  const [company, setcompany] = useState([]);
   const [data, setData] = useState([]);
   const [dataEdit, setDataEdit] = useState([]);
   const [statusValidation, setStatusValidation] = useState([]);
@@ -227,17 +227,30 @@ const NonadUsermanage = (props) => {
             },
           ];
         });
-        request('system/users/info', { method: 'get' }).then((res) => {
+        request('system/roles', { method: 'get' }).then((res) => {
           let arrData = [];
-          res.items.users.forEach((v, k) => {
+          res.items.roles.forEach((v, k) => {
             console.log(v);
-            arrData.push({ label: v.roles_name, value: v.roles_id });
+            arrData.push({ label: v.roles_name, value: v.id });
           });
           console.log(arrData);
           setRoles(arrData);
         });
         setData(tempDataArray);
         setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    request('master/getCompany', { method: 'get' })
+      .then((res) => {
+        console.log(res);
+        let arrData = [];
+        res.items.forEach((v, k) => {
+          arrData.push({ label: v.company_name, value: v.id });
+        });
+        setcompany(arrData);
       })
       .catch((error) => {
         console.log(error);
@@ -540,7 +553,7 @@ const NonadUsermanage = (props) => {
                   name="company_id"
                   rules={[{ required: true, message: 'กรุณากรอกรหัสบริษัท' }]}
                 >
-                  <Select placeholder="รหัสบริษัท" options={com_id}></Select>
+                  <Select placeholder="รหัสบริษัท" options={company}></Select>
                 </Form.Item>
 
                 <Form.Item

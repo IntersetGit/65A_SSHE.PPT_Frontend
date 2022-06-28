@@ -149,6 +149,7 @@ const ContractorCompanyManage = (props) => {
                   ...values,
                   key: selectedrow.key,
                   id: selectedrow.id,
+                  number: selectedrow.number,
                 });
                 Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
               }
