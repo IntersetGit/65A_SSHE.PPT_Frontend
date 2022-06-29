@@ -263,26 +263,28 @@ const ContractorCompanyManage = (props) => {
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
         <h1>การจัดการข้อมูล บริษัทผู้รับเหมา</h1>
-        <Space>
+        {/* <Space>
           <p>ชื่อโครงการ</p>
           <Search
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
           />
-        </Space>
-        <Button
-          type="primary"
-          style={{ float: 'right' }}
-          icon={<PlusOutlined />}
-          onClick={() => showModal(1)}
-        >
-          เพิ่ม
-        </Button>
+        </Space> */}
         <ProTable
           columns={columns}
           dataSource={comusermanage}
           expandable
+          toolBarRender={() => [
+            <Button
+              type="primary"
+              style={{ float: 'right' }}
+              icon={<PlusOutlined />}
+              onClick={() => showModal(1)}
+            >
+              เพิ่ม
+            </Button>,
+          ]}
           size={'middle'}
           scroll={{
             y: 240,

@@ -1,27 +1,25 @@
-import { Button, Drawer, Modal } from "antd"
-import React from "react";
+import UnderMaintenance from '@/components/UnderMaintenance';
+import React from 'react';
 
+const AnalysisReport: React.FC = () => {
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [isBigdrawervis, setBigdrawervis] = React.useState(false);
 
-const AnalysisReport : React.FC = () =>{
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
 
-    const [isModalVisible, setIsModalVisible] = React.useState(false);
-    const [isBigdrawervis, setBigdrawervis] = React.useState(false);
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
 
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-    return (
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  return (
     <>
-        AnalysisReport
-        {/* <Drawer
+      <UnderMaintenance />
+      {/* <Drawer
             closable={false}
             visible={true}
         >
@@ -40,7 +38,8 @@ const AnalysisReport : React.FC = () =>{
         <Drawer width={250} visible={isBigdrawervis}>
             250 WIDTH
         </Drawer> */}
-    </>)
-}
+    </>
+  );
+};
 
-export default AnalysisReport
+export default AnalysisReport;

@@ -18,7 +18,7 @@ export default class JWT {
   }
 
   public removeAccess(): void {
-    this.Cookies.remove('access');
+    this.Cookies.remove('access', { path: '/' });
   }
 
   public getRefresh(): string {
@@ -30,7 +30,7 @@ export default class JWT {
   }
 
   public removeRefresh(): void {
-    this.Cookies.remove('refresh_token');
+    this.Cookies.remove('refresh_token', { path: '/' });
   }
 
   public removeAllJWT(): void {

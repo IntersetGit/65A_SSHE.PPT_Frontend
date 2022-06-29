@@ -1,9 +1,35 @@
-import React, { useState } from 'react';
-import { Card , Tabs , Input, message , Form , DatePicker , Upload , Col , Row , TimePicker , Checkbox, Radio , Table , Space , Tag, Button, Dropdown, Menu } from 'antd';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  InboxOutlined,
+  LeftOutlined,
+  MoreOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import {
+  Button,
+  Card,
+  Checkbox,
+  Col,
+  DatePicker,
+  Dropdown,
+  Form,
+  Input,
+  Menu,
+  message,
+  Radio,
+  Row,
+  Select,
+  Space,
+  Table,
+  Tabs,
+  TimePicker,
+  Upload,
+} from 'antd';
 import Search from 'antd/lib/input/Search';
-import { DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined , LeftOutlined , InboxOutlined } from '@ant-design/icons';
-import {incident_dummy_data} from '../../../../dummy_data/incident_dummy_data'
-import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { request } from 'umi';
+import { incident_dummy_data } from '../../../../dummy_data/incident_dummy_data';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -30,266 +56,335 @@ const props = {
 };
 
 const Incident = () => {
+  const [isTablefield, setTablefield] = useState(true);
+  const [form] = Form.useForm();
+  const [incidentdata, setincidentdata] = useState(incident_dummy_data);
+  const [selectedrow, setselectedrow] = useState(null);
+  const [actiontype, setactiontype] = useState(1);
 
-    const [isTablefield,setTablefield] = useState(true)
-    const [form] = Form.useForm()
-    const [incidentdata,setincidentdata] = useState(incident_dummy_data)
-    const [selectedrow,setselectedrow] = useState(null)
-    const [actiontype,setactiontype] = useState(1)
+  useEffect(() => {
+    request('master/getProject', { method: 'get' })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {});
+  }, []);
 
-    const AddDataState = (type, _data = {}) => {
-      switch (type) {
-        case "ADD":
-          setincidentdata([...incidentdata, _data])
-          break;
-  
-        case "EDIT":
-          const indexs = incidentdata.findIndex(e => e.key == _data.key)
-          let arr = [...incidentdata]
-          console.log(indexs)
-          arr[indexs] = _data
-  
-          setincidentdata(arr)
-          break;
-  
-        case "DELETE":
-          const newState = [...incidentdata]
-          const newArr = newState.filter(e => e.key != _data.key)
-          setincidentdata(newArr)
-          break;
-  
-        default:
-          break;
-      }
+  const AddDataState = (type, _data = {}) => {
+    switch (type) {
+      case 'ADD':
+        setincidentdata([...incidentdata, _data]);
+        break;
+
+      case 'EDIT':
+        const indexs = incidentdata.findIndex((e) => e.key == _data.key);
+        let arr = [...incidentdata];
+        console.log(indexs);
+        arr[indexs] = _data;
+
+        setincidentdata(arr);
+        break;
+
+      case 'DELETE':
+        const newState = [...incidentdata];
+        const newArr = newState.filter((e) => e.key != _data.key);
+        setincidentdata(newArr);
+        break;
+
+      default:
+        break;
     }
+  };
 
-    const columns = [
-      {
-          title: 'Report No.',
-          dataIndex: 'key',
-          key: 'key',
-      },
-      {
-          title: 'Incident No.',
-          dataIndex: 'incident_id',
-          key: 'incident_id'
-      },
-      {
-          title: 'Project',
-          dataIndex: 'project',
-          key: 'project',
-      },
-      {
-        title: 'Company',
-        dataIndex: 'company',
-        key: 'company',
-      },
-      {
-        title: 'Date of Incident',
-        dataIndex: 'dateofincident',
-        key: 'dateofincident',
-      },
-      {
-        title: 'Location',
-        dataIndex: 'locationofincident',
-        key: 'locationofincident',
-      },
-      {
-        title: 'Incident Type',
-        dataIndex: 'typeofincident',
-        key: 'typeofincident',
-      },
-      {
-          title: 'Action',
-          key: 'action',
-          render: (text, record) => (
-              <Dropdown.Button icon={<MoreOutlined/>} type='text' overlay={ 
-                <Menu>
-                  <Menu.Item key="1" icon={<EditOutlined />} onClick={() => {
-                    setactiontype(2)
-                    form.setFieldsValue(record)
-                    setselectedrow(record)
-                    setTablefield(false)
-                  }}>แก้ไข</Menu.Item>
-                  <Menu.Item key="2" icon={<DeleteOutlined />} onClick={() => AddDataState("DELETE", record)}>ลบ</Menu.Item>
-                </Menu>
-              
-                }>
+  const columns = [
+    {
+      title: 'Report No.',
+      dataIndex: 'key',
+      key: 'key',
+    },
+    {
+      title: 'Incident No.',
+      dataIndex: 'incident_id',
+      key: 'incident_id',
+    },
+    {
+      title: 'Project',
+      dataIndex: 'project',
+      key: 'project',
+    },
+    {
+      title: 'Company',
+      dataIndex: 'company',
+      key: 'company',
+    },
+    {
+      title: 'Date of Incident',
+      dataIndex: 'dateofincident',
+      key: 'dateofincident',
+    },
+    {
+      title: 'Location',
+      dataIndex: 'locationofincident',
+      key: 'locationofincident',
+    },
+    {
+      title: 'Incident Type',
+      dataIndex: 'typeofincident',
+      key: 'typeofincident',
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Dropdown.Button
+          icon={<MoreOutlined />}
+          type="text"
+          overlay={
+            <Menu>
+              <Menu.Item
+                key="1"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setactiontype(2);
+                  form.setFieldsValue(record);
+                  setselectedrow(record);
+                  setTablefield(false);
+                }}
+              >
+                แก้ไข
+              </Menu.Item>
+              <Menu.Item
+                key="2"
+                icon={<DeleteOutlined />}
+                onClick={() => AddDataState('DELETE', record)}
+              >
+                ลบ
+              </Menu.Item>
+            </Menu>
+          }
+        ></Dropdown.Button>
+      ),
+    },
+  ];
 
-              </Dropdown.Button>
-          ),
-      },
-    ];
+  const table_data = [
+    {
+      key: '1',
+      report_no: 'Rp-001',
+      incident_no: 'l-x00190',
+      project: 'ปรับปรุง Tank Farm',
+      company: 'ABC',
+      doi: '20 ม.ค. 2565',
+      location: 'Tank Farm',
+      incidenttype: 'Lack of Machine',
+    },
+    {
+      key: '2',
+      report_no: 'Rp-002',
+      incident_no: 'l-x00191',
+      project: 'ต่อเติมอาคาร 101',
+      company: 'XYZ',
+      doi: '1 ก.พ. 2565',
+      location: 'บริเวณอาคาร 101',
+      incidenttype: 'Lack of Machine',
+    },
+    {
+      key: '3',
+      report_no: 'Rp-003',
+      incident_no: 'l-x00192',
+      project: 'วางท่อก๊าซ ระยอง-บ้านเพ',
+      company: 'อีตัล',
+      doi: '12 เม.ย. 2565',
+      location: 'K-291',
+      incidenttype: 'Lack of Equipment',
+    },
+  ];
 
-    const table_data = [
-      {
-        key : '1',
-        report_no : 'Rp-001',
-        incident_no : 'l-x00190',
-        project : 'ปรับปรุง Tank Farm',
-        company : 'ABC',
-        doi : '20 ม.ค. 2565',
-        location : 'Tank Farm',
-        incidenttype : 'Lack of Machine'
-      },
-      {
-        key : '2',
-        report_no : 'Rp-002',
-        incident_no : 'l-x00191',
-        project : 'ต่อเติมอาคาร 101',
-        company : 'XYZ',
-        doi : '1 ก.พ. 2565',
-        location : 'บริเวณอาคาร 101',
-        incidenttype : 'Lack of Machine'
-      },
-      {
-        key : '3',
-        report_no : 'Rp-003',
-        incident_no : 'l-x00192',
-        project : 'วางท่อก๊าซ ระยอง-บ้านเพ',
-        company : 'อีตัล',
-        doi : '12 เม.ย. 2565',
-        location : 'K-291',
-        incidenttype : 'Lack of Equipment'
-      }
-    ]
+  const typeofincidentoptions = [
+    { label: 'Fatality', value: 'Fatality' },
+    { label: 'Lost Workday ', value: 'Lost Workday' },
+    { label: 'Medical Treatment ', value: 'Medical Treatment' },
+    { label: 'Near Miss  ', value: 'Near Miss' },
+    { label: 'Property Damage ', value: 'Property Damage' },
+    { label: 'Motor Vehicle Incident ', value: 'Motor Vehicle Incident' },
+    { label: 'Fire Incident First Aid ', value: 'Fire Incident First Aid' },
+    { label: 'Environmental Incident ', value: 'Environmental Incident' },
+    { label: 'Other ', value: 'Other' },
+  ];
 
-    const typeofincidentoptions = [
-      { label: 'Fatality', value: 'Fatality' },
-      { label: 'Lost Workday ', value: 'Lost Workday' },
-      { label: 'Medical Treatment ', value: 'Medical Treatment' },
-      { label: 'Near Miss  ', value: 'Near Miss' },
-      { label: 'Property Damage ', value: 'Property Damage' },
-      { label: 'Motor Vehicle Incident ', value: 'Motor Vehicle Incident' },
-      { label: 'Fire Incident First Aid ', value: 'Fire Incident First Aid' },
-      { label: 'Environmental Incident ', value: 'Environmental Incident' },
-      { label: 'Other ', value: 'Other' },
-    ];
+  const employeroptions = [
+    { label: 'Fatality', value: 'Fatality' },
+    { label: 'Medical Treatment', value: 'medical Treatment' },
+    { label: 'First Aid', value: 'First Aid' },
+    { label: 'Lost Time', value: 'Lost Time' },
+    { label: 'Restricted Work', value: 'Restricted Work' },
+  ];
 
-    const employeroptions = [
-      { label: 'Fatality' , value: 'Fatality' },
-      { label: 'Medical Treatment' , value: 'medical Treatment' },
-      { label: 'First Aid' , value: 'First Aid' },
-      { label: 'Lost Time' , value: 'Lost Time' },
-      { label: 'Restricted Work' , value: 'Restricted Work'},
-    ];
+  const wordplaceconditionoption = [
+    { label: 'Inadequate guard', value: 'Inadequate guard' },
+    { label: 'Unguarded hazard', value: 'Unguarded hazard' },
+    {
+      label: 'Safety device is defective',
+      value: 'Safety device is defective',
+    },
+    {
+      label: 'Tool or equipm ent defectiove',
+      value: 'Tool or equipm ent defectiove',
+    },
+    {
+      label: 'Workstation layout is hazardous',
+      value: 'Workstation layout is hazardous',
+    },
+    { label: 'Unsafe lighting', value: 'Unsafe lighting' },
+    { label: 'Unsafe ventilation', value: 'Unsafe ventilation' },
+    {
+      label: 'Lack of needed personal protective equipm ent',
+      value: 'Lack of needed personal protective equipm ent',
+    },
+    {
+      label: 'Lack of appropriate equipm ent/tools',
+      value: 'Lack of appropriate equipm ent/tools',
+    },
+    { label: 'Unsafe clothing', value: 'Unsafe clothing' },
+    {
+      label: 'No training or insufficient training',
+      value: 'No training or insufficient training',
+    },
+    { label: 'Other', value: 'Other' },
+  ];
 
-    const wordplaceconditionoption = [
-      { label: 'Inadequate guard', value: 'Inadequate guard'},
-      { label: 'Unguarded hazard', value: 'Unguarded hazard'},
-      { label: 'Safety device is defective', value: 'Safety device is defective'},
-      { label: 'Tool or equipm ent defectiove', value: 'Tool or equipm ent defectiove'},
-      { label: 'Workstation layout is hazardous', value: 'Workstation layout is hazardous'},
-      { label: 'Unsafe lighting', value: 'Unsafe lighting'},
-      { label: 'Unsafe ventilation', value: 'Unsafe ventilation'},
-      { label: 'Lack of needed personal protective equipm ent', value: 'Lack of needed personal protective equipm ent'},
-      { label: 'Lack of appropriate equipm ent/tools', value: 'Lack of appropriate equipm ent/tools'},
-      { label: 'Unsafe clothing', value: 'Unsafe clothing'},
-      { label: 'No training or insufficient training', value: 'No training or insufficient training'},
-      { label: 'Other', value: 'Other'},
-    ];
+  const actsbypeopleoption = [
+    {
+      label: 'Operating without permission',
+      value: 'Operating without permission',
+    },
+    { label: 'Operating at unsafe speed', value: 'Operating at unsafe speed' },
+    {
+      label: 'Servicing equipment that has power to it',
+      value: 'Servicing equipment that has power to it',
+    },
+    {
+      label: 'Making a safety device inoperative',
+      value: 'Making a safety device inoperative',
+    },
+    { label: 'Using defective equipment', value: 'Using defective equipment' },
+    {
+      label: 'Using equipment in an unapproved way',
+      value: 'Using equipment in an unapproved way',
+    },
+    { label: 'Unsafe lifting', value: 'Unsafe lifting' },
+    {
+      label: 'Taking an unsafe position or posture',
+      value: 'Taking an unsafe position or posture',
+    },
+    {
+      label: 'Distraction, teasing, horseplay',
+      value: 'Distraction, teasing, horseplay',
+    },
+    {
+      label: 'Failure to wear personal protective equipment',
+      value: 'Failure to wear personal protective equipment',
+    },
+    {
+      label: 'Failure to use the available equipment / tools',
+      value: 'Failure to use the available equipment / tools',
+    },
+    { label: 'Other', value: 'Other' },
+  ];
 
-    const actsbypeopleoption = [
-      { label: 'Operating without permission', value: 'Operating without permission'},
-      { label: 'Operating at unsafe speed', value: 'Operating at unsafe speed'},
-      { label: 'Servicing equipment that has power to it', value: 'Servicing equipment that has power to it'},
-      { label: 'Making a safety device inoperative', value: 'Making a safety device inoperative'},
-      { label: 'Using defective equipment', value: 'Using defective equipment'},
-      { label: 'Using equipment in an unapproved way', value: 'Using equipment in an unapproved way'},
-      { label: 'Unsafe lifting', value: 'Unsafe lifting'},
-      { label: 'Taking an unsafe position or posture', value: 'Taking an unsafe position or posture'},
-      { label: 'Distraction, teasing, horseplay', value: 'Distraction, teasing, horseplay'},
-      { label: 'Failure to wear personal protective equipment', value: 'Failure to wear personal protective equipment'},
-      { label: 'Failure to use the available equipment / tools', value: 'Failure to use the available equipment / tools'},
-      { label: 'Other', value: 'Other'},
-    ];
+  const suggest_incidentoption = [
+    { label: 'Stop this activity', value: 'Stop this activity' },
+    { label: 'Guard the hazard', value: 'Guard the hazard' },
+    { label: 'Train the employee(s)', value: 'Train the employee(s)' },
+    { label: 'Train the supervisor(s)', value: 'Train the supervisor(s)' },
+    { label: 'Redesign task steps', value: 'Redesign task steps' },
+    { label: 'Redesign work station', value: 'Redesign work station' },
+    { label: 'Write a new policy/rule', value: 'Write a new policy/rule' },
+    { label: 'Enforce existing policy', value: 'Enforce existing policy' },
+    {
+      label: 'Routinely inspect for the hazard',
+      value: 'Routinely inspect for the hazard',
+    },
+    {
+      label: 'Personal Protective Equipment',
+      value: 'Personal Protective Equipment',
+    },
+    { label: 'Other: ', value: 'Other: ' },
+  ];
 
-    const suggest_incidentoption = [
-      {label : 'Stop this activity' , value :'Stop this activity'},
-      {label : 'Guard the hazard' , value :'Guard the hazard'},
-      {label : 'Train the employee(s)' , value :'Train the employee(s)'},
-      {label : 'Train the supervisor(s)' , value :'Train the supervisor(s)'},
-      {label : 'Redesign task steps' , value :'Redesign task steps'},
-      {label : 'Redesign work station' , value :'Redesign work station'},
-      {label : 'Write a new policy/rule' , value :'Write a new policy/rule'},
-      {label : 'Enforce existing policy' , value :'Enforce existing policy'},
-      {label : 'Routinely inspect for the hazard' , value :'Routinely inspect for the hazard'},
-      {label : 'Personal Protective Equipment' , value :'Personal Protective Equipment'},
-      {label : 'Other: ' , value :'Other: '},
-    ]
+  const reportoption = [
+    { label: 'Yes', value: 'Yes' },
+    { label: 'No', value: 'No' },
+  ];
 
-    const reportoption = [
-      { label: 'Yes', value: 'Yes'},
-      { label: 'No', value: 'No'},      
-    ];
+  const typeofonChange = () => {};
 
-    const typeofonChange = () =>{
-      
+  const onFinish = (valuse) => {
+    console.log(valuse);
+    if (actiontype == 1) {
+      AddDataState('ADD', { key: incidentdata.length + 1, ...valuse });
+    } else if (actiontype == 2) {
+      const modified_value = { ...selectedrow, ...valuse };
+      console.log(modified_value);
+      AddDataState('EDIT', modified_value);
     }
+    handleClose();
+  };
 
-    const onFinish = (valuse) =>{
-      console.log(valuse)
-      if (actiontype == 1){
-        AddDataState("ADD",{key : incidentdata.length + 1 , ...valuse})
-      }else if (actiontype == 2) {
-        const modified_value = {...selectedrow,...valuse}
-        console.log(modified_value)
-        AddDataState("EDIT", modified_value)
-      }
-      handleClose()
-    }
+  const onFinishFailed = () => {
+    console.log('Failed');
+  };
 
-    const onFinishFailed = () => {
-      console.log("Failed")
-    }
+  const handleClose = () => {
+    setselectedrow(null);
+    form.resetFields();
+    setTablefield(true);
+  };
 
-    const handleClose = () =>{
-      setselectedrow(null)
-      form.resetFields()
-      setTablefield(true)
-    }
+  return (
+    <>
+      {isTablefield ? (
+        <Card title={'การจัดการข้อมูล Incident'}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Space size={'large'}>
+              <p>IncidentCategory</p>
+              <Input placeholder="Search to Select" />
+              <Search placeholder="Search" />
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  setactiontype(1);
+                  setTablefield(false);
+                }}
+              >
+                เพิ่ม ISSUE{' '}
+              </Button>
+            </Space>
+          </div>
 
-    return (
-      <>
-        {
-          isTablefield ? 
-            <Card title={"การจัดการข้อมูล Incident"}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Space size={"large"}>
-                <p>IncidentCategory</p>
-                <Input placeholder="Search to Select" />
-                <Search placeholder="Search" />
-                <Button type='primary' icon={<PlusOutlined />} onClick={() => {
-                  setactiontype(1) 
-                  setTablefield(false)
-                }}>
-                  เพิ่ม ISSUE{" "}
-                </Button>
-              </Space>
-            </div>
-
-            <Table columns={columns} dataSource={incidentdata} />
-          </Card>
-          :
-          <Card>
-            <Button type="text" icon={<LeftOutlined />} onClick={handleClose}>
-                กลับ
-            </Button>
+          <Table columns={columns} dataSource={incidentdata} />
+        </Card>
+      ) : (
+        <Card>
+          <Button type="text" icon={<LeftOutlined />} onClick={handleClose}>
+            กลับ
+          </Button>
           <Form
             name="basic"
             labelCol={{ span: 6 }}
-            wrapperCol={{ span: 18 , flex: 1 }}
+            wrapperCol={{ span: 18, flex: 1 }}
             labelWrap
             form={form}
-            labelAlign='left'
+            labelAlign="left"
             colon={false}
-            // initialValues={{ 
+            // initialValues={{
             //   key : selectedrow && selectedrow.key,
             //   Incident_Discription: selectedrow && selectedrow.Incident_Discription,
             //   Property_Damage_1: selectedrow && selectedrow.Property_Damage_1,
@@ -334,37 +429,35 @@ const Incident = () => {
             <Card>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}
               >
                 <img
-                  src={
-                    "/assets/images/PTT Public Company Limited.svg"
-                  }
+                  src={'/assets/images/PTT Public Company Limited.svg'}
                   width={120}
                   height={60}
                   alt="ptt-logo"
                 />
-                <p style={{ fontWeight: "bold" }}>
+                <p style={{ fontWeight: 'bold' }}>
                   INCIDENT/ACCIDENT INVESTIGATION
                 </p>
-                <p style={{ fontWeight: "bold" }}>REPORT NO-001</p>
+                <p style={{ fontWeight: 'bold' }}>REPORT NO-001</p>
               </div>
               <Form.Item
                 label="Project"
                 name="project"
-                rules={[{ required: true, message: "กรุณาป้อนชื่อโปรเจค" }]}
+                rules={[{ required: true, message: 'กรุณาป้อนชื่อโปรเจค' }]}
               >
-                <Input />
+                <Select showSearch />
               </Form.Item>
               <Form.Item
                 label="Company"
                 name="company"
-                rules={[{ required: true, message: "กรุณาป้อนชื่อบริษัท" }]}
+                rules={[{ required: true, message: 'กรุณาป้อนชื่อบริษัท' }]}
               >
-                <Input />
+                <Select showSearch />
               </Form.Item>
             </Card>
 
@@ -372,14 +465,14 @@ const Incident = () => {
               <TabPane tab="General Information" key="1">
                 <Row gutter={[8, 8]}>
                   <Col xl={12} md={24} sm={24} xs={24}>
-                    <Card title={"Date/Time of Incident"}>
+                    <Card title={'Date/Time of Incident'}>
                       <Form.Item
                         label="Date of Incident"
                         name="dateofincident"
                         rules={[
                           {
                             required: true,
-                            message: "กรุณาป้อนวันที่เกิดเหตุการณ์",
+                            message: 'กรุณาป้อนวันที่เกิดเหตุการณ์',
                           },
                         ]}
                       >
@@ -392,7 +485,7 @@ const Incident = () => {
                         rules={[
                           {
                             required: true,
-                            message: "กรุณาป้อนเวลาที่เกิดเหตุการณ์",
+                            message: 'กรุณาป้อนเวลาที่เกิดเหตุการณ์',
                           },
                         ]}
                       >
@@ -402,14 +495,14 @@ const Incident = () => {
                   </Col>
 
                   <Col xl={12} md={24} sm={24} xs={24}>
-                    <Card title={"Date/Time of Report"}>
+                    <Card title={'Date/Time of Report'}>
                       <Form.Item
                         label="Date of Report"
                         name="dateofreport"
                         rules={[
                           {
                             required: true,
-                            message: "กรุณาป้อนวันที่รายงานเหตุการณ์",
+                            message: 'กรุณาป้อนวันที่รายงานเหตุการณ์',
                           },
                         ]}
                       >
@@ -422,7 +515,7 @@ const Incident = () => {
                         rules={[
                           {
                             required: true,
-                            message: "กรุณาป้อนวันที่รายงานเหตุการณ์",
+                            message: 'กรุณาป้อนวันที่รายงานเหตุการณ์',
                           },
                         ]}
                       >
@@ -439,7 +532,7 @@ const Incident = () => {
                         label="Incident No"
                         name="incident_id"
                         rules={[
-                          { required: true, message: "กรุณาป้อน Incident No." },
+                          { required: true, message: 'กรุณาป้อน Incident No.' },
                         ]}
                       >
                         <Input />
@@ -451,7 +544,7 @@ const Incident = () => {
                         rules={[
                           {
                             required: true,
-                            message: "กรุณาป้อนสถานที่เกิดเหตุการณ์",
+                            message: 'กรุณาป้อนสถานที่เกิดเหตุการณ์',
                           },
                         ]}
                       >
@@ -464,7 +557,7 @@ const Incident = () => {
                         rules={[
                           {
                             required: true,
-                            message: "กรุณาป้อนสถานที่เกิดเหตุการณ์",
+                            message: 'กรุณาป้อนสถานที่เกิดเหตุการณ์',
                           },
                         ]}
                       >
@@ -489,11 +582,11 @@ const Incident = () => {
               </TabPane>
 
               <TabPane tab="Details of Injury/Illness" key="2">
-                <Card title={"Employer"}>
+                <Card title={'Employer'}>
                   <Form.Item
                     label="Company Name"
                     name="company_name"
-                    rules={[{ required: true, message: "กรุณาป้อนชื่อบริษัท" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนชื่อบริษัท' }]}
                   >
                     <Input />
                   </Form.Item>
@@ -502,7 +595,7 @@ const Incident = () => {
                     label="Subcontractor"
                     name="sub_contractor"
                     rules={[
-                      { required: true, message: "กรุณาป้อนชื่อผู้รับเหมา" },
+                      { required: true, message: 'กรุณาป้อนชื่อผู้รับเหมา' },
                     ]}
                   >
                     <Input />
@@ -515,11 +608,11 @@ const Incident = () => {
                     />
                   </Form.Item>
                 </Card>
-                <Card title={"Duration of Employment"}>
+                <Card title={'Duration of Employment'}>
                   <Form.Item
                     label="Year"
                     name="year"
-                    rules={[{ required: true, message: "กรุณาป้อนปีที่ทำงาน" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนปีที่ทำงาน' }]}
                   >
                     <DatePicker picker="year" />
                   </Form.Item>
@@ -528,7 +621,7 @@ const Incident = () => {
                     label="Month"
                     name="month"
                     rules={[
-                      { required: true, message: "กรุณาป้อนเดือนที่ทำงาน" },
+                      { required: true, message: 'กรุณาป้อนเดือนที่ทำงาน' },
                     ]}
                   >
                     <DatePicker picker="month" />
@@ -539,7 +632,7 @@ const Incident = () => {
                     label="Name of injured"
                     name="nameofinjured"
                     rules={[
-                      { required: true, message: "กรุณาป้อนชื่อผู้เสียหาย" },
+                      { required: true, message: 'กรุณาป้อนชื่อผู้เสียหาย' },
                     ]}
                   >
                     <Input />
@@ -548,7 +641,7 @@ const Incident = () => {
                   <Form.Item
                     label="Age"
                     name="age"
-                    rules={[{ required: true, message: "กรุณาป้อนอายุ" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนอายุ' }]}
                   >
                     <Input style={{ width: 140 }} />
                   </Form.Item>
@@ -556,7 +649,7 @@ const Incident = () => {
                   <Form.Item
                     label="Nationality"
                     name="nationality"
-                    rules={[{ required: true, message: "กรุณาป้อนสัญชาติ" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนสัญชาติ' }]}
                   >
                     <Input style={{ width: 140 }} />
                   </Form.Item>
@@ -567,7 +660,7 @@ const Incident = () => {
                     rules={[
                       {
                         required: true,
-                        message: "กรุณาป้อนเลขบัตรประชาชนหรือพาสปอร์ต",
+                        message: 'กรุณาป้อนเลขบัตรประชาชนหรือพาสปอร์ต',
                       },
                     ]}
                   >
@@ -577,7 +670,7 @@ const Incident = () => {
                   <Form.Item
                     label="Address"
                     name="address"
-                    rules={[{ required: true, message: "กรุณาป้อนที่อยู่" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนที่อยู่' }]}
                   >
                     <TextArea rows={4} />
                   </Form.Item>
@@ -594,7 +687,7 @@ const Incident = () => {
                     rules={[
                       {
                         required: true,
-                        message: "กรุณาป้อนทรัพย์สินที่เสียหาย",
+                        message: 'กรุณาป้อนทรัพย์สินที่เสียหาย',
                       },
                     ]}
                   >
@@ -607,7 +700,7 @@ const Incident = () => {
                     rules={[
                       {
                         required: true,
-                        message: "กรุณาป้อนลักษณะของความเสียหาย",
+                        message: 'กรุณาป้อนลักษณะของความเสียหาย',
                       },
                     ]}
                   >
@@ -620,7 +713,7 @@ const Incident = () => {
                     rules={[
                       {
                         required: true,
-                        message: "กรุณาป้อนวัตถุที่สร้างความเสียหาย",
+                        message: 'กรุณาป้อนวัตถุที่สร้างความเสียหาย',
                       },
                     ]}
                   >
@@ -631,7 +724,7 @@ const Incident = () => {
                     label="Damage Cost"
                     name="Property_Damage_4"
                     rules={[
-                      { required: true, message: "กรุณาป้อนค่าความเสียหาย" },
+                      { required: true, message: 'กรุณาป้อนค่าความเสียหาย' },
                     ]}
                   >
                     <Input />
@@ -646,7 +739,7 @@ const Incident = () => {
                     rules={[
                       {
                         required: true,
-                        message: "กรุณาป้อนรายละเอียดเหตุการณ์",
+                        message: 'กรุณาป้อนรายละเอียดเหตุการณ์',
                       },
                     ]}
                   >
@@ -686,7 +779,7 @@ const Incident = () => {
                     rules={[
                       {
                         required: true,
-                        message: "กรุณาป้อนเหตุใดที่่ทำให้เกิดอันตราย",
+                        message: 'กรุณาป้อนเหตุใดที่่ทำให้เกิดอันตราย',
                       },
                     ]}
                   >
@@ -699,7 +792,7 @@ const Incident = () => {
                     rules={[
                       {
                         required: true,
-                        message: "กรุณาป้อนการกระทำที่่ทำให้เกิดอันตราย",
+                        message: 'กรุณาป้อนการกระทำที่่ทำให้เกิดอันตราย',
                       },
                     ]}
                   >
@@ -731,10 +824,10 @@ const Incident = () => {
               <TabPane tab="How can future incidents be prevented?" key="7">
                 <Card
                   title={
-                    "What changes do you suggest to prevent this incident/near miss from happening again?"
+                    'What changes do you suggest to prevent this incident/near miss from happening again?'
                   }
                 >
-                  <Form.Item name={"sug_option"}>
+                  <Form.Item name={'sug_option'}>
                     <Checkbox.Group
                       options={suggest_incidentoption}
                       onChange={typeofonChange}
@@ -746,11 +839,14 @@ const Incident = () => {
                     What should be (or has been) done to carry out the
                     suggestion(s) checked above?
                   </p>
-                  <Form.Item label={"Description continued on attached sheets"} name="description_continued_on_attached_sheet">
+                  <Form.Item
+                    label={'Description continued on attached sheets'}
+                    name="description_continued_on_attached_sheet"
+                  >
                     <Radio.Group
                       options={[
-                        { label: "Yes", value: "Yes" },
-                        { label: "No", value: "No" },
+                        { label: 'Yes', value: 'Yes' },
+                        { label: 'No', value: 'No' },
                       ]}
                     />
                   </Form.Item>
@@ -783,7 +879,7 @@ const Incident = () => {
                     label="Prepared by"
                     name="prepared"
                     rules={[
-                      { required: true, message: "กรุณาป้อนผู้เตรียมการ" },
+                      { required: true, message: 'กรุณาป้อนผู้เตรียมการ' },
                     ]}
                   >
                     <Input />
@@ -792,7 +888,7 @@ const Incident = () => {
                   <Form.Item
                     label="Position"
                     name="position"
-                    rules={[{ required: true, message: "กรุณาป้อนตำแหน่ง" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนตำแหน่ง' }]}
                   >
                     <Input />
                   </Form.Item>
@@ -800,7 +896,7 @@ const Incident = () => {
                   <Form.Item
                     label="Department"
                     name="department"
-                    rules={[{ required: true, message: "กรุณาป้อนสาขา" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนสาขา' }]}
                   >
                     <Input />
                   </Form.Item>
@@ -808,7 +904,7 @@ const Incident = () => {
                   <Form.Item
                     label="Names of investigation team members"
                     name="name_team_member"
-                    rules={[{ required: true, message: "กรุณาป้อนชื่อสมาชิก" }]}
+                    rules={[{ required: true, message: 'กรุณาป้อนชื่อสมาชิก' }]}
                   >
                     <TextArea
                       rows={4}
@@ -836,16 +932,19 @@ const Incident = () => {
                 </Card>
               </TabPane>
             </Tabs>
-                <Space size="middle">
-                  <Button type="primary" htmlType="submit">บันทึก</Button>
-                  <Button type="primary" danger onClick={handleClose}>ยกเลิก</Button>
-                </Space>
+            <Space size="middle">
+              <Button type="primary" htmlType="submit">
+                บันทึก
+              </Button>
+              <Button type="primary" danger onClick={handleClose}>
+                ยกเลิก
+              </Button>
+            </Space>
           </Form>
         </Card>
-        }
+      )}
+    </>
+  );
+};
 
-      </>
-    );
-}
-
-export default Incident
+export default Incident;
