@@ -1,7 +1,6 @@
 import {
   DeleteOutlined,
   EditOutlined,
-  MinusOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -70,6 +69,7 @@ const ProjectManage = (props) => {
           arrData.push({ label: v.company_name, value: v.id });
         });
         setdata(arrData);
+        console.log(arrData);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -174,8 +174,19 @@ const ProjectManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddProject('UPDATE', { ...selectedrow, ...values });
-          Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          request('master/manageProject', {
+            method: 'post',
+            data: { ...values, id: selectedrow.id },
+          }).then((res) => {
+            if (res.status_code) {
+              AddProject('UPDATE', {
+                id: res.items,
+                number: `Rp-00${projectdata.length + 1}`,
+                ...values,
+              });
+              Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     }
@@ -232,19 +243,6 @@ const ProjectManage = (props) => {
       key: 'company_name',
       align: 'center',
     },
-    {
-      title: 'Action',
-      align: 'center',
-      render: (record) => {
-        return (
-          <Button
-            icon={<MinusOutlined />}
-            type="danger"
-            onClick={() => DeleteCon(record)}
-          ></Button>
-        );
-      },
-    },
   ];
 
   const menus = [
@@ -289,30 +287,6 @@ const ProjectManage = (props) => {
         }
       });
     }
-  };
-
-  const DeleteCon = (record) => {
-    Swal.fire({
-      title: 'ลบข้อมูล',
-      text: 'ยืนยันการลบข้อมูล',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน',
-      cancelButtonText: 'ยกเลิก',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // request(`master/deleteProject/${record.company_id}`, {
-        //   method: 'delete',
-        // }).then((res) => {
-        //   if (res.status_code == 200) {
-        //     AddProject('DELETE', record);
-        //     Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-        //   }
-        // });
-      }
-    });
   };
 
   const columns = [

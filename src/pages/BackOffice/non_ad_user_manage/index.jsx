@@ -39,52 +39,6 @@ const NonadUsermanage = (props) => {
   const [formEdit] = Form.useForm();
   const [usertype, setusertype] = useState(undefined);
 
-  // const AddAdData = (type, _data = {}) => {
-  //   console.log('onSaveData', type);
-  //   switch (type) {
-  //     case 'ADD':
-  //       const _num = `${adusermanage.length + 1}`;
-  //       console.log([
-  //         ...adusermanage,
-  //         {
-  //           key: adusermanage.length + 1,
-  //           number: _num,
-  //           is_ad: 'Non-AD',
-  //           ..._data,
-  //         },
-  //       ]);
-  //       setadusermanage([
-  //         ...adusermanage,
-  //         {
-  //           key: adusermanage.length + 1,
-  //           number: _num,
-  //           is_ad: 'Non-AD',
-  //           ..._data,
-  //         },
-  //       ]);
-  //       break;
-  //     case 'UPDATE':
-  //       console.log(_data, adusermanage);
-  //       const indexs = adusermanage.findIndex((e) => e.key == _data.key);
-  //       if (indexs != -1) {
-  //         let arr = [...adusermanage];
-
-  //         arr[indexs] = _data;
-  //         setadusermanage(arr);
-  //         console.log(arr);
-  //       }
-  //       break;
-  //     case 'DELETE':
-  //       console.log(_data);
-  //       const newState = [...adusermanage];
-  //       const newArr = newState.filter((e) => e.key != _data.key);
-  //       setadusermanage(newArr);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
   const menus = [
     {
       key: 'edit',
@@ -237,6 +191,7 @@ const NonadUsermanage = (props) => {
           setRoles(arrData);
         });
         setData(tempDataArray);
+        console.log(tempDataArray);
         setLoading(false);
       })
       .catch((error) => {
@@ -259,25 +214,60 @@ const NonadUsermanage = (props) => {
 
   useEffect(() => {
     reload();
+    formCrete.setFieldsValue({ password: 'user@123!!!' });
   }, []);
 
-  const showDrawer = () => {
+  const showDrawer = (type) => {
+    setdrawerType(type);
     setShowDrawer(true);
   };
 
-  // const showDrawerr = (value) => {
-  //   setShowDrawer((data) => {
-  //     return { ...data, [value]: true };
-  //   });
-  // };
-
-  const handleOk = (form) => {
-    if (form === 'formCreate') {
-      formCrete.submit();
+  const onFinishAD = (values) => {
+    console.log(drawerType);
+    if (drawerType == 1) {
+      Swal.fire({
+        title: 'บันทึกข้อมูล',
+        text: 'ยืนยันการบันทึกข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          request('system/addUserAD', {
+            method: 'post',
+            data: values,
+          }).then((data) => {
+            reload();
+            Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+          });
+        }
+      });
+    } else if (drawerType == 2) {
+      Swal.fire({
+        title: 'แก้ไขข้อมูล',
+        text: 'ยืนยันการแก้ไขข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          request('system/editUser', {
+            method: 'put',
+            data: { ...values, id: dataEdit.id },
+          }).then((data) => {
+            reload();
+            Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          });
+        }
+      });
     }
-    if (form === 'formAD') {
-      formEdit.submit();
-    }
+    handleCancel();
   };
 
   const handleCancel = () => {
@@ -291,80 +281,12 @@ const NonadUsermanage = (props) => {
     setLoading(false);
   };
 
-  const onFinishCrete = async (value) => {
-    let filterRoles = await roles.find(
-      (data) => data,
-      roles_name === value.roles_id,
-    );
-    setLoading(true);
-    request(
-      'system/addUserAD',
-      { medthod: 'post' },
-      {
-        username: value.username,
-        roles_id: filterRoles.id,
-        is_ad: true,
-      },
-    )
-      .then((res) => {
-        Swal.fire('', 'บันทึกข้อมูลสำเร็จ', 'success');
-        setStatusValidation([]);
-        setShowDrawer(false);
-        setLoading(false);
-        formCrete.resetFields();
-        reload();
-      })
-      .catch((error) => {
-        Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
-        console.log(error);
-        setStatusValidation([]);
-        setShowDrawer(false);
-        setLoading(false);
-        formCrete.resetFields();
-        reload();
-      });
-  };
-
-  const onFinishEdit = async (value) => {
-    try {
-      let filterRoles = await roles.find(
-        (data) => data.roles_name === value.roles_id,
-      );
-      Swal.fire({
-        title: 'กรุณายืนยันการแก้ไขข้อมูล',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#218838',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'ยืนยัน',
-        cancelButtonText: 'ยกเลิก',
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          let resp = await request(
-            'system/updateRoleUser',
-            { method: 'put' },
-            {
-              id: dataEdit.id,
-              roles_id: filterRoles.id,
-            },
-          );
-          await Swal.fire('', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
-          reload();
-          handleCancel();
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      Swal.fire('', 'มีบางอย่างผิดพลาด', 'success');
-    }
-  };
-
   const onSearch = async (value) => {
     setStatusValidation({
       help: `กำลังโหลดข้อมูล...`,
     });
     setLoading(true);
-    request(`system/findUserAD?username=${value}`, { method: 'get' }).then(
+    request(`system/findUserAD?user_name=${value}`, { method: 'get' }).then(
       (res) => {
         console.log(res);
         setStatusValidation({
@@ -383,14 +305,17 @@ const NonadUsermanage = (props) => {
     console.log(filterData);
     if (filterData.is_ad) {
       setDataEdit(filterData);
-      showDrawer('edit');
+      showDrawer(2);
+      setMode('edit');
       setusertype('ad');
+      formEdit.setFieldsValue(filterData);
     } else {
+      setDataEdit(filterData);
       setusertype('nonad');
       setMode('edit');
-      showDrawer(true);
+      showDrawer(2);
       filterData.username = filterData.user_name;
-      formAD.setFieldsValue(filterData);
+      formCrete.setFieldsValue(filterData);
     }
   };
 
@@ -407,8 +332,8 @@ const NonadUsermanage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then(async (result) => {
         if (result.isConfirmed) {
-          const resp = await request('/system/delUserAD/' + id, {
-            medthod: 'post',
+          const resp = await request('system/delUserAD/' + id, {
+            medthod: 'get',
           });
           console.log(resp);
           reload();
@@ -438,29 +363,6 @@ const NonadUsermanage = (props) => {
     formAD.resetFields();
     setShowDrawer(false);
     setIdUser(null);
-  };
-
-  /**
-   * Submit Form
-   * @param {{username: String, roles_id: String, password: String, e_mail: String}} value
-   */
-  const onFinishAD = async (value) => {
-    try {
-      // console.log('value :>> ', value);
-      value.is_ad = false;
-      if (mode == 'edit') {
-        value.id = idUser;
-
-        await request('system/editUser', { method: 'put' }, value);
-      } else {
-        await request('system/addUserAD', { method: 'post', data: value });
-      }
-      Swal.fire('', 'บันทึกข้อมูลเรียบร้อย', 'success');
-      handleCancelAD();
-      reload();
-    } catch (error) {
-      Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
-    }
   };
 
   const onFinishFailedAD = (error) => {
@@ -497,6 +399,7 @@ const NonadUsermanage = (props) => {
           onClick={() => {
             reload();
           }}
+          style={{ marginLeft: 10 }}
         >
           <RedoOutlined />
         </Button>
@@ -506,7 +409,7 @@ const NonadUsermanage = (props) => {
           type="primary"
           onClick={() => {
             setMode('add');
-            showDrawer();
+            showDrawer(1);
           }}
         >
           + เพิ่มผู้ใช้ระบบ
@@ -576,7 +479,7 @@ const NonadUsermanage = (props) => {
                   ]}
                   hasFeedback
                 >
-                  <Input.Password defaultValue={'user@123!!!'} />
+                  <Input.Password />
                 </Form.Item>
 
                 <Form.Item
@@ -631,7 +534,7 @@ const NonadUsermanage = (props) => {
                     name="adform"
                     id="adform"
                     form={formAD}
-                    onFinish={onFinishCrete}
+                    // onFinish={onFinishCrete}
                     size="large"
                     initialValues={{}}
                   >
@@ -677,7 +580,7 @@ const NonadUsermanage = (props) => {
                   <Form
                     form={formEdit}
                     layout="vertical"
-                    onFinish={onFinishEdit}
+                    // onFinish={onFinishEdit}
                     onFinishFailed={onFinishFailedAD}
                     initialValues={{
                       username: dataEdit.username,
