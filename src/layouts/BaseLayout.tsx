@@ -1,4 +1,5 @@
 import ICONMAP from '@/components/Iconmap ';
+import PageMiddleware from '@/components/PageMiddleware';
 import type {
   BasicLayoutProps as ProLayoutProps,
   MenuDataItem,
@@ -9,11 +10,13 @@ import type { MenuProps } from 'antd';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/lib/locale/en_US';
 import React from 'react';
-import { history, Link } from 'umi';
+import { history, Link, useModel } from 'umi';
 import defaultSettings from '../../config/defaultSettings';
 import Footer from './Footer';
 import HeaderTitle from './HeaderTitle';
 import RightNavContent from './RightNavContent';
+
+const loginPath = '/login';
 
 export type BasicLayoutProps = {
   breadcrumbNameMap: Record<string, MenuDataItem>;
@@ -28,6 +31,7 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 };
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
+  const { initialState, setInitialState } = useModel('@@initialState');
   const [isCollapsed, setCollased] = React.useState<boolean>(false);
   const {
     children,
@@ -112,6 +116,13 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       }}
       menuDataRender={menuDataRender}
       disableContentMargin
+      onLoad={() => console.log('Onload')}
+      onPageChange={(location) => {
+        // เงื่อนไขหากไม่มี currentuser และ location.pathname ไม่ใช่ login path ให้เด้งไป login path
+        if (!initialState?.userInfo && location.pathname !== loginPath) {
+          history.push(loginPath);
+        }
+      }}
       // @ts-ignore: Unreachable code error
       headerTitleRender={(
         logo: string,
@@ -122,7 +133,9 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       footerRender={() => <Footer />}
     >
       <PageContainer>
-        <ConfigProvider locale={enUS}>{children}</ConfigProvider>
+        <ConfigProvider locale={enUS}>
+          <PageMiddleware>{children}</PageMiddleware>
+        </ConfigProvider>
       </PageContainer>
     </ProLayout>
   );

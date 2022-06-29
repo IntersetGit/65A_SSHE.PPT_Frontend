@@ -23,7 +23,7 @@ const RiskRegisterAndAction: React.FC = () => {
           title: 'Works Activity',
           key: 'work_activity',
           dataIndex: 'work_activity',
-          width: 400,
+          width: 300,
           valueType: 'select',
           valueEnum: {
             'Working closely existing facility': {
@@ -44,7 +44,7 @@ const RiskRegisterAndAction: React.FC = () => {
           title: 'Hazard',
           key: 'hazard',
           dataIndex: 'hazard',
-          width: 600,
+          width: 500,
           valueType: 'select',
           fieldProps: {
             mode: 'multiple',
@@ -325,17 +325,26 @@ const RiskRegisterAndAction: React.FC = () => {
             action?.startEditable?.(record.keys);
           }}
         >
-          แก้ไข
+          Edit
         </a>,
-        <EditableProTable.RecordCreator
-          key="copy"
-          record={{
-            ...record,
-            keys: dataSource.length + 1,
+        // <EditableProTable.RecordCreator
+        //   key="copy"
+        //   record={{
+        //     ...record,
+        //     keys: dataSource.length + 1,
+        //   }}
+        // >
+        //   <a> คัดลอกเทมเพลต </a>
+        // </EditableProTable.RecordCreator>,
+        <a
+          color="lime"
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.keys);
           }}
         >
-          <a> คัดลอกเทมเพลต </a>
-        </EditableProTable.RecordCreator>,
+          Delete
+        </a>,
       ],
     },
   ];

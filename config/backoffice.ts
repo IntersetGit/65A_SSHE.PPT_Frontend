@@ -115,10 +115,16 @@ const backoffice_menu = {
           icon: 'blockoutline',
           routes: [
             {
+              path: '/backoffice/settings/issue_info',
+              icon: 'SSHE-Incident',
+              name: 'Issue Info',
+              component: 'BackOffice/issue_info',
+            },
+            {
               path: '/backoffice/settings/alert',
               icon: 'redalarm',
               name: 'Incident Info',
-              component: 'BackOffice/activity_manage',
+              component: 'BackOffice/alert',
             },
             {
               component: '404',

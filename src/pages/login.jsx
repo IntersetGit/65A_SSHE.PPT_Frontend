@@ -149,7 +149,7 @@ const Login = () => {
                 Log in
               </Button>
             </Form.Item>
-            <Button
+            {/* <Button
               type="default"
               className="login-form-button"
               style={{ width: '100%' }}
@@ -158,7 +158,7 @@ const Login = () => {
               disabled={isBlock || loading}
             >
               Bypass (ป้องกัน API ล่มในขณะทดลองเข้า)
-            </Button>
+            </Button> */}
 
             {/* {isBlock ? <h5 className="text-center text-red">ไม่สามารถใช้งานได้ถึง {dateText}</h5> : null}
               {loading ? <h5 className="text-center text-red">กำลังโหลดข้อมูล{pointLoading}</h5> : null} */}
