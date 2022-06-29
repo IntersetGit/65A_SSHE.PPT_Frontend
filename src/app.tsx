@@ -1,10 +1,17 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'; //SettingDrawer, BasicLayoutProps
 import PageLoading from '@ant-design/pro-layout';
+import { registerLicense } from '@syncfusion/ej2-base';
 import { AxiosPromise } from 'axios';
 import jwtDecode from 'jwt-decode';
 import cloneDeep from 'lodash/cloneDeep';
 import merge from 'lodash/merge';
 import { history, request as requestUmi, RequestConfig } from 'umi';
+
+//** Register syncfusion license */
+registerLicense(
+  'ORg4AjUWIQA/Gnt2VVhhQlFac1pJWnxLd0x0RWFbb19yflVEal1XVAciSV9jS3xTcEdqWX9adXVdRmNVVg==',
+);
+
 import type {
   RequestInterceptor,
   RequestOptionsInit,

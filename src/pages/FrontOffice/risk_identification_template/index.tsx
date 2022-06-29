@@ -1,13 +1,6 @@
-import { PlusOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  EditableProTable,
-  ProColumns,
-  ProForm,
-} from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { ActionType, ProColumns, ProForm } from '@ant-design/pro-components';
+import { SpreadsheetComponent } from '@syncfusion/ej2-react-spreadsheet';
 import React, { useRef, useState } from 'react';
-import { simple_data } from './simple_data';
 
 const RiskIdenTemPlate: React.FC = () => {
   const actionRef = useRef<ActionType>();
@@ -227,10 +220,38 @@ const RiskIdenTemPlate: React.FC = () => {
       ],
     },
   ];
+  let spreadsheet: SpreadsheetComponent | null = null;
+  const beforeOpen = (args: any) => {
+    console.log(args);
+  };
 
+  const created = (args) => {
+    fetch(
+      'https://js.syncfusion.com/demos/ejservices/data/Spreadsheet/LargeData.xlsx',
+    ) // fetch the remote url
+      .then((response) => {
+        response.blob().then((fileBlob) => {
+          var file = new File([fileBlob], 'Sample.xlsx'); //convert the blob into file
+          spreadsheet?.open({ file: file }); // open the file into Spreadsheet
+        });
+      });
+  };
   return (
     <>
-      <EditableProTable<APITypes.RiskIdentifierTemplateType>
+      <SpreadsheetComponent
+        ref={(ssObj) => {
+          spreadsheet = ssObj;
+        }}
+        created={created}
+        allowSave={true}
+        openUrl={
+          'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open'
+        }
+        height={'500px'}
+        allowOpen={true}
+        beforeOpen={(e) => beforeOpen(e)}
+      />
+      {/* <EditableProTable<APITypes.RiskIdentifierTemplateType>
         headerTitle="Risk Identification Template Data"
         actionRef={actionRef}
         bordered
@@ -281,7 +302,7 @@ const RiskIdenTemPlate: React.FC = () => {
         expandable={{
           onExpand,
         }}
-      />
+      /> */}
     </>
   );
 };
