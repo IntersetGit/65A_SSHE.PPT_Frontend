@@ -37,6 +37,10 @@ const ProjectManage = (props) => {
   const [value, setValue] = useState('Active');
   const [values, setValues] = useState('Favorite');
   const [project, setproject] = useState([]);
+  const [companyselectedItems, setcompanySelectedItems] = useState([]);
+  const filteredOptions = data.filter(
+    (o) => !companyselectedItems.includes(o.value),
+  );
 
   useEffect(() => {
     request('master/getProject', { method: 'get' })
@@ -258,6 +262,23 @@ const ProjectManage = (props) => {
     },
   ];
 
+  useEffect(() => {
+    if (selectedrow != null) {
+      console.log(form.getFieldsValue());
+      console.log(selectedrow);
+      let company_arr = [];
+      selectedrow.company?.forEach((v) => {
+        company_arr.push(v.company_id);
+      });
+      console.log(company_arr);
+      form.setFieldsValue({ company_id: company_arr });
+    }
+  }, [selectedrow]);
+
+  useEffect(() => {
+    console.log(companyselectedItems);
+    console.log(filteredOptions);
+  }, [companyselectedItems]);
   const onMenuClick = async (event, record) => {
     const { key } = event;
     if (key === 'edit') {
@@ -422,7 +443,13 @@ const ProjectManage = (props) => {
 
             <TabPane tab="บริษัทผู้รับเหมา" key="2">
               <Form.Item label="เพิ่มผู้รับเหมา" name="company_id">
-                <Select options={data} mode="multiple" allowClear></Select>
+                <Select
+                  options={filteredOptions}
+                  value={companyselectedItems}
+                  onChange={setcompanySelectedItems}
+                  mode="multiple"
+                  allowClear
+                ></Select>
               </Form.Item>
 
               <Form.Item>

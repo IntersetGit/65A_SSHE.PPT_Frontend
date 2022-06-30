@@ -1,5 +1,17 @@
 import { ActionType, ProColumns, ProForm } from '@ant-design/pro-components';
-import { SpreadsheetComponent } from '@syncfusion/ej2-react-spreadsheet';
+import {
+  CellDirective,
+  CellsDirective,
+  ColumnDirective,
+  ColumnsDirective,
+  RangeDirective,
+  RangesDirective,
+  RowDirective,
+  RowsDirective,
+  SheetDirective,
+  SheetsDirective,
+  SpreadsheetComponent,
+} from '@syncfusion/ej2-react-spreadsheet';
 import React, { useRef, useState } from 'react';
 
 const RiskIdenTemPlate: React.FC = () => {
@@ -225,17 +237,35 @@ const RiskIdenTemPlate: React.FC = () => {
     console.log(args);
   };
 
-  const created = (args) => {
-    fetch(
-      'https://js.syncfusion.com/demos/ejservices/data/Spreadsheet/LargeData.xlsx',
-    ) // fetch the remote url
-      .then((response) => {
-        response.blob().then((fileBlob) => {
-          var file = new File([fileBlob], 'Sample.xlsx'); //convert the blob into file
-          spreadsheet?.open({ file: file }); // open the file into Spreadsheet
-        });
-      });
+  const created = (args: any) => {
+    spreadsheet?.cellFormat(
+      { fontWeight: 'bold', textAlign: 'center' },
+      'A1:H1',
+    );
+    spreadsheet?.cellFormat({ verticalAlign: 'middle' }, 'A1:H5');
+    spreadsheet?.cellFormat({ textAlign: 'center' }, 'A2:B5');
+    spreadsheet?.cellFormat({ textAlign: 'center' }, 'D2:D5');
+    // To wrap the cells from E2 to E5 range
+    spreadsheet?.wrap('E2:E5');
+    // To unwrap the H3 cell
+    spreadsheet?.wrap('H3', false);
+    // fetch("https://js.syncfusion.com/demos/ejservices/data/Spreadsheet/LargeData.xlsx") // fetch the remote url
+    //     .then((response) => {
+    //     response.blob().then((fileBlob) => {
+    //         var file = new File([fileBlob], "Sample.xlsx"); //convert the blob into file
+    //         spreadsheet?.open({ file: file }); // open the file into Spreadsheet
+    //     });
+    // });
   };
+
+  let data: Object[] = [
+    {
+      No: '1',
+      Workactivity: 'Weather condition',
+      Hazard: 'Work crew exposed to Lightning hazard when working on open area',
+    },
+  ];
+
   return (
     <>
       <SpreadsheetComponent
@@ -244,13 +274,49 @@ const RiskIdenTemPlate: React.FC = () => {
         }}
         created={created}
         allowSave={true}
-        openUrl={
-          'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open'
-        }
         height={'500px'}
-        allowOpen={true}
         beforeOpen={(e) => beforeOpen(e)}
-      />
+      >
+        <SheetsDirective>
+          <SheetDirective name={'Movie List'}>
+            <RowsDirective>
+              <RowDirective height={30}></RowDirective>
+              <RowDirective>
+                <CellsDirective>
+                  <CellDirective index={7} wrap={true}></CellDirective>
+                </CellsDirective>
+              </RowDirective>
+              <RowDirective>
+                <CellsDirective>
+                  <CellDirective index={7} wrap={true}></CellDirective>
+                </CellsDirective>
+              </RowDirective>
+              <RowDirective>
+                <CellsDirective>
+                  <CellDirective index={7} wrap={true}></CellDirective>
+                </CellsDirective>
+              </RowDirective>
+              <RowDirective>
+                <CellsDirective>
+                  <CellDirective index={7} wrap={true}></CellDirective>
+                </CellsDirective>
+              </RowDirective>
+            </RowsDirective>
+            <RangesDirective>
+              <RangeDirective dataSource={data}></RangeDirective>
+            </RangesDirective>
+            <ColumnsDirective>
+              <ColumnDirective width={100} index={1}></ColumnDirective>
+              <ColumnDirective width={140}></ColumnDirective>
+              <ColumnDirective width={90}></ColumnDirective>
+              <ColumnDirective width={150}></ColumnDirective>
+              <ColumnDirective width={120}></ColumnDirective>
+              <ColumnDirective width={90}></ColumnDirective>
+              <ColumnDirective width={180}></ColumnDirective>
+            </ColumnsDirective>
+          </SheetDirective>
+        </SheetsDirective>
+      </SpreadsheetComponent>
       {/* <EditableProTable<APITypes.RiskIdentifierTemplateType>
         headerTitle="Risk Identification Template Data"
         actionRef={actionRef}
