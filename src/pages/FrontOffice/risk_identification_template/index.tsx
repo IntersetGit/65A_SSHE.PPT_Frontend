@@ -238,6 +238,7 @@ const RiskIdenTemPlate: React.FC = () => {
   };
 
   const created = (args: any) => {
+    console.log(args);
     spreadsheet?.cellFormat(
       { fontWeight: 'bold', textAlign: 'center' },
       'A1:H1',
@@ -261,8 +262,23 @@ const RiskIdenTemPlate: React.FC = () => {
   let data: Object[] = [
     {
       No: '1',
-      Workactivity: 'Weather condition',
+      'Works activity': 'Weather condition',
       Hazard: 'Work crew exposed to Lightning hazard when working on open area',
+      'Existing control': `
+      1.  No work to be carried out
+      2. Workers to be under shelter and away from tress and overhead services
+      3. In place for container to double up as protection to workers, grounding rods for container and equipment
+      `,
+    },
+    {
+      No: '2',
+      'Works activity': 'Understanding of site safety procedure',
+      Hazard: 'Injury to people Property damage',
+      'Existing control': `
+      1. Induction course
+      3. SHE Management Plan                               
+      4. Safety Induction & Training Procedure
+      `,
     },
   ];
 
@@ -272,13 +288,13 @@ const RiskIdenTemPlate: React.FC = () => {
         ref={(ssObj) => {
           spreadsheet = ssObj;
         }}
-        created={created}
+        created={(e) => created(e)}
         allowSave={true}
         height={'500px'}
         beforeOpen={(e) => beforeOpen(e)}
       >
         <SheetsDirective>
-          <SheetDirective name={'Movie List'}>
+          <SheetDirective name={'Risk Identification Template'}>
             <RowsDirective>
               <RowDirective height={30}></RowDirective>
               <RowDirective>
@@ -306,9 +322,9 @@ const RiskIdenTemPlate: React.FC = () => {
               <RangeDirective dataSource={data}></RangeDirective>
             </RangesDirective>
             <ColumnsDirective>
-              <ColumnDirective width={100} index={1}></ColumnDirective>
-              <ColumnDirective width={140}></ColumnDirective>
-              <ColumnDirective width={90}></ColumnDirective>
+              <ColumnDirective width={200} index={1}></ColumnDirective>
+              <ColumnDirective width={490}></ColumnDirective>
+              <ColumnDirective width={490}></ColumnDirective>
               <ColumnDirective width={150}></ColumnDirective>
               <ColumnDirective width={120}></ColumnDirective>
               <ColumnDirective width={90}></ColumnDirective>
