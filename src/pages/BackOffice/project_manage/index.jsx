@@ -1,9 +1,11 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -29,6 +31,7 @@ const { TextArea } = Input;
 const ProjectManage = (props) => {
   const [projectdata, setprojectdata] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [data, setdata] = useState([]);
@@ -130,6 +133,10 @@ const ProjectManage = (props) => {
   const showModal = (type) => {
     setdrawerType(type);
     setShowModal(true);
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const hideModal = () => {
@@ -256,6 +263,11 @@ const ProjectManage = (props) => {
       label: 'แก้ไข',
     },
     {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดู',
+    },
+    {
       key: 'delete',
       icon: <DeleteOutlined />,
       label: 'ลบ',
@@ -285,6 +297,9 @@ const ProjectManage = (props) => {
       showModal(2);
       setselectedrow(record);
       form.setFieldsValue(record);
+    } else if (key === 'view') {
+      showDrawer();
+      setselectedrow(record);
     } else {
       Swal.fire({
         title: 'ลบข้อมูล',
@@ -310,6 +325,50 @@ const ProjectManage = (props) => {
     }
   };
 
+  const display = [
+    {
+      title: 'Company Name',
+      dataIndex: 'company',
+      key: 'Company Name',
+      render: (record) => {
+        return (
+          <>
+            {record.map((v, k) => {
+              return <div key={v.company_id}>{v.company_name}</div>;
+            })}
+          </>
+        );
+      },
+    },
+    {
+      title: 'Project Type ID',
+      dataIndex: 'project_type_id',
+      key: 'Project Type ID',
+      render: (record) => {
+        const data = project.find((e) => e.value === record);
+        return <>{<div key={data?.value}>{data?.label}</div>}</>;
+      },
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'Description',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'Active',
+      render: (record) => {
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
+      },
+    },
+    {
+      title: 'Favorite Status',
+      dataIndex: 'favorite_status',
+      key: 'Favorite Status',
+    },
+  ];
+
   const columns = [
     {
       title: 'Project ID',
@@ -328,6 +387,7 @@ const ProjectManage = (props) => {
       title: 'Action',
       key: 'action',
       align: 'center',
+      valueType: 'option',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -343,7 +403,6 @@ const ProjectManage = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูลโครงการ</h1>
         <Space>
           <p>ชื่อโครงการ</p>
           <Search
@@ -481,6 +540,31 @@ const ProjectManage = (props) => {
             </TabPane>
           </Tabs>
         </Form>
+      </Drawer>
+
+      <Drawer
+        width={700}
+        visible={isShowDrawer}
+        onClose={() => {
+          setselectedrow(undefined);
+          setShowDrawer(false);
+        }}
+        closable={false}
+      >
+        {selectedrow?.project_name && (
+          <ProDescriptions
+            column={1}
+            bordered
+            title={selectedrow?.project_name}
+            request={async () => ({
+              data: selectedrow || {},
+            })}
+            params={{
+              id: selectedrow?.project_name,
+            }}
+            columns={[...columns, ...display]}
+          />
+        )}
       </Drawer>
     </>
   );

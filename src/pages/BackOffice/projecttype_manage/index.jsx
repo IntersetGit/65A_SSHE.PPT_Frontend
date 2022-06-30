@@ -1,9 +1,11 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -29,6 +31,7 @@ const ActivityManage = (props) => {
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [form] = useForm();
 
   useEffect(() => {
@@ -82,6 +85,10 @@ const ActivityManage = (props) => {
       default:
         break;
     }
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const showModal = (type) => {
@@ -177,6 +184,11 @@ const ActivityManage = (props) => {
       label: 'แก้ไข',
     },
     {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดู',
+    },
+    {
       key: 'delete',
       icon: <DeleteOutlined />,
       label: 'ลบ',
@@ -189,6 +201,9 @@ const ActivityManage = (props) => {
       showModal(2);
       setselectedrow(record);
       form.setFieldsValue(record);
+    } else if (key === 'view') {
+      showDrawer();
+      setselectedrow(record);
     } else {
       Swal.fire({
         title: 'ลบข้อมูล',
@@ -214,6 +229,22 @@ const ActivityManage = (props) => {
     }
   };
 
+  const display = [
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'Description',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'Active',
+      render: (record) => {
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
+      },
+    },
+  ];
+
   const columns = [
     {
       title: 'Project Type ID',
@@ -232,6 +263,7 @@ const ActivityManage = (props) => {
       title: 'Action',
       key: 'action',
       align: 'center',
+      valueType: 'option',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -247,7 +279,6 @@ const ActivityManage = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูล ประเภทโครงการ</h1>
         <Space>
           <p>ค้นหาด้วยชื่อ</p>
           <Search
@@ -302,12 +333,14 @@ const ActivityManage = (props) => {
           <Form.Item
             label="Project Type Name"
             name="name"
-            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Activity' }]}
+            rules={[
+              { required: true, message: 'กรุณาใส่ชื่อ Project Type Name' },
+            ]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="คำอธิบาย" name="activity_detail">
+          <Form.Item label="คำอธิบาย" name="description">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
@@ -329,6 +362,31 @@ const ActivityManage = (props) => {
             </Space>
           </Form.Item>
         </Form>
+      </Drawer>
+
+      <Drawer
+        width={700}
+        visible={isShowDrawer}
+        onClose={() => {
+          setselectedrow(undefined);
+          setShowDrawer(false);
+        }}
+        closable={false}
+      >
+        {selectedrow?.name && (
+          <ProDescriptions
+            column={1}
+            bordered
+            title={selectedrow?.name}
+            request={async () => ({
+              data: selectedrow || {},
+            })}
+            params={{
+              id: selectedrow?.name,
+            }}
+            columns={[...columns, ...display]}
+          />
+        )}
       </Drawer>
     </>
   );

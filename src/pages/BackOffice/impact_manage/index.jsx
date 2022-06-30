@@ -37,7 +37,6 @@ const Impact = (props) => {
         res.items.impacts.forEach((v, k) => {
           v.number = `Hz${k + 1}`;
           v.key = k + 1;
-          v.status = 'Active';
         });
         setimpact(res.items.impacts);
         console.log(res.items.impacts);
@@ -49,14 +48,8 @@ const Impact = (props) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
-        console.log([
-          ...impact,
-          { key: impact.length + 1, status: 'Active', ..._data },
-        ]);
-        setimpact([
-          ...impact,
-          { key: impact.length + 1, status: 'Active', ..._data },
-        ]);
+        console.log([...impact, { key: impact.length + 1, ..._data }]);
+        setimpact([...impact, { key: impact.length + 1, ..._data }]);
         break;
 
       case 'UPDATE':
@@ -230,20 +223,23 @@ const Impact = (props) => {
     },
     {
       title: 'สถานะ',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'isuse',
+      key: 'isuse',
       align: 'center',
       filters: [
         {
           text: 'Active',
-          value: 'Active',
+          value: '1',
         },
         {
           text: 'Non Active',
-          value: 'Non Active',
+          value: '0',
         },
       ],
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      onFilter: (value, record) => record.isuse.indexOf(value) === 0,
+      render: (record) => {
+        return <p>{record === 1 ? `Active` : `Non Active`}</p>;
+      },
     },
     {
       title: 'Action',
@@ -264,7 +260,6 @@ const Impact = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูล Hazard</h1>
         <Space>
           <p>ค้นหาด้วยชื่อ</p>
           <Search
@@ -328,10 +323,10 @@ const Impact = (props) => {
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="status" label="สถานะ">
+          <Form.Item name="isuse" label="สถานะ">
             <Radio.Group>
-              <Radio.Button value="Active">Active</Radio.Button>
-              <Radio.Button value="Non Active">Non Active</Radio.Button>
+              <Radio.Button value={1}>Active</Radio.Button>
+              <Radio.Button value={0}>Non Active</Radio.Button>
             </Radio.Group>
           </Form.Item>
 

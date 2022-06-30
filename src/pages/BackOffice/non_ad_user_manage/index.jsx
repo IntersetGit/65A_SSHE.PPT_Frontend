@@ -278,6 +278,7 @@ const NonadUsermanage = (props) => {
     });
     formCrete.resetFields();
     formEdit.resetFields();
+    formAD.resetFields();
     setLoading(false);
   };
 
@@ -383,9 +384,6 @@ const NonadUsermanage = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>
-          <p>จัดการผู้ใช้งานระบบ</p>
-        </h1>
         <Search
           placeholder="input search text"
           allowClear

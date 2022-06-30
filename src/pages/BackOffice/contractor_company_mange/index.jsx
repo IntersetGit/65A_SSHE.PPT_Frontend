@@ -262,7 +262,6 @@ const ContractorCompanyManage = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>การจัดการข้อมูล บริษัทผู้รับเหมา</h1>
         {/* <Space>
           <p>ชื่อโครงการ</p>
           <Search

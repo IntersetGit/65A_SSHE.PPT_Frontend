@@ -267,7 +267,6 @@ const IncidentofTypeManage = (props) => {
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <h1>จัดการข้อมูล SSHE INCIDENT TYPE</h1>
         <Space>
           <p>ค้นหาด้วยชื่อ</p>
           <Search
