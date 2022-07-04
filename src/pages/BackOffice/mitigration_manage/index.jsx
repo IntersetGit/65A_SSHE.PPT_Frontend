@@ -1,9 +1,11 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -27,6 +29,7 @@ const { TextArea } = Input;
 const Mitigration = (props) => {
   const [mitigration, setmitigration] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
@@ -37,7 +40,6 @@ const Mitigration = (props) => {
         res.items.mitigations.forEach((v, k) => {
           v.number = `ExC${k + 1}`;
           v.key = k + 1;
-          v.status = 'Active';
         });
         setmitigration(res.items.mitigations);
         console.log(res.items.mitigations);
@@ -49,14 +51,13 @@ const Mitigration = (props) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
-        const _num = `${mitigration.length + 1}`;
         console.log([
           ...mitigration,
-          { key: mitigration.length + 1, id: _num, status: 'Active', ..._data },
+          { key: mitigration.length + 1, ..._data },
         ]);
         setmitigration([
           ...mitigration,
-          { key: mitigration.length + 1, id: _num, status: 'Active', ..._data },
+          { key: mitigration.length + 1, ..._data },
         ]);
         break;
 
@@ -88,6 +89,10 @@ const Mitigration = (props) => {
   const showModal = (type) => {
     setdrawerType(type);
     setShowModal(true);
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const hideModal = () => {
@@ -178,6 +183,11 @@ const Mitigration = (props) => {
       label: 'แก้ไข',
     },
     {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดู',
+    },
+    {
       key: 'delete',
       icon: <DeleteOutlined />,
       label: 'ลบ',
@@ -190,6 +200,9 @@ const Mitigration = (props) => {
       showModal(2);
       setselectedrow(record);
       form.setFieldsValue(record);
+    } else if (key === 'view') {
+      showDrawer();
+      setselectedrow(record);
     } else {
       Swal.fire({
         title: 'ลบข้อมูล',
@@ -215,6 +228,14 @@ const Mitigration = (props) => {
     }
   };
 
+  const display = [
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'Description',
+    },
+  ];
+
   const columns = [
     {
       title: 'ID',
@@ -231,8 +252,8 @@ const Mitigration = (props) => {
     },
     {
       title: 'สถานะ',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'isuse',
+      key: 'isuse',
       align: 'center',
       filters: [
         {
@@ -245,11 +266,15 @@ const Mitigration = (props) => {
         },
       ],
       onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (record) => {
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
+      },
     },
     {
       title: 'Action',
       key: 'action',
       align: 'center',
+      valueType: 'option',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -348,6 +373,31 @@ const Mitigration = (props) => {
             </Space>
           </Form.Item>
         </Form>
+      </Drawer>
+
+      <Drawer
+        width={700}
+        visible={isShowDrawer}
+        onClose={() => {
+          setselectedrow(undefined);
+          setShowDrawer(false);
+        }}
+        closable={false}
+      >
+        {selectedrow?.id && (
+          <ProDescriptions
+            column={1}
+            bordered
+            title={selectedrow?.name}
+            request={async () => ({
+              data: selectedrow || {},
+            })}
+            params={{
+              id: selectedrow?.name,
+            }}
+            columns={[...columns, ...display]}
+          />
+        )}
       </Drawer>
     </>
   );

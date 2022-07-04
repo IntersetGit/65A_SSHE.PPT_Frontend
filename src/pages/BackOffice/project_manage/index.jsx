@@ -51,7 +51,7 @@ const ProjectManage = (props) => {
         console.log(res);
         res.items.forEach((v, k) => {
           v.key = k + 1;
-          v.number = `Rp-00${k + 1}`;
+          v.number = k + 1;
         });
         setprojectdata(res.items);
       })

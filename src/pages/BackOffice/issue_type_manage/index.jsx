@@ -1,9 +1,11 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -27,6 +29,7 @@ const { TextArea } = Input;
 const IssueTypeManage = (props) => {
   const [issue, setissue] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
@@ -37,7 +40,6 @@ const IssueTypeManage = (props) => {
         res.items.forEach((v, k) => {
           v.number = `ST-00${k + 1}`;
           v.key = k + 1;
-          v.status = 'Active';
         });
         setissue(res.items);
         console.log(res.items);
@@ -49,14 +51,8 @@ const IssueTypeManage = (props) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
-        console.log([
-          ...issue,
-          { key: issue.length + 1, status: 'Active', ..._data },
-        ]);
-        setissue([
-          ...issue,
-          { key: issue.length + 1, status: 'Active', ..._data },
-        ]);
+        console.log([...issue, { key: issue.length + 1, ..._data }]);
+        setissue([...issue, { key: issue.length + 1, ..._data }]);
         break;
 
       case 'UPDATE':
@@ -87,6 +83,10 @@ const IssueTypeManage = (props) => {
   const showModal = (type) => {
     setdrawerType(type);
     setShowModal(true);
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const hideModal = () => {
@@ -177,6 +177,11 @@ const IssueTypeManage = (props) => {
       label: 'แก้ไข',
     },
     {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดู',
+    },
+    {
       key: 'delete',
       icon: <DeleteOutlined />,
       label: 'ลบ',
@@ -189,6 +194,9 @@ const IssueTypeManage = (props) => {
       showModal(2);
       setselectedrow(record);
       form.setFieldsValue(record);
+    } else if (key === 'view') {
+      showDrawer();
+      setselectedrow(record);
     } else {
       Swal.fire({
         title: 'ลบข้อมูล',
@@ -214,6 +222,14 @@ const IssueTypeManage = (props) => {
     }
   };
 
+  const display = [
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'Description',
+    },
+  ];
+
   const columns = [
     {
       title: 'IssueType ID',
@@ -230,8 +246,8 @@ const IssueTypeManage = (props) => {
     },
     {
       title: 'สถานะ',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'active',
+      key: 'active',
       align: 'center',
       filters: [
         {
@@ -243,15 +259,16 @@ const IssueTypeManage = (props) => {
           value: 'Non Active',
         },
       ],
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      onFilter: (value, record) => record.active.indexOf(value) === 0,
       render: (record) => {
-        return <p>{record ? 'Active' : 'Non Active'}</p>;
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
     },
     {
       title: 'Action',
       key: 'action',
       align: 'center',
+      valueType: 'option',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -348,6 +365,31 @@ const IssueTypeManage = (props) => {
             </Space>
           </Form.Item>
         </Form>
+      </Drawer>
+
+      <Drawer
+        width={700}
+        visible={isShowDrawer}
+        onClose={() => {
+          setselectedrow(undefined);
+          setShowDrawer(false);
+        }}
+        closable={false}
+      >
+        {selectedrow?.id && (
+          <ProDescriptions
+            column={1}
+            bordered
+            title={selectedrow?.issue_type_name}
+            request={async () => ({
+              data: selectedrow || {},
+            })}
+            params={{
+              id: selectedrow?.issue_type_name,
+            }}
+            columns={[...columns, ...display]}
+          />
+        )}
       </Drawer>
     </>
   );
