@@ -38,6 +38,16 @@ const RightNavContent = () => {
             />
           </p>
         </Tooltip>
+        <Tooltip title={'การแจ้งเตือน'}>
+          <p>
+            <img
+              src="/assets/Bell.png"
+              width={40}
+              height={40}
+              alt="bell-icon"
+            />
+          </p>
+        </Tooltip>
         <AvatarDropdown />
       </Space>
     </>

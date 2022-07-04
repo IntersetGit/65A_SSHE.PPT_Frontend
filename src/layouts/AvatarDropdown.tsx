@@ -1,5 +1,10 @@
 import JWTCLASS from '@/jwt';
-import { DownOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  DownOutlined,
+  LogoutOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import { stringify } from 'querystring';
 import { MenuInfo } from 'rc-menu/lib/interface';
@@ -47,6 +52,11 @@ const AvatarDropdown: React.FC = () => {
       key: 'myprofile',
       icon: <UserOutlined />,
       label: 'My Profile',
+    },
+    {
+      key: 'teammanage',
+      icon: <TeamOutlined />,
+      label: 'Team Management',
     },
     {
       key: 'logout',

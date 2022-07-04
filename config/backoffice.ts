@@ -75,6 +75,12 @@ const backoffice_menu = {
               component: 'BackOffice/procedure_jsea_manage',
             },
             {
+              path: '/backoffice/risk-manage/risk_identification_template',
+              icon: 'Risk Identification',
+              name: 'Risk Template',
+              component: './FrontOffice/risk_identification_template',
+            },
+            {
               component: '404',
             },
           ],

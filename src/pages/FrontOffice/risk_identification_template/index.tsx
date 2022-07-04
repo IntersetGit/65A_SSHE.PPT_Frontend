@@ -285,13 +285,13 @@ const RiskIdenTemPlate: React.FC = () => {
   return (
     <>
       <SpreadsheetComponent
-        ref={(ssObj) => {
+        ref={(ssObj: any) => {
           spreadsheet = ssObj;
         }}
-        created={(e) => created(e)}
+        created={(e: any) => created(e)}
         allowSave={true}
         height={'500px'}
-        beforeOpen={(e) => beforeOpen(e)}
+        beforeOpen={(e: any) => beforeOpen(e)}
       >
         <SheetsDirective>
           <SheetDirective name={'Risk Identification Template'}>
