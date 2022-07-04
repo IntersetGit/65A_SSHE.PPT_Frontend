@@ -1,9 +1,11 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -27,6 +29,7 @@ const { TextArea } = Input;
 const Impact = (props) => {
   const [impact, setimpact] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
@@ -80,6 +83,10 @@ const Impact = (props) => {
   const showModal = (type) => {
     setdrawerType(type);
     setShowModal(true);
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const hideModal = () => {
@@ -170,6 +177,11 @@ const Impact = (props) => {
       label: 'แก้ไข',
     },
     {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดู',
+    },
+    {
       key: 'delete',
       icon: <DeleteOutlined />,
       label: 'ลบ',
@@ -182,6 +194,9 @@ const Impact = (props) => {
       showModal(2);
       setselectedrow(record);
       form.setFieldsValue(record);
+    } else if (key === 'view') {
+      showDrawer();
+      setselectedrow(record);
     } else {
       Swal.fire({
         title: 'ลบข้อมูล',
@@ -206,6 +221,14 @@ const Impact = (props) => {
       });
     }
   };
+
+  const display = [
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'Description',
+    },
+  ];
 
   const columns = [
     {
@@ -238,13 +261,14 @@ const Impact = (props) => {
       ],
       onFilter: (value, record) => record.isuse.indexOf(value) === 0,
       render: (record) => {
-        return <p>{record === 1 ? `Active` : `Non Active`}</p>;
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
     },
     {
       title: 'Action',
       key: 'action',
       align: 'center',
+      valueType: 'option',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -341,6 +365,31 @@ const Impact = (props) => {
             </Space>
           </Form.Item>
         </Form>
+      </Drawer>
+
+      <Drawer
+        width={700}
+        visible={isShowDrawer}
+        onClose={() => {
+          setselectedrow(undefined);
+          setShowDrawer(false);
+        }}
+        closable={false}
+      >
+        {selectedrow?.id && (
+          <ProDescriptions
+            column={1}
+            bordered
+            title={selectedrow?.name}
+            request={async () => ({
+              data: selectedrow || {},
+            })}
+            params={{
+              id: selectedrow?.name,
+            }}
+            columns={[...columns, ...display]}
+          />
+        )}
       </Drawer>
     </>
   );
