@@ -49,4 +49,35 @@ declare namespace APITypes {
     work_activity?: string;
     children?: RiskIdentifierTemplateType[];
   };
+
+  type IssueTypes = {
+    active: number;
+    created_by: string;
+    created_date: Date | string;
+    description: string | null;
+    id: string;
+    issue_type_id: string | number;
+    issue_type_name: string;
+    updated_by: string;
+    updated_date: Date | string;
+  };
+
+  type SelectType = {
+    label: string | number;
+    value: string | number;
+  };
+
+  type HazardIssueType = {
+    active: number;
+    created_by: string;
+    created_date: Date | string;
+    description: string | undefined;
+    hazard_id: string | undefined;
+    hazard_name: string;
+    id: string;
+    issue_type_id: string;
+    issue_type_name: string;
+    updated_by: string;
+    updated_date: Date | string;
+  };
 }
