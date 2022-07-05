@@ -15,6 +15,7 @@ import {
   Input,
   Menu,
   Radio,
+  Select,
   Space,
   Table,
 } from 'antd';
@@ -28,6 +29,7 @@ const { TextArea } = Input;
 
 const Mitigration = (props) => {
   const [mitigration, setmitigration] = useState([]);
+  const [impacttype, setimpacttype] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
@@ -35,6 +37,7 @@ const Mitigration = (props) => {
   const [form] = useForm();
 
   useEffect(() => {
+    form.setFieldsValue({ isuse: 0 });
     request('risk/getdata/risk', { medthod: 'get' })
       .then((res) => {
         res.items.mitigations.forEach((v, k) => {
@@ -43,6 +46,17 @@ const Mitigration = (props) => {
         });
         setmitigration(res.items.mitigations);
         console.log(res.items.mitigations);
+      })
+      .catch((err) => console.error(err));
+
+    request('risk/getdata/risk', { medthod: 'get' })
+      .then((res) => {
+        let arrData = [];
+        res.items.impacts.forEach((v, k) => {
+          arrData.push({ label: v.name, value: v.id });
+        });
+        setimpacttype(arrData);
+        console.log(arrData);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -251,21 +265,21 @@ const Mitigration = (props) => {
       align: 'center',
     },
     {
+      title: 'Hazard',
+      dataIndex: 'impact_id',
+      key: 'impact_id',
+      align: 'center',
+      render: (record) => {
+        const data = impacttype.find((e) => e.value === record);
+        return <>{<div key={data?.value}>{data?.label}</div>}</>;
+      },
+    },
+    {
       title: 'สถานะ',
       dataIndex: 'isuse',
       key: 'isuse',
       align: 'center',
-      filters: [
-        {
-          text: 'Active',
-          value: 'Active',
-        },
-        {
-          text: 'Non Active',
-          value: 'Non Active',
-        },
-      ],
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      sorter: (a, b) => a.isuse - b.isuse,
       render: (record) => {
         return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
@@ -342,6 +356,14 @@ const Mitigration = (props) => {
           initialValues={{}}
         >
           <Form.Item
+            label="Hazard"
+            name="impact_id"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Hazard' }]}
+          >
+            <Select options={impacttype}></Select>
+          </Form.Item>
+
+          <Form.Item
             label="Existing Control"
             name="name"
             rules={[
@@ -355,10 +377,14 @@ const Mitigration = (props) => {
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="status" label="สถานะ">
+          <Form.Item
+            name="isuse"
+            label="สถานะ"
+            rules={[{ required: true, message: 'กรุณาเลือก' }]}
+          >
             <Radio.Group>
-              <Radio.Button value="Active">Active</Radio.Button>
-              <Radio.Button value="Non Active">Non Active</Radio.Button>
+              <Radio.Button value={1}>Active</Radio.Button>
+              <Radio.Button value={0}>Non Active</Radio.Button>
             </Radio.Group>
           </Form.Item>
 

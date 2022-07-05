@@ -1,6 +1,7 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -13,6 +14,7 @@ import {
   Input,
   Menu,
   Radio,
+  Select,
   Space,
   Table,
 } from 'antd';
@@ -26,6 +28,7 @@ const { TextArea } = Input;
 
 const ProcedureJsea = (props) => {
   const [procedurejsea, setprocedurejsea] = useState([]);
+  const [impacttype, setimpacttype] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
@@ -35,12 +38,22 @@ const ProcedureJsea = (props) => {
     request('risk/getdata/risk', { medthod: 'get' })
       .then((res) => {
         res.items.procedures.forEach((v, k) => {
-          v.number = k + 1;
+          v.number = `TP${k + 1}`;
           v.key = k + 1;
-          v.status = 'Active';
         });
         setprocedurejsea(res.items.procedures);
         console.log(res.items);
+      })
+      .catch((err) => console.error(err));
+
+    request('risk/getdata/risk', { medthod: 'get' })
+      .then((res) => {
+        let arrData = [];
+        res.items.impacts.forEach((v, k) => {
+          arrData.push({ label: v.name, value: v.id });
+        });
+        setimpacttype(arrData);
+        console.log(arrData);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -49,13 +62,10 @@ const ProcedureJsea = (props) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
-        const _num = `${procedurejsea.length + 1}`;
         console.log([
           ...procedurejsea,
           {
             key: procedurejsea.length + 1,
-            id: _num,
-            status: 'Active',
             ..._data,
           },
         ]);
@@ -63,8 +73,6 @@ const ProcedureJsea = (props) => {
           ...procedurejsea,
           {
             key: procedurejsea.length + 1,
-            id: _num,
-            status: 'Active',
             ..._data,
           },
         ]);
@@ -119,8 +127,20 @@ const ProcedureJsea = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddProcedureJsea('ADD', values);
-          Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+          request('risk/addProcedures', {
+            method: 'post',
+            data: values,
+          }).then((res) => {
+            if (res.status_code) {
+              AddProcedureJsea('ADD', {
+                id: res.items,
+                key: res.items,
+                number: `TP${procedurejsea.length + 1}`,
+                ...values,
+              });
+              Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     } else if (drawerType == 2) {
@@ -135,8 +155,23 @@ const ProcedureJsea = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          AddProcedureJsea('UPDATE', { ...selectedrow, ...values });
-          Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          request('risk/updateProcedures', {
+            method: 'post',
+            data: {
+              ...values,
+              id: selectedrow.id,
+            },
+          }).then((res) => {
+            if (res.status_code === 200) {
+              AddProcedureJsea('UPDATE', {
+                ...values,
+                key: selectedrow.key,
+                id: selectedrow.id,
+                number: selectedrow.number,
+              });
+              Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+            }
+          });
         }
       });
     }
@@ -154,6 +189,58 @@ const ProcedureJsea = (props) => {
     },
   };
 
+  const menus = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: 'แก้ไข',
+    },
+    {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดู',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'ลบ',
+    },
+  ];
+
+  const onMenuClick = async (event, record) => {
+    const { key } = event;
+    if (key === 'edit') {
+      showModal(2);
+      setselectedrow(record);
+      form.setFieldsValue(record);
+    } else if (key === 'view') {
+      showDrawer();
+      setselectedrow(record);
+    } else {
+      Swal.fire({
+        title: 'ลบข้อมูล',
+        text: 'ยืนยันการลบข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          request(`risk/deleteProcedures/${record.id}`, {
+            method: 'delete',
+          }).then((res) => {
+            if (res.status_code == 200) {
+              AddProcedureJsea('DELETE', record);
+              Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            }
+          });
+        }
+      });
+    }
+  };
+
   const columns = [
     {
       title: 'ID',
@@ -169,67 +256,35 @@ const ProcedureJsea = (props) => {
       align: 'center',
     },
     {
-      title: 'สถานะ',
-      dataIndex: 'status',
-      key: 'status',
+      title: 'Hazard',
+      dataIndex: 'impact_id',
+      key: 'impact_id',
       align: 'center',
-      filters: [
-        {
-          text: 'Active',
-          value: 'Active',
-        },
-        {
-          text: 'Non Active',
-          value: 'Non Active',
-        },
-      ],
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (record) => {
+        const data = impacttype.find((e) => e.value === record);
+        return <>{<div key={data?.value}>{data?.label}</div>}</>;
+      },
+    },
+    {
+      title: 'สถานะ',
+      dataIndex: 'isuse',
+      key: 'isuse',
+      align: 'center',
+      sorter: (a, b) => a.isuse - b.isuse,
+      render: (record) => {
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
+      },
     },
     {
       title: 'Action',
       key: 'action',
       align: 'center',
-      render: (text, record) => (
+      render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
           type="text"
           overlay={
-            <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  showModal(2);
-                  setselectedrow(record);
-                  form.setFieldsValue(record);
-                }}
-              >
-                แก้ไข
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<DeleteOutlined />}
-                onClick={() =>
-                  Swal.fire({
-                    title: 'ลบข้อมูล',
-                    text: 'ยืนยันการลบข้อมูล',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'ยืนยัน',
-                    cancelButtonText: 'ยกเลิก',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      AddProcedureJsea('DELETE', record);
-                      Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
-                    }
-                  })
-                }
-              >
-                ลบ
-              </Menu.Item>
-            </Menu>
+            <Menu items={menus} onClick={(e) => onMenuClick(e, record)} />
           }
         ></Dropdown.Button>
       ),
@@ -291,21 +346,33 @@ const ProcedureJsea = (props) => {
           initialValues={{}}
         >
           <Form.Item
+            label="Hazard"
+            name="impact_id"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Hazard' }]}
+          >
+            <Select options={impacttype}></Select>
+          </Form.Item>
+
+          <Form.Item
             label="Treatment Plan"
-            name="procedurejsea"
+            name="name"
             rules={[{ required: true, message: 'กรุณาใส่ชื่อ Treatment Plan' }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="คำอธิบาย" name="procedurejsea_detail">
+          <Form.Item label="คำอธิบาย" name="description">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="status" label="สถานะ">
+          <Form.Item
+            name="isuse"
+            label="สถานะ"
+            rules={[{ required: true, message: 'กรุณาเลือก' }]}
+          >
             <Radio.Group>
-              <Radio.Button value="Active">Active</Radio.Button>
-              <Radio.Button value="Non Active">Non Active</Radio.Button>
+              <Radio.Button value={1}>Active</Radio.Button>
+              <Radio.Button value={0}>Non Active</Radio.Button>
             </Radio.Group>
           </Form.Item>
 

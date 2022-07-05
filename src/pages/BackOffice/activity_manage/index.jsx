@@ -35,6 +35,7 @@ const ActivityManage = (props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    form.setFieldsValue({ isuse: 0 });
     request('risk/getdata/risk', { medthod: 'get' })
       .then((res) => {
         res.items.activity.forEach((v, k) => {
@@ -249,17 +250,7 @@ const ActivityManage = (props) => {
       dataIndex: 'isuse',
       key: 'isuse',
       align: 'center',
-      filters: [
-        {
-          text: 'Active',
-          value: '1',
-        },
-        {
-          text: 'Non Active',
-          value: '0',
-        },
-      ],
-      onFilter: (value, record) => record.isuse.indexOf(value) === 0,
+      sorter: (a, b) => a.isuse - b.isuse,
       render: (record) => {
         return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
@@ -347,10 +338,14 @@ const ActivityManage = (props) => {
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="isuse" label="สถานะ">
+          <Form.Item
+            name="isuse"
+            label="สถานะ"
+            rules={[{ required: true, message: 'กรุณาเลือก' }]}
+          >
             <Radio.Group>
-              <Radio.Button value="1">Active</Radio.Button>
-              <Radio.Button value="0">Non Active</Radio.Button>
+              <Radio.Button value={1}>Active</Radio.Button>
+              <Radio.Button value={0}>Non Active</Radio.Button>
             </Radio.Group>
           </Form.Item>
 

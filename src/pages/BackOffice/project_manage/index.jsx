@@ -36,7 +36,6 @@ const ProjectManage = (props) => {
   const [selectedrow, setselectedrow] = useState(null);
   const [data, setdata] = useState([]);
   const [form] = Form.useForm();
-  const [formCT] = Form.useForm();
   const [value, setValue] = useState('Active');
   const [values, setValues] = useState('Favorite');
   const [project, setproject] = useState([]);
@@ -46,7 +45,13 @@ const ProjectManage = (props) => {
   );
 
   useEffect(() => {
-    request('master/getProject', { method: 'get' })
+    form.setFieldsValue({ active: 0 });
+    form.setFieldsValue({ favorite_status: 0 });
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('master/getProject', { method: 'get', params: { search: search } })
       .then((res) => {
         console.log(res);
         res.items.forEach((v, k) => {
@@ -79,7 +84,7 @@ const ProjectManage = (props) => {
         console.log(arrData);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddProject = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -165,7 +170,7 @@ const ProjectManage = (props) => {
             if (res.status_code) {
               AddProject('ADD', {
                 id: res.items,
-                number: `Rp-00${projectdata.length + 1}`,
+                number: projectdata.length + 1,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
@@ -191,8 +196,9 @@ const ProjectManage = (props) => {
           }).then((res) => {
             if (res.status_code) {
               AddProject('UPDATE', {
-                id: res.items,
-                number: `Rp-00${projectdata.length + 1}`,
+                key: selectedrow.key,
+                id: selectedrow.id,
+                number: selectedrow.number,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
@@ -228,22 +234,22 @@ const ProjectManage = (props) => {
   const options = [
     {
       label: 'Active',
-      value: '1',
+      value: 1,
     },
     {
       label: 'Non Active',
-      value: '2',
+      value: 0,
     },
   ];
 
   const optionsF = [
     {
       label: 'Favorite',
-      value: '1',
+      value: 1,
     },
     {
       label: 'Non Favorite',
-      value: '2',
+      value: 0,
     },
   ];
 
@@ -341,15 +347,6 @@ const ProjectManage = (props) => {
       },
     },
     {
-      title: 'Project Type ID',
-      dataIndex: 'project_type_id',
-      key: 'Project Type ID',
-      render: (record) => {
-        const data = project.find((e) => e.value === record);
-        return <>{<div key={data?.value}>{data?.label}</div>}</>;
-      },
-    },
-    {
       title: 'Description',
       dataIndex: 'description',
       key: 'Description',
@@ -384,6 +381,26 @@ const ProjectManage = (props) => {
       align: 'center',
     },
     {
+      title: 'ประเภทโครงการ',
+      dataIndex: 'project_type_id',
+      key: 'project_type_id',
+      align: 'center',
+      render: (record) => {
+        const data = project.find((e) => e.value === record);
+        return <>{<div key={data?.value}>{data?.label}</div>}</>;
+      },
+    },
+    {
+      title: 'สถานะ',
+      dataIndex: 'active',
+      key: 'active',
+      align: 'center',
+      sorter: (a, b) => a.active - b.active,
+      render: (record) => {
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
+      },
+    },
+    {
       title: 'Action',
       key: 'action',
       align: 'center',
@@ -409,6 +426,9 @@ const ProjectManage = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button
@@ -470,7 +490,11 @@ const ProjectManage = (props) => {
                 <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
               </Form.Item>
 
-              <Form.Item label="Active" name="active">
+              <Form.Item
+                label="Active"
+                name="active"
+                rules={[{ required: true, message: 'กรุณาเลือก' }]}
+              >
                 <Radio.Group
                   options={options}
                   onChange={RadioonChange}
@@ -479,7 +503,11 @@ const ProjectManage = (props) => {
                 />
               </Form.Item>
 
-              <Form.Item label="Favorite" name="favorite_status">
+              <Form.Item
+                label="Favorite"
+                name="favorite_status"
+                rules={[{ required: true, message: 'กรุณาเลือก' }]}
+              >
                 <Radio.Group
                   options={optionsF}
                   onChange={RadioFavorite}

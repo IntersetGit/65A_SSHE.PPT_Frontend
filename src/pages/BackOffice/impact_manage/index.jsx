@@ -249,17 +249,7 @@ const Impact = (props) => {
       dataIndex: 'isuse',
       key: 'isuse',
       align: 'center',
-      filters: [
-        {
-          text: 'Active',
-          value: '1',
-        },
-        {
-          text: 'Non Active',
-          value: '0',
-        },
-      ],
-      onFilter: (value, record) => record.isuse.indexOf(value) === 0,
+      sorter: (a, b) => a.isuse - b.isuse,
       render: (record) => {
         return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },

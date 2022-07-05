@@ -35,6 +35,7 @@ const IssueTypeManage = (props) => {
   const [form] = useForm();
 
   useEffect(() => {
+    form.setFieldsValue({ active: 0 });
     request('master/getIssueType', { medthod: 'get' })
       .then((res) => {
         res.items.forEach((v, k) => {
@@ -249,17 +250,7 @@ const IssueTypeManage = (props) => {
       dataIndex: 'active',
       key: 'active',
       align: 'center',
-      filters: [
-        {
-          text: 'Active',
-          value: 'Active',
-        },
-        {
-          text: 'Non Active',
-          value: 'Non Active',
-        },
-      ],
-      onFilter: (value, record) => record.active.indexOf(value) === 0,
+      sorter: (a, b) => a.active - b.active,
       render: (record) => {
         return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
@@ -347,10 +338,14 @@ const IssueTypeManage = (props) => {
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="status" label="สถานะ">
+          <Form.Item
+            name="active"
+            label="สถานะ"
+            rules={[{ required: true, message: 'กรุณาเลือก' }]}
+          >
             <Radio.Group>
-              <Radio.Button value="Active">Active</Radio.Button>
-              <Radio.Button value="Non Active">Non Active</Radio.Button>
+              <Radio.Button value={1}>Active</Radio.Button>
+              <Radio.Button value={0}>Non Active</Radio.Button>
             </Radio.Group>
           </Form.Item>
 

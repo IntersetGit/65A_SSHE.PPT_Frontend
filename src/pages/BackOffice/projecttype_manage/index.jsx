@@ -35,7 +35,15 @@ const ActivityManage = (props) => {
   const [form] = useForm();
 
   useEffect(() => {
-    request('master/getProjecttype', { medthod: 'get' })
+    form.setFieldsValue({ active: 0 });
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('master/getProjecttype', {
+      medthod: 'get',
+      params: { search: search },
+    })
       .then((res) => {
         let arrData = [];
         res.items.forEach((v, k) => {
@@ -46,7 +54,7 @@ const ActivityManage = (props) => {
         console.log(res.items);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddProjectType = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -235,14 +243,6 @@ const ActivityManage = (props) => {
       dataIndex: 'description',
       key: 'Description',
     },
-    {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'Active',
-      render: (record) => {
-        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
-      },
-    },
   ];
 
   const columns = [
@@ -258,6 +258,16 @@ const ActivityManage = (props) => {
       dataIndex: 'name',
       key: 'name',
       align: 'center',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'active',
+      key: 'Active',
+      align: 'center',
+      sorter: (a, b) => a.active - b.active,
+      render: (record) => {
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
+      },
     },
     {
       title: 'Action',
@@ -280,11 +290,14 @@ const ActivityManage = (props) => {
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
         <Space>
-          <p>ค้นหาด้วยชื่อ</p>
+          <p>ชื่อประเภทโครงการ</p>
           <Search
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button
@@ -346,8 +359,8 @@ const ActivityManage = (props) => {
 
           <Form.Item name="active" label="สถานะ">
             <Radio.Group>
-              <Radio.Button value="1">Active</Radio.Button>
-              <Radio.Button value="2">Non Active</Radio.Button>
+              <Radio.Button value={1}>Active</Radio.Button>
+              <Radio.Button value={0}>Non Active</Radio.Button>
             </Radio.Group>
           </Form.Item>
 

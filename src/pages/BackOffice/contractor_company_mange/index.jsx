@@ -8,7 +8,6 @@ import {
 import { ProDescriptions, ProTable } from '@ant-design/pro-components';
 import {
   Button,
-  Card,
   Col,
   Drawer,
   Dropdown,
@@ -30,6 +29,7 @@ const { TextArea } = Input;
 
 const ContractorCompanyManage = (props) => {
   const [comusermanage, setcomusermanage] = useState([]);
+  const [subcontract, setsubcontract] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
@@ -37,6 +37,7 @@ const ContractorCompanyManage = (props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    form.setFieldsValue({ active: '0' });
     request('master/getCompany', { method: 'get' })
       .then((res) => {
         console.log(res);
@@ -45,6 +46,18 @@ const ContractorCompanyManage = (props) => {
           v.number = k + 1;
         });
         setcomusermanage(res.items);
+      })
+      .catch((err) => console.error(err));
+
+    request('master/getCompany', { method: 'get' })
+      .then((res) => {
+        console.log(res);
+        let arrData = [];
+        res.items.forEach((v, k) => {
+          arrData.push({ label: v.company_name, value: v.id });
+        });
+        setsubcontract(arrData);
+        console.log(arrData);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -122,7 +135,7 @@ const ContractorCompanyManage = (props) => {
               if (res.status_code) {
                 AddComData('ADD', {
                   id: res.items,
-                  number: `Rp-00${comusermanage.length + 1}`,
+                  number: comusermanage.length + 1,
                   ...values,
                 });
                 console.log(res);
@@ -259,14 +272,6 @@ const ContractorCompanyManage = (props) => {
       key: 'Description',
     },
     {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'Active',
-      render: (record) => {
-        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
-      },
-    },
-    {
       title: 'Favorite Status',
       dataIndex: 'favorite_status',
       key: 'Favorite Status',
@@ -279,6 +284,7 @@ const ContractorCompanyManage = (props) => {
       dataIndex: 'number',
       key: 'number',
       align: 'center',
+      hideInSearch: true,
     },
     {
       title: 'Company',
@@ -287,19 +293,27 @@ const ContractorCompanyManage = (props) => {
       align: 'center',
     },
     {
+      title: 'Subcontract',
+      dataIndex: 'subcontract_name',
+      key: 'subcontract_id',
+      align: 'center',
+    },
+    {
       title: 'ที่อยู่',
       dataIndex: 'address',
       key: 'address',
       align: 'center',
+      hideInSearch: true,
     },
     {
       title: 'สถานะ',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'active',
+      key: 'Active',
       align: 'center',
-      sorter: (a, b) => a.type - b.type,
+      hideInSearch: true,
+      sorter: (a, b) => a.active - b.active,
       render: (record) => {
-        return <p>{record ? 'Active' : 'Non Active'}</p>;
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
     },
     {
@@ -321,8 +335,8 @@ const ContractorCompanyManage = (props) => {
 
   return (
     <>
-      <Card style={{ marginTop: '1rem' }} bordered={true}>
-        {/* <Space>
+      {/* <Card style={{ marginTop: '1rem' }} bordered={true}> */}
+      {/* <Space>
           <p>ชื่อโครงการ</p>
           <Search
             placeholder="Search"
@@ -330,26 +344,26 @@ const ContractorCompanyManage = (props) => {
             enterButton
           />
         </Space> */}
-        <ProTable
-          columns={columns}
-          dataSource={comusermanage}
-          expandable
-          toolBarRender={() => [
-            <Button
-              type="primary"
-              style={{ float: 'right' }}
-              icon={<PlusOutlined />}
-              onClick={() => showModal(1)}
-            >
-              เพิ่ม
-            </Button>,
-          ]}
-          size={'middle'}
-          scroll={{
-            y: 240,
-          }}
-        />
-      </Card>
+      <ProTable
+        columns={columns}
+        dataSource={comusermanage}
+        expandable
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            style={{ float: 'right' }}
+            icon={<PlusOutlined />}
+            onClick={() => showModal(1)}
+          >
+            เพิ่ม
+          </Button>,
+        ]}
+        size={'middle'}
+        scroll={{
+          y: 240,
+        }}
+      />
+      {/* </Card> */}
 
       <Drawer
         title="บริษัทผู้รับเหมา"
@@ -440,11 +454,38 @@ const ContractorCompanyManage = (props) => {
               </Form.Item>
             </Form.Item>
           </Col>
+
           <Col>
-            <Form.Item name="status" label="สถานะ">
+            <Form.Item label="">
+              <Form.Item
+                name="subcontract_name"
+                label="เป็น Subcontract ของ"
+                labelCol={{ span: 24 }}
+                style={{
+                  display: 'inline-block',
+                  width: 'calc(100% - 12px)',
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'กรุณาระบุชื่อบริษัท Subcontract',
+                  },
+                ]}
+              >
+                <Select options={subcontract}></Select>
+              </Form.Item>
+            </Form.Item>
+          </Col>
+
+          <Col>
+            <Form.Item
+              name="active"
+              label="สถานะ"
+              rules={[{ required: true, message: 'กรุณาเลือก' }]}
+            >
               <Radio.Group>
-                <Radio.Button value="Active">Active</Radio.Button>
-                <Radio.Button value="Non Active">Non Active</Radio.Button>
+                <Radio.Button value={1}>Active</Radio.Button>
+                <Radio.Button value={0}>Non Active</Radio.Button>
               </Radio.Group>
             </Form.Item>
           </Col>

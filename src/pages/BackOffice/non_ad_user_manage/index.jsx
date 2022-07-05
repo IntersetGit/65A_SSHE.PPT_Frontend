@@ -1,9 +1,11 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   MoreOutlined,
   RedoOutlined,
 } from '@ant-design/icons';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -32,6 +34,7 @@ const NonadUsermanage = (props) => {
   const [dataEdit, setDataEdit] = useState([]);
   const [statusValidation, setStatusValidation] = useState([]);
   const [isShowDrawer, setShowDrawer] = useState(false);
+  const [isShowDrawers, setShowDrawers] = useState(false);
 
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
@@ -46,6 +49,11 @@ const NonadUsermanage = (props) => {
       label: 'แก้ไข',
     },
     {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดู',
+    },
+    {
       key: 'delete',
       icon: <DeleteOutlined />,
       label: 'ลบ',
@@ -58,6 +66,9 @@ const NonadUsermanage = (props) => {
       await handleCancel();
       await setMode('edit');
       await handleEdit(id);
+    } else if (key === 'view') {
+      showDrawers();
+      setselectedrow(id);
     } else {
       handleDelete(id);
     }
@@ -153,7 +164,8 @@ const NonadUsermanage = (props) => {
     {
       title: 'จัดการ',
       key: '7',
-      render: ({ id }) => (
+      valueType: 'option',
+      render: (id) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
           type="text"
@@ -203,7 +215,7 @@ const NonadUsermanage = (props) => {
         console.log(res);
         let arrData = [];
         res.items.forEach((v, k) => {
-          arrData.push({ label: v.company_name, value: v.id });
+          arrData.push({ label: v.company_name, value: v.company_id });
         });
         setcompany(arrData);
       })
@@ -220,6 +232,10 @@ const NonadUsermanage = (props) => {
   const showDrawer = (type) => {
     setdrawerType(type);
     setShowDrawer(true);
+  };
+
+  const showDrawers = () => {
+    setShowDrawers(true);
   };
 
   const onFinishAD = (values) => {
@@ -299,11 +315,11 @@ const NonadUsermanage = (props) => {
     );
   };
 
-  const handleEdit = async (id) => {
+  const handleEdit = async ({ id }) => {
     let filterData = data.find((data) => data.id === id);
     setIdUser(id);
     console.log(id);
-    console.log(filterData);
+    console.log('Filter', filterData);
     if (filterData.is_ad) {
       setDataEdit(filterData);
       showDrawer(2);
@@ -581,7 +597,7 @@ const NonadUsermanage = (props) => {
                     // onFinish={onFinishEdit}
                     onFinishFailed={onFinishFailedAD}
                     initialValues={{
-                      username: dataEdit.username,
+                      username: dataEdit.user_name,
                       roles_id: dataEdit.roles_name,
                     }}
                   >
@@ -617,6 +633,31 @@ const NonadUsermanage = (props) => {
             </TabPane>
           )}
         </Tabs>
+      </Drawer>
+
+      <Drawer
+        width={700}
+        visible={isShowDrawers}
+        onClose={() => {
+          setselectedrow(undefined);
+          setShowDrawers(false);
+        }}
+        closable={false}
+      >
+        {selectedrow?.id && (
+          <ProDescriptions
+            column={1}
+            bordered
+            title={selectedrow?.user_name}
+            request={async () => ({
+              data: selectedrow || {},
+            })}
+            params={{
+              id: selectedrow?.user_name,
+            }}
+            columns={columns}
+          />
+        )}
       </Drawer>
     </>
   );
