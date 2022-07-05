@@ -195,6 +195,7 @@ const ContractorCompanyManage = (props) => {
   ];
 
   const onMenuClick = async (event, record) => {
+    record = record.props.record;
     const { key } = event;
     if (key === 'edit') {
       showModal(2);
