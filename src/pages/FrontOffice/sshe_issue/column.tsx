@@ -1,5 +1,6 @@
 import { ProColumns } from '@ant-design/pro-components';
 import { getIssueType } from './api';
+import { status } from './enums';
 
 export const columns: ProColumns[] = [
   {
@@ -25,6 +26,9 @@ export const columns: ProColumns[] = [
     key: 'process',
     valueType: 'select',
     hideInTable: true,
+    request: async () => {
+      return status;
+    },
   },
   {
     title: 'Project Name',
