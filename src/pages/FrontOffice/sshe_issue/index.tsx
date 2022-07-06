@@ -22,16 +22,22 @@ import { Button, Tooltip } from 'antd';
 import { useRef, useState } from 'react';
 import { getIssueHazard, getIssueType } from './api';
 import { columns } from './column';
+import { status } from './enums';
 import Map from './map';
 
 const Issue = () => {
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [isShowMapmodal, setShowMapmodal] = useState(false);
+  const [mapmode, setmapmode] = useState<'select' | 'display'>('select');
   const formRef = useRef<ProFormInstance>();
   const actionRef = useRef<ActionType>();
 
   const showModal = () => {
     setShowDrawer(true);
+  };
+
+  const showMapModal = () => {
+    setShowMapmodal(!isShowMapmodal);
   };
 
   return (
@@ -49,7 +55,8 @@ const Issue = () => {
             key={'alertmap'}
             icon={<EnvironmentOutlined />}
             onClick={() => {
-              setShowMapmodal(!isShowMapmodal);
+              setmapmode('display');
+              showMapModal();
             }}
           >
             Alert Map
@@ -145,6 +152,8 @@ const Issue = () => {
                 }}
                 onClick={() => {
                   console.log('Select Lat long');
+                  setmapmode('select');
+                  showMapModal();
                 }}
               >
                 <AimOutlined />
@@ -224,7 +233,7 @@ const Issue = () => {
 
         <ProForm.Group>
           <ProFormUploadDragger
-            title={<p>Image Before</p>}
+            title={'Image Before'}
             name={'before_uploads'}
             description={
               'Click or Drag for upload(accept image file type only).'
@@ -232,7 +241,7 @@ const Issue = () => {
             width={350}
           />
           <ProFormUploadDragger
-            title={<p>Image After</p>}
+            title={'Image After'}
             name={'after_uploads'}
             description={
               'Click or Drag for upload(accept image file type only).'
@@ -242,7 +251,12 @@ const Issue = () => {
         </ProForm.Group>
 
         <ProForm.Group>
-          <ProFormSelect label={'Status'} width={'sm'} name={'status'} />
+          <ProFormSelect
+            label={'Status'}
+            width={'sm'}
+            name={'status'}
+            options={status}
+          />
           <ProFormDatePicker
             label={'Due date'}
             width={'md'}
@@ -256,7 +270,7 @@ const Issue = () => {
       </DrawerForm>
 
       {/* MAP */}
-      <Map visible={isShowMapmodal} />
+      <Map mode={mapmode} visible={isShowMapmodal} onCancel={showMapModal} />
     </>
   );
 };

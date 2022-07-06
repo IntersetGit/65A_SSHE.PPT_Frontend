@@ -8,6 +8,8 @@
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
+    "serve": "set PORT=3000 && umi-serve",
+    "b:serve" : "npm run build && npm run serve",
     "test:coverage": "umi-test --coverage"
   },
   "gitHooks": {
@@ -44,6 +46,7 @@
     "react-cookie": "^4.1.1",
     "react-dev-inspector": "^1.7.0",
     "react-dom": "17.x",
+    "react-google-maps": "^9.4.5",
     "sweetalert2": "^11.4.17",
     "umi": "^3.5.0",
     "umi-request": "^1.4.0"
@@ -70,7 +73,7 @@
     "prettier": "^2.2.0",
     "stylelint": "^13.0.0",
     "typescript": "^4.1.2",
-    "umi-serve": "^1.9.10",
+    "umi-serve": "^1.9.11",
     "yorkie": "^2.0.0"
   },
   "engines": {

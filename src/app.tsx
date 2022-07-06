@@ -132,7 +132,7 @@ const responseInterceptor = async (
 
 const API_PATH = {
   DEVELOPMENT: 'http://localhost:8000/api/',
-  PRODUCTION: 'https://sshe.hrconnext.co/api/',
+  PRODUCTION: 'http://nonpemdsshe-ai.pttplc.com/api/',
 };
 
 export const request: RequestConfig = {
