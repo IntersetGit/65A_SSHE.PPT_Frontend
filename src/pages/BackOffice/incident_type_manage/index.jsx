@@ -36,7 +36,14 @@ const IncidentofTypeManage = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({ active: 0 });
-    request('master/getIncidentType', { medthod: 'get' })
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('master/getIncidentType', {
+      medthod: 'get',
+      params: { search: search },
+    })
       .then((res) => {
         res.items.forEach((v, k) => {
           v.number = `IT-00${k + 1}`;
@@ -46,7 +53,7 @@ const IncidentofTypeManage = (props) => {
         console.log(res.items);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddIncidentType = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -287,6 +294,10 @@ const IncidentofTypeManage = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button

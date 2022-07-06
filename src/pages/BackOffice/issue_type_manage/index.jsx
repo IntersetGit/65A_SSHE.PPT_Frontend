@@ -36,7 +36,14 @@ const IssueTypeManage = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({ active: 0 });
-    request('master/getIssueType', { medthod: 'get' })
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('master/getIssueType', {
+      medthod: 'get',
+      params: { search: search },
+    })
       .then((res) => {
         res.items.forEach((v, k) => {
           v.number = `ST-00${k + 1}`;
@@ -46,7 +53,7 @@ const IssueTypeManage = (props) => {
         console.log(res.items);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddIssueType = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -281,6 +288,10 @@ const IssueTypeManage = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button

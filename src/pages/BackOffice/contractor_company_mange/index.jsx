@@ -37,7 +37,7 @@ const ContractorCompanyManage = (props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({ active: '0' });
+    form.setFieldsValue({ active: 0 });
     request('master/getCompany', { method: 'get' })
       .then((res) => {
         console.log(res);
@@ -49,12 +49,12 @@ const ContractorCompanyManage = (props) => {
       })
       .catch((err) => console.error(err));
 
-    request('master/getCompany', { method: 'get' })
+    request('master/getSubCompany', { method: 'get' })
       .then((res) => {
         console.log(res);
         let arrData = [];
         res.items.forEach((v, k) => {
-          arrData.push({ label: v.company_name, value: v.id });
+          arrData.push({ label: v.subcontract_name, value: v.id });
         });
         setsubcontract(arrData);
         console.log(arrData);
@@ -136,6 +136,7 @@ const ContractorCompanyManage = (props) => {
                 AddComData('ADD', {
                   id: res.items,
                   number: comusermanage.length + 1,
+                  subcontract_id: values.subcontract,
                   ...values,
                 });
                 console.log(res);
@@ -169,6 +170,7 @@ const ContractorCompanyManage = (props) => {
                   key: selectedrow.key,
                   id: selectedrow.id,
                   number: selectedrow.number,
+                  subcontract_id: values.subcontract,
                 });
                 Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
               }
@@ -260,9 +262,9 @@ const ContractorCompanyManage = (props) => {
     {
       title: 'Project Type ID',
       dataIndex: 'project_type_id',
-      key: 'Project Type ID',
+      key: 'Project_type_id',
       render: (record) => {
-        const data = project.find((e) => e.value === record);
+        const data = subcontract.find((e) => e.value === record);
         return <>{<div key={data?.value}>{data?.label}</div>}</>;
       },
     },
@@ -285,6 +287,7 @@ const ContractorCompanyManage = (props) => {
       key: 'number',
       align: 'center',
       hideInSearch: true,
+      sorter: (a, b) => a.number - b.number,
     },
     {
       title: 'Company',
@@ -294,9 +297,14 @@ const ContractorCompanyManage = (props) => {
     },
     {
       title: 'Subcontract',
-      dataIndex: 'subcontract_name',
+      dataIndex: 'subcontract_id',
       key: 'subcontract_id',
       align: 'center',
+      render: (record) => {
+        const data = subcontract.find((e) => e.value === record);
+        console.log(record);
+        return <>{<div key={data?.value}>{data?.label}</div>}</>;
+      },
     },
     {
       title: 'ที่อยู่',
@@ -458,7 +466,7 @@ const ContractorCompanyManage = (props) => {
           <Col>
             <Form.Item label="">
               <Form.Item
-                name="subcontract_name"
+                name="subcontract"
                 label="เป็น Subcontract ของ"
                 labelCol={{ span: 24 }}
                 style={{

@@ -36,17 +36,24 @@ const ActivityManage = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({ isuse: 0 });
-    request('risk/getdata/risk', { medthod: 'get' })
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('risk/getActivitice', {
+      medthod: 'get',
+      params: { search: search },
+    })
       .then((res) => {
-        res.items.activity.forEach((v, k) => {
+        res.items.forEach((v, k) => {
           v.number = `Ac${k + 1}`;
           v.key = k + 1;
         });
-        setactivity(res.items.activity);
+        setactivity(res.items);
         console.log(res.items);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddActivity = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -246,6 +253,12 @@ const ActivityManage = (props) => {
       align: 'center',
     },
     {
+      title: 'ภาษาไทย',
+      dataIndex: 'name_thai',
+      key: 'name_thai',
+      align: 'center',
+    },
+    {
       title: 'สถานะ',
       dataIndex: 'isuse',
       key: 'isuse',
@@ -281,6 +294,10 @@ const ActivityManage = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button
@@ -330,6 +347,14 @@ const ActivityManage = (props) => {
             label="Activity"
             name="name"
             rules={[{ required: true, message: 'กรุณาใส่ชื่อ Activity' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="ภาษาไทย"
+            name="name_thai"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อภาษาไทย' }]}
           >
             <Input />
           </Form.Item>

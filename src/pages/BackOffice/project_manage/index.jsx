@@ -4,6 +4,7 @@ import {
   EyeOutlined,
   MoreOutlined,
   PlusOutlined,
+  RedoOutlined,
 } from '@ant-design/icons';
 import { ProDescriptions } from '@ant-design/pro-components';
 import {
@@ -379,6 +380,7 @@ const ProjectManage = (props) => {
       dataIndex: 'project_name',
       key: 'Project Name',
       align: 'center',
+      sorter: (a, b) => a.project_name - b.project_name,
     },
     {
       title: 'ประเภทโครงการ',
@@ -426,11 +428,22 @@ const ProjectManage = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
             onSearch={(search) => {
               reload(search);
             }}
           />
         </Space>
+
+        <Button
+          onClick={() => {
+            reload();
+          }}
+          style={{ marginLeft: 10 }}
+        >
+          <RedoOutlined />
+        </Button>
+
         <Button
           type="primary"
           style={{ float: 'right' }}

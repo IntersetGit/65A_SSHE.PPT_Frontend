@@ -35,17 +35,22 @@ const Impact = (props) => {
   const [form] = useForm();
 
   useEffect(() => {
-    request('risk/getdata/risk', { medthod: 'get' })
+    form.setFieldsValue({ isuse: 0 });
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('risk/getImpact', { medthod: 'get', params: { search: search } })
       .then((res) => {
-        res.items.impacts.forEach((v, k) => {
+        res.items.forEach((v, k) => {
           v.number = `Hz${k + 1}`;
           v.key = k + 1;
         });
-        setimpact(res.items.impacts);
-        console.log(res.items.impacts);
+        setimpact(res.items);
+        console.log(res.items);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddImpact = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -245,6 +250,12 @@ const Impact = (props) => {
       align: 'center',
     },
     {
+      title: 'ภาษาไทย',
+      dataIndex: 'name_thai',
+      key: 'name_thai',
+      align: 'center',
+    },
+    {
       title: 'สถานะ',
       dataIndex: 'isuse',
       key: 'isuse',
@@ -280,6 +291,10 @@ const Impact = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button
@@ -333,11 +348,23 @@ const Impact = (props) => {
             <Input />
           </Form.Item>
 
+          <Form.Item
+            label="ภาษาไทย"
+            name="name_thai"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อภาษาไทย' }]}
+          >
+            <Input />
+          </Form.Item>
+
           <Form.Item label="คำอธิบาย" name="description">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="isuse" label="สถานะ">
+          <Form.Item
+            name="isuse"
+            label="สถานะ"
+            rules={[{ required: true, message: 'กรุณาเลือก' }]}
+          >
             <Radio.Group>
               <Radio.Button value={1}>Active</Radio.Button>
               <Radio.Button value={0}>Non Active</Radio.Button>

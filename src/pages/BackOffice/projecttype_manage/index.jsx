@@ -4,6 +4,7 @@ import {
   EyeOutlined,
   MoreOutlined,
   PlusOutlined,
+  RedoOutlined,
 } from '@ant-design/icons';
 import { ProDescriptions } from '@ant-design/pro-components';
 import {
@@ -295,11 +296,22 @@ const ActivityManage = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
             onSearch={(search) => {
               reload(search);
             }}
           />
         </Space>
+
+        <Button
+          onClick={() => {
+            reload();
+          }}
+          style={{ marginLeft: 10 }}
+        >
+          <RedoOutlined />
+        </Button>
+
         <Button
           type="primary"
           style={{ float: 'right' }}
@@ -357,7 +369,11 @@ const ActivityManage = (props) => {
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
 
-          <Form.Item name="active" label="สถานะ">
+          <Form.Item
+            name="active"
+            label="สถานะ"
+            rules={[{ required: true, message: 'กรุณาเลือก' }]}
+          >
             <Radio.Group>
               <Radio.Button value={1}>Active</Radio.Button>
               <Radio.Button value={0}>Non Active</Radio.Button>

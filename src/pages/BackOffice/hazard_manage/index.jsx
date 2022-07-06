@@ -38,7 +38,14 @@ const HazardManage = (props) => {
 
   useEffect(() => {
     form.setFieldsValue({ active: 0 });
-    request('master/getHazardIssue', { medthod: 'get' })
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('master/getHazardIssue', {
+      medthod: 'get',
+      params: { search: search },
+    })
       .then((res) => {
         res.items.forEach((v, k) => {
           v.number = `ST-00${k + 1}`;
@@ -59,7 +66,7 @@ const HazardManage = (props) => {
         console.log(arrData);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddHazard = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -306,6 +313,10 @@ const HazardManage = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button

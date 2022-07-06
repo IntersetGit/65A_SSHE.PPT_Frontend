@@ -147,17 +147,9 @@ const NonadUsermanage = (props) => {
       title: 'แหล่งที่มาจากผู้ใช้งาน',
       dataIndex: 'is_ad',
       key: '6',
-      filters: [
-        {
-          text: 'AD',
-          value: 'AD',
-        },
-        {
-          text: 'Non AD',
-          value: 'Non AD',
-        },
-      ],
-      onFilter: (value, record) => record.is_ad.indexOf(value) === 0,
+      sorter: (record1, record2) => {
+        return record1.is_ad > record2.is_ad;
+      },
       render: (item1, item2) =>
         item1 ? 'AD' : <span style={{ color: 'red' }}>Non AD</span>,
     },

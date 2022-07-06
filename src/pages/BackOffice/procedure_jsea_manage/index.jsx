@@ -5,6 +5,7 @@ import {
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -30,33 +31,42 @@ const ProcedureJsea = (props) => {
   const [procedurejsea, setprocedurejsea] = useState([]);
   const [impacttype, setimpacttype] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = useForm();
 
   useEffect(() => {
-    request('risk/getdata/risk', { medthod: 'get' })
+    form.setFieldsValue({ isuse: 0 });
+    reload();
+  }, []);
+
+  const reload = (search = null) => {
+    request('risk/getProcedures', {
+      medthod: 'get',
+      params: { search: search },
+    })
       .then((res) => {
-        res.items.procedures.forEach((v, k) => {
+        res.items.forEach((v, k) => {
           v.number = `TP${k + 1}`;
           v.key = k + 1;
         });
-        setprocedurejsea(res.items.procedures);
+        setprocedurejsea(res.items);
         console.log(res.items);
       })
       .catch((err) => console.error(err));
 
-    request('risk/getdata/risk', { medthod: 'get' })
+    request('risk/getImpact', { medthod: 'get' })
       .then((res) => {
         let arrData = [];
-        res.items.impacts.forEach((v, k) => {
+        res.items.forEach((v, k) => {
           arrData.push({ label: v.name, value: v.id });
         });
         setimpacttype(arrData);
         console.log(arrData);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddProcedureJsea = (type, _data = {}) => {
     console.log('onSaveData', type);
@@ -106,6 +116,10 @@ const ProcedureJsea = (props) => {
   const showModal = (type) => {
     setdrawerType(type);
     setShowModal(true);
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const hideModal = () => {
@@ -241,6 +255,14 @@ const ProcedureJsea = (props) => {
     }
   };
 
+  const display = [
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'Description',
+    },
+  ];
+
   const columns = [
     {
       title: 'ID',
@@ -256,12 +278,19 @@ const ProcedureJsea = (props) => {
       align: 'center',
     },
     {
+      title: 'ภาษาไทย',
+      dataIndex: 'name_thai',
+      key: 'name_thai',
+      align: 'center',
+    },
+    {
       title: 'Hazard',
       dataIndex: 'impact_id',
       key: 'impact_id',
       align: 'center',
       render: (record) => {
         const data = impacttype.find((e) => e.value === record);
+        console.log(record);
         return <>{<div key={data?.value}>{data?.label}</div>}</>;
       },
     },
@@ -279,6 +308,7 @@ const ProcedureJsea = (props) => {
       title: 'Action',
       key: 'action',
       align: 'center',
+      valueType: 'option',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -300,6 +330,10 @@ const ProcedureJsea = (props) => {
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
         </Space>
         <Button
@@ -361,6 +395,14 @@ const ProcedureJsea = (props) => {
             <Input />
           </Form.Item>
 
+          <Form.Item
+            label="ภาษาไทย"
+            name="name_thai"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อภาษาไทย' }]}
+          >
+            <Input />
+          </Form.Item>
+
           <Form.Item label="คำอธิบาย" name="description">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
           </Form.Item>
@@ -387,6 +429,31 @@ const ProcedureJsea = (props) => {
             </Space>
           </Form.Item>
         </Form>
+      </Drawer>
+
+      <Drawer
+        width={700}
+        visible={isShowDrawer}
+        onClose={() => {
+          setselectedrow(undefined);
+          setShowDrawer(false);
+        }}
+        closable={false}
+      >
+        {selectedrow?.id && (
+          <ProDescriptions
+            column={1}
+            bordered
+            title={selectedrow?.name}
+            request={async () => ({
+              data: selectedrow || {},
+            })}
+            params={{
+              id: selectedrow?.name,
+            }}
+            columns={[...columns, ...display]}
+          />
+        )}
       </Drawer>
     </>
   );
