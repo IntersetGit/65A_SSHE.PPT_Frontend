@@ -1,5 +1,11 @@
 import { Modal } from 'antd';
-import { GoogleMap, withGoogleMap, withScriptjs } from 'react-google-maps';
+import { useState } from 'react';
+import {
+  GoogleMap,
+  Marker,
+  withGoogleMap,
+  withScriptjs,
+} from 'react-google-maps';
 
 type MapPropsType = {
   visible: boolean;
@@ -8,17 +14,31 @@ type MapPropsType = {
 };
 
 const MyMapComponent = withScriptjs(
-  withGoogleMap((props) => (
-    <GoogleMap
-      defaultZoom={10}
-      defaultCenter={{ lat: 13.740819806880188, lng: 100.51283607894975 }}
-      onClick={(e) => {
-        console.log(e.latLng?.lat(), e.latLng?.lng());
-      }}
-    >
-      {}
-    </GoogleMap>
-  )),
+  withGoogleMap((props) => {
+    const [markerpos, setmarkerpos] = useState<{
+      lat: number | undefined;
+      lng: number | undefined;
+    } | null>(null);
+    return (
+      <GoogleMap
+        defaultZoom={10}
+        defaultCenter={{ lat: 13.740819806880188, lng: 100.51283607894975 }}
+        onClick={(e) => {
+          console.log(e.latLng?.lat(), e.latLng?.lng());
+          setmarkerpos({ lat: e.latLng?.lat(), lng: e.latLng?.lng() });
+        }}
+      >
+        {markerpos !== null && (
+          <Marker
+            position={{
+              lat: markerpos?.lat as number,
+              lng: markerpos?.lng as number,
+            }}
+          />
+        )}
+      </GoogleMap>
+    );
+  }),
 );
 const Map: React.FC<MapPropsType> = (props) => {
   return (
