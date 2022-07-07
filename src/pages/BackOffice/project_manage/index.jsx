@@ -31,13 +31,13 @@ const { TextArea } = Input;
 
 const ProjectManage = (props) => {
   const [projectdata, setprojectdata] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isShowModal, setShowModal] = useState(false);
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [data, setdata] = useState([]);
   const [form] = Form.useForm();
-  const [value, setValue] = useState('Active');
   const [values, setValues] = useState('Favorite');
   const [project, setproject] = useState([]);
   const [companyselectedItems, setcompanySelectedItems] = useState([]);
@@ -46,7 +46,6 @@ const ProjectManage = (props) => {
   );
 
   useEffect(() => {
-    form.setFieldsValue({ active: 0 });
     form.setFieldsValue({ favorite_status: 0 });
     reload();
   }, []);
@@ -58,8 +57,12 @@ const ProjectManage = (props) => {
         res.items.forEach((v, k) => {
           v.key = k + 1;
           v.number = k + 1;
+          v.company.forEach((value, key) => {
+            value.key = key + 1;
+          });
         });
         setprojectdata(res.items);
+        setLoading(false);
       })
       .catch((err) => console.error(err));
 
@@ -164,6 +167,7 @@ const ProjectManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
+          setLoading(true);
           request('master/manageProject', {
             method: 'post',
             data: values,
@@ -175,6 +179,8 @@ const ProjectManage = (props) => {
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+              setLoading(false);
+              reload();
             }
           });
         }
@@ -191,6 +197,7 @@ const ProjectManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
+          setLoading(true);
           request('master/manageProject', {
             method: 'post',
             data: { ...values, id: selectedrow.id },
@@ -203,6 +210,8 @@ const ProjectManage = (props) => {
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+              setLoading(false);
+              reload();
             }
           });
         }
@@ -220,11 +229,6 @@ const ProjectManage = (props) => {
       xs: { span: 24 },
       sm: { span: 24 },
     },
-  };
-
-  const RadioonChange = ({ target: { value } }) => {
-    console.log('radio checked', value);
-    setValue(value);
   };
 
   const RadioFavorite = ({ target: { value } }) => {
@@ -283,7 +287,6 @@ const ProjectManage = (props) => {
 
   useEffect(() => {
     if (selectedrow != null) {
-      console.log(form.getFieldsValue());
       console.log(selectedrow);
       let company_arr = [];
       selectedrow.company?.forEach((v) => {
@@ -319,11 +322,13 @@ const ProjectManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
+          setLoading(true);
           request(`master/deleteProject/${record.id}`, {
             method: 'delete',
           }).then((res) => {
             if (res.status_code == 200) {
               AddProject('DELETE', record);
+              setLoading(false);
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -351,14 +356,6 @@ const ProjectManage = (props) => {
       title: 'Description',
       dataIndex: 'description',
       key: 'Description',
-    },
-    {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'Active',
-      render: (record) => {
-        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
-      },
     },
     {
       title: 'Favorite Status',
@@ -390,16 +387,6 @@ const ProjectManage = (props) => {
       render: (record) => {
         const data = project.find((e) => e.value === record);
         return <>{<div key={data?.value}>{data?.label}</div>}</>;
-      },
-    },
-    {
-      title: 'สถานะ',
-      dataIndex: 'active',
-      key: 'active',
-      align: 'center',
-      sorter: (a, b) => a.active - b.active,
-      render: (record) => {
-        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
     },
     {
@@ -453,6 +440,7 @@ const ProjectManage = (props) => {
           เพิ่ม
         </Button>
         <Table
+          loading={loading}
           columns={columns}
           dataSource={projectdata}
           expandable
@@ -501,19 +489,6 @@ const ProjectManage = (props) => {
 
               <Form.Item label="รายละเอียด" name="description">
                 <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
-              </Form.Item>
-
-              <Form.Item
-                label="Active"
-                name="active"
-                rules={[{ required: true, message: 'กรุณาเลือก' }]}
-              >
-                <Radio.Group
-                  options={options}
-                  onChange={RadioonChange}
-                  value={value}
-                  optionType="button"
-                />
               </Form.Item>
 
               <Form.Item

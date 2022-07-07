@@ -42,6 +42,8 @@ const AvatarDropdown: React.FC = () => {
         logOutMethod();
       } else if (key === 'myprofile') {
         history.push('/frontoffice/user-profile');
+      } else {
+        history.push('/frontoffice/team-management');
       }
     },
     [setInitialState],

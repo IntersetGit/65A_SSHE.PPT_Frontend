@@ -30,6 +30,7 @@ const NonadUsermanage = (props) => {
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState([]);
   const [company, setcompany] = useState([]);
+  const [project, setproject] = useState([]);
   const [data, setData] = useState([]);
   const [dataEdit, setDataEdit] = useState([]);
   const [statusValidation, setStatusValidation] = useState([]);
@@ -214,6 +215,17 @@ const NonadUsermanage = (props) => {
       .catch((error) => {
         console.log(error);
       });
+
+    request('master/getProject', { medthod: 'get' })
+      .then((res) => {
+        let arrData = [];
+        res.items.forEach((v, k) => {
+          arrData.push({ label: v.project_name, value: v.id });
+        });
+        setproject(arrData);
+        console.log(arrData);
+      })
+      .catch((err) => console.error(err));
   };
 
   useEffect(() => {
@@ -514,6 +526,14 @@ const NonadUsermanage = (props) => {
                   rules={[{ required: true, message: 'กรุณาเลือกข้อมูล' }]}
                 >
                   <Select placeholder="กลุ่มผู้ใช้งาน" options={roles} />
+                </Form.Item>
+
+                <Form.Item
+                  name="project_id"
+                  label="ชื่อโครงการ"
+                  rules={[{ required: true, message: 'กรุณาเลือกโครงการ' }]}
+                >
+                  <Select placeholder="กลุ่มผู้ใช้งาน" options={project} />
                 </Form.Item>
 
                 <Form.Item>

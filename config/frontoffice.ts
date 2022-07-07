@@ -16,6 +16,13 @@ const frontoffice_menu = {
           hideInMenu: true,
         },
         {
+          path: '/frontoffice/team-management',
+          exact: true,
+          component: './FrontOffice/team-management',
+          name: 'Team Management',
+          hideInMenu: true,
+        },
+        {
           path: '/frontoffice/risk',
           name: 'RISK ASSESSMENT',
           icon: 'Risk Assessment',

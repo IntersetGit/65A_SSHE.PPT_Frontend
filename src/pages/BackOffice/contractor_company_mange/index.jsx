@@ -14,7 +14,6 @@ import {
   Form,
   Input,
   Menu,
-  Radio,
   Select,
   Space,
 } from 'antd';
@@ -37,7 +36,6 @@ const ContractorCompanyManage = (props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({ active: 0 });
     request('master/getCompany', { method: 'get' })
       .then((res) => {
         console.log(res);
@@ -314,17 +312,6 @@ const ContractorCompanyManage = (props) => {
       hideInSearch: true,
     },
     {
-      title: 'สถานะ',
-      dataIndex: 'active',
-      key: 'Active',
-      align: 'center',
-      hideInSearch: true,
-      sorter: (a, b) => a.active - b.active,
-      render: (record) => {
-        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
-      },
-    },
-    {
       title: 'จัดการ',
       key: 'จัดการ',
       align: 'center',
@@ -355,7 +342,18 @@ const ContractorCompanyManage = (props) => {
       <ProTable
         columns={columns}
         dataSource={comusermanage}
-        expandable
+        expandable={{
+          expandedRowRender: (record) => (
+            <p
+              style={{
+                margin: 0,
+              }}
+            >
+              {record.address}
+            </p>
+          ),
+          rowExpandable: (record) => record.company_name !== 'Not Expandable',
+        }}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -482,19 +480,6 @@ const ContractorCompanyManage = (props) => {
               >
                 <Select options={subcontract}></Select>
               </Form.Item>
-            </Form.Item>
-          </Col>
-
-          <Col>
-            <Form.Item
-              name="active"
-              label="สถานะ"
-              rules={[{ required: true, message: 'กรุณาเลือก' }]}
-            >
-              <Radio.Group>
-                <Radio.Button value={1}>Active</Radio.Button>
-                <Radio.Button value={0}>Non Active</Radio.Button>
-              </Radio.Group>
             </Form.Item>
           </Col>
 

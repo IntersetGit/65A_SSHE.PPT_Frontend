@@ -14,7 +14,6 @@ import {
   Form,
   Input,
   Menu,
-  Radio,
   Space,
   Table,
 } from 'antd';
@@ -35,7 +34,6 @@ const Impact = (props) => {
   const [form] = useForm();
 
   useEffect(() => {
-    form.setFieldsValue({ isuse: 0 });
     reload();
   }, []);
 
@@ -256,16 +254,6 @@ const Impact = (props) => {
       align: 'center',
     },
     {
-      title: 'สถานะ',
-      dataIndex: 'isuse',
-      key: 'isuse',
-      align: 'center',
-      sorter: (a, b) => a.isuse - b.isuse,
-      render: (record) => {
-        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
-      },
-    },
-    {
       title: 'Action',
       key: 'action',
       align: 'center',
@@ -358,17 +346,6 @@ const Impact = (props) => {
 
           <Form.Item label="คำอธิบาย" name="description">
             <TextArea rows={8} autoSize={{ minRows: 8, width: 12 }} />
-          </Form.Item>
-
-          <Form.Item
-            name="isuse"
-            label="สถานะ"
-            rules={[{ required: true, message: 'กรุณาเลือก' }]}
-          >
-            <Radio.Group>
-              <Radio.Button value={1}>Active</Radio.Button>
-              <Radio.Button value={0}>Non Active</Radio.Button>
-            </Radio.Group>
           </Form.Item>
 
           <Form.Item>
