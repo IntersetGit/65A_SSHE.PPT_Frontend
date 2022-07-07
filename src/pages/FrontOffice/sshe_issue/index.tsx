@@ -20,24 +20,72 @@ import {
 } from '@ant-design/pro-components';
 import { Button, Tooltip } from 'antd';
 import { useRef, useState } from 'react';
-import { getIssueHazard, getIssueType } from './api';
+import Swal from 'sweetalert2';
+import { addIssue, getIssue, getIssueHazard, getIssueType } from './api';
 import { columns } from './column';
 import { status } from './enums';
-import Map from './map';
+import Map, { Latlngtype } from './map';
 
 const Issue = () => {
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [isShowMapmodal, setShowMapmodal] = useState(false);
+  const [dataSource, setDatasource] = useState<APITypes.SSHEIssueApitype[]>([]);
+  const [maplatlng, setmaplatlng] = useState<Latlngtype | null>(null);
   const [mapmode, setmapmode] = useState<'select' | 'display'>('select');
   const formRef = useRef<ProFormInstance>();
+  const [form] = ProForm.useForm();
   const actionRef = useRef<ActionType>();
 
   const showModal = () => {
     setShowDrawer(true);
+    form.resetFields();
+    setmaplatlng(null);
   };
 
   const showMapModal = () => {
     setShowMapmodal(!isShowMapmodal);
+  };
+
+  const handleFinish = async (values: APITypes.SSHEIssueFormType) => {
+    console.log(values);
+    handleAddIssue(values);
+  };
+
+  const handleAddIssue = (values: APITypes.SSHEIssueFormType) => {
+    Swal.fire({
+      title: 'บันทึกข้อมูล',
+      text: 'ยืนยันการบันทึกข้อมูล',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await addIssue({ data: values });
+          Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } catch (error) {
+          Swal.fire('บันทึกข้อมูลไม่สำเร็จ', '', 'error');
+        }
+      }
+    });
+  };
+
+  const onMapselectConfirm = (latlng: Latlngtype | null) => {
+    if (latlng) {
+      console.log(latlng);
+      form.setFieldsValue({
+        lat: latlng.lat,
+        long: latlng.lng,
+      });
+      showMapModal();
+    }
   };
 
   return (
@@ -48,6 +96,8 @@ const Issue = () => {
         }}
         columns={columns}
         actionRef={actionRef}
+        request={getIssue}
+        onDataSourceChange={setDatasource}
         columnEmptyText={'ไม่พบข้อมูล'}
         footer={() => [
           <Button
@@ -95,12 +145,11 @@ const Issue = () => {
         }}
       />
       {/* Drawer Form */}
-      <DrawerForm
+      <DrawerForm<APITypes.SSHEIssueFormType>
         title={'ADD ISSUE'}
+        form={form}
         visible={isShowDrawer}
-        onFinish={async (values) => {
-          console.log(values);
-        }}
+        onFinish={handleFinish}
         formRef={formRef}
         layout={'horizontal'}
         autoFocusFirstInput
@@ -127,7 +176,7 @@ const Issue = () => {
           <ProFormSelect
             label={'Project Name'}
             width={'md'}
-            name={'project_name'}
+            name={'project_id'}
           />
         </ProForm.Group>
 
@@ -143,7 +192,11 @@ const Issue = () => {
               },
             ]}
           />
-          <ProFormText label={'Lat/Long'} width={150} name={'lat_long'} />
+        </ProForm.Group>
+
+        <ProForm.Group>
+          <ProFormText label={'Lat'} width={270} name={'lat'} />
+          <ProFormText label={'Lng'} width={270} name={'long'} />
           <ProForm.Item>
             <Tooltip overlay="Select Lat/Long">
               <span
@@ -151,7 +204,11 @@ const Issue = () => {
                   cursor: 'pointer',
                 }}
                 onClick={() => {
-                  console.log('Select Lat long');
+                  const f = form.getFieldsValue();
+                  if (f.lat && f.long) {
+                    console.log('Do this');
+                    setmaplatlng({ lat: f.lat, lng: f.long });
+                  }
                   setmapmode('select');
                   showMapModal();
                 }}
@@ -170,7 +227,7 @@ const Issue = () => {
               return getIssueType();
             }}
             showSearch
-            name={'primary_case'}
+            name={'issue_type_id'}
             rules={[
               {
                 required: true,
@@ -180,12 +237,12 @@ const Issue = () => {
           />
           <ProFormSelect
             label={'Hazard'}
-            width={'md'}
+            width={'sm'}
             showSearch
             request={async () => {
               return getIssueHazard();
             }}
-            name={'hazard'}
+            name={'hazard_id'}
             rules={[
               {
                 required: true,
@@ -221,7 +278,7 @@ const Issue = () => {
           <ProFormText
             label={'SHE Officer'}
             width={'md'}
-            name={'she_officer'}
+            name={'user_id'}
             rules={[
               {
                 required: true,
@@ -270,7 +327,14 @@ const Issue = () => {
       </DrawerForm>
 
       {/* MAP */}
-      <Map mode={mapmode} visible={isShowMapmodal} onCancel={showMapModal} />
+      <Map
+        mode={mapmode}
+        dataSource={dataSource}
+        onConfirm={onMapselectConfirm}
+        markerVal={maplatlng}
+        visible={isShowMapmodal}
+        onCancel={showMapModal}
+      />
     </>
   );
 };

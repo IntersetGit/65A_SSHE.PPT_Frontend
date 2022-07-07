@@ -4,18 +4,29 @@ import { status } from './enums';
 
 export const columns: ProColumns[] = [
   {
-    title: 'Date',
+    title: 'Form - To Date',
     key: 'date',
     valueType: 'dateRange',
+    hideInForm: true,
+    hideInTable: true,
+  },
+  {
+    title: 'Date',
+    key: 'date',
+    dataIndex: 'date',
+    valueType: 'date',
+    hideInSearch: true,
   },
   {
     title: 'Location',
     key: 'location',
+    dataIndex: 'location',
     hideInSearch: true,
   },
   {
     title: 'Primary Case',
     key: 'primary_case',
+    dataIndex: 'issue_type_name',
     valueType: 'select',
     request: async () => {
       return getIssueType();
@@ -23,7 +34,8 @@ export const columns: ProColumns[] = [
   },
   {
     title: 'Process',
-    key: 'process',
+    key: 'status',
+    dataIndex: 'status',
     valueType: 'select',
     hideInTable: true,
     request: async () => {
@@ -39,16 +51,19 @@ export const columns: ProColumns[] = [
   {
     title: 'Hazard',
     key: 'hazard',
+    dataIndex: 'hazard_name',
     hideInSearch: true,
   },
   {
     title: 'Description',
     key: 'description',
+    dataIndex: 'description',
     hideInSearch: true,
   },
   {
     title: 'Suggestion',
     key: 'suggestion',
+    dataIndex: 'suggestion',
     hideInSearch: true,
   },
   {

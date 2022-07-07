@@ -80,4 +80,39 @@ declare namespace APITypes {
     updated_by: string;
     updated_date: Date | string;
   };
+
+  type SSHEIssueApitype = {
+    key?: number;
+    created_by: string;
+    created_date: Date | string;
+    date: Date | string;
+    description: string;
+    due_date: Date | string;
+    hazard_name: string;
+    id: string;
+    issue_type_name: string;
+    lat: string;
+    location: string;
+    long: string;
+    project_name: string;
+    status: number;
+    suggestion: string;
+    updated_by: string;
+    updated_date: Date | string;
+    user_name: string;
+  };
+
+  type SSHEIssueFormType = {
+    date: Date | string;
+    description: string;
+    due_date: Date | string;
+    hazard_id: string;
+    issue_type_id: string;
+    lat: number;
+    location: string;
+    long: number;
+    status: number;
+    suggestion: string;
+    user_id: string;
+  };
 }
