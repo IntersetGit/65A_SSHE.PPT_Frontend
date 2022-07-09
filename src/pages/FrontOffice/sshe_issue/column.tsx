@@ -66,10 +66,17 @@ export const columns: ProColumns[] = [
     dataIndex: 'suggestion',
     hideInSearch: true,
   },
-  {
-    title: 'Action',
-    key: 'action',
-    valueType: 'option',
-    hideInSearch: true,
-  },
+  // {
+  //   title: 'Action',
+  //   key: 'action',
+  //   valueType: 'option',
+  //   hideInSearch: true,
+  //   render: (_, record) => {
+  //     return (
+  //       <>
+  //         <Dropdown.Button type='text' icon={<MoreOutlined />} overlay={<DropdownMenu record={record}/>}/>
+  //       </>
+  //     );
+  //   }
+  // },
 ];

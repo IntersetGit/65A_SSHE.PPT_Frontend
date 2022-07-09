@@ -1,13 +1,18 @@
 import {
   AimOutlined,
+  DeleteOutlined,
   DownloadOutlined,
+  EditOutlined,
   EnvironmentOutlined,
+  EyeOutlined,
   FileExcelOutlined,
+  MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import {
   ActionType,
   DrawerForm,
+  ProColumns,
   ProForm,
   ProFormCheckbox,
   ProFormDatePicker,
@@ -18,7 +23,8 @@ import {
   ProFormUploadDragger,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Tooltip } from 'antd';
+import { Button, Dropdown, Menu, Tooltip } from 'antd';
+import { MenuInfo } from 'rc-menu/lib/interface';
 import { useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import { addIssue, getIssue, getIssueHazard, getIssueType } from './api';
@@ -31,6 +37,8 @@ const Issue = () => {
   const [isShowMapmodal, setShowMapmodal] = useState(false);
   const [dataSource, setDatasource] = useState<APITypes.SSHEIssueApitype[]>([]);
   const [maplatlng, setmaplatlng] = useState<Latlngtype | null>(null);
+  const [selectedRow, setselectedRow] =
+    useState<APITypes.SSHEIssueApitype | null>(null);
   const [mapmode, setmapmode] = useState<'select' | 'display'>('select');
   const formRef = useRef<ProFormInstance>();
   const [form] = ProForm.useForm();
@@ -77,6 +85,66 @@ const Issue = () => {
     });
   };
 
+  //** ================================ Column Dropdown Menu ================================ */
+  const menuItems = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: 'แก้ไข',
+    },
+    {
+      key: 'view',
+      icon: <EyeOutlined />,
+      label: 'ดูข้อมูล',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: 'ลบข้อมูล',
+    },
+  ];
+
+  const onMenuClick = (event: MenuInfo, record: APITypes.SSHEIssueApitype) => {
+    const { key } = event;
+    if (key === 'edit') {
+      console.log('edit');
+      setselectedRow(record);
+      form.setFieldsValue(record);
+      setShowDrawer(true);
+    } else if (key === 'view') {
+      console.log('view');
+    } else if (key === 'delete') {
+      console.log('delete');
+    }
+  };
+
+  const optionCol: ProColumns = {
+    title: 'Action',
+    key: 'action',
+    valueType: 'option',
+    hideInSearch: true,
+    render: (_: any, record: any) => {
+      return (
+        <>
+          <Dropdown.Button
+            type="text"
+            icon={<MoreOutlined />}
+            overlay={<DropdownMenu record={record} />}
+          />
+        </>
+      );
+    },
+  };
+  const DropdownMenu: React.FC<{ record: APITypes.SSHEIssueApitype }> = (
+    props,
+  ) => (
+    <>
+      <Menu items={menuItems} onClick={(e) => onMenuClick(e, props.record)} />
+    </>
+  );
+
+  //** =========================================================================================== */
+
   const onMapselectConfirm = (latlng: Latlngtype | null) => {
     if (latlng) {
       console.log(latlng);
@@ -88,13 +156,15 @@ const Issue = () => {
     }
   };
 
+  const comparedColums = [...columns, optionCol];
+
   return (
     <>
       <ProTable
         search={{
           labelWidth: 'auto',
         }}
-        columns={columns}
+        columns={comparedColums}
         actionRef={actionRef}
         request={getIssue}
         onDataSourceChange={setDatasource}

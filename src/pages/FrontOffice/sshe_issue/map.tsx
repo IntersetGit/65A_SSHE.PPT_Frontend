@@ -85,8 +85,30 @@ const MyMapComponent = withScriptjs(
                     onCloseClick={() => setinfodataview(null)}
                   >
                     <>
-                      <p>{item.id}</p>
-                      <p>{item.issue_type_name}</p>
+                      <p>
+                        <span style={{ fontWeight: 'bold' }}>Date : </span>
+                        {item.date}
+                      </p>
+                      <p>
+                        <span style={{ fontWeight: 'bold' }}>Location : </span>
+                        {item.location}
+                      </p>
+                      <p>
+                        <span style={{ fontWeight: 'bold' }}>
+                          Primary Case :{' '}
+                        </span>
+                        {item.issue_type_name}
+                      </p>
+                      <p>
+                        <span style={{ fontWeight: 'bold' }}>Hazard : </span>
+                        {item.hazard_name}
+                      </p>
+                      <p>
+                        <span style={{ fontWeight: 'bold' }}>
+                          Description :{' '}
+                        </span>
+                        {item.description}
+                      </p>
                     </>
                   </InfoWindow>
                 )}
