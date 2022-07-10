@@ -135,6 +135,7 @@ const Issue = () => {
       );
     },
   };
+
   const DropdownMenu: React.FC<{ record: APITypes.SSHEIssueApitype }> = (
     props,
   ) => (
