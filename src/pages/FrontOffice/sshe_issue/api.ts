@@ -76,3 +76,23 @@ export async function addIssue(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+export async function editIssue(options?: { [key: string]: any }) {
+  return request<APITypes.SSHEIssueFormType>('ssheissue/updatedssheissue', {
+    method: 'PUT',
+    ...(options || {}),
+  });
+}
+
+export async function deleteIssue(
+  id: string,
+  options?: { [key: string]: any },
+) {
+  return request<APITypes.SSHEIssueFormType>(
+    'ssheissue/deletessheissue/' + id,
+    {
+      method: 'DELETE',
+      ...(options || {}),
+    },
+  );
+}

@@ -100,6 +100,7 @@ declare namespace APITypes {
     updated_by: string;
     updated_date: Date | string;
     user_name: string;
+    close: number;
   };
 
   type SSHEIssueFormType = {
@@ -114,5 +115,6 @@ declare namespace APITypes {
     status: number;
     suggestion: string;
     user_id: string;
+    close: number;
   };
 }

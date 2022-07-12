@@ -23,26 +23,27 @@ const frontoffice_menu = {
           hideInMenu: true,
         },
         {
-          path: '/frontoffice/risk',
-          name: 'RISK ASSESSMENT',
+          path: '/frontoffice/risk/risk_register_and_action_plan',
+          name: 'Risk Register & Plan',
           icon: 'Risk Assessment',
-          routes: [
-            {
-              path: '/frontoffice/risk/risk_identification_template',
-              icon: 'Risk Identification',
-              name: 'Risk Identification Template',
-              component: './FrontOffice/risk_identification_template',
-            },
-            {
-              path: '/frontoffice/risk/risk_register_and_action_plan',
-              icon: 'Risk Register',
-              name: 'Risk Register and Action Plan',
-              component: './FrontOffice/risk_register_and_action_plan',
-            },
-            {
-              component: '404',
-            },
-          ],
+          component: './FrontOffice/risk_register_and_action_plan',
+          // routes: [
+          //   {
+          //     path: '/frontoffice/risk/risk_identification_template',
+          //     icon: 'Risk Identification',
+          //     name: 'Risk Identification Template',
+          //     component: './FrontOffice/risk_identification_template',
+          //   },
+          //   {
+          //     path: '/frontoffice/risk/risk_register_and_action_plan',
+          //     icon: 'Risk Register',
+          //     name: 'Risk Register and Action Plan',
+          //     component: './FrontOffice/risk_register_and_action_plan',
+          //   },
+          //   {
+          //     component: '404',
+          //   },
+          // ],
         },
         {
           path: '/frontoffice/sshe_issue',
@@ -71,7 +72,19 @@ const frontoffice_menu = {
             {
               path: '/frontoffice/analysis/analyze_of_issues',
               icon: 'SSHE-Statistic',
-              name: 'ANALYZE OF SSHE ISSUES',
+              name: 'SUMMERY STATIC',
+              component: './FrontOffice/analysis_graph',
+            },
+            {
+              path: '/frontoffice/analysis/analysis_graph',
+              icon: 'SSHE-Statistic',
+              name: 'ANALYSIS GRAPH',
+              component: './FrontOffice/analysis_graph',
+            },
+            {
+              path: '/frontoffice/analysis/sshe_kpi',
+              icon: 'SSHE-Statistic',
+              name: 'SSHE KPI',
               component: './FrontOffice/analysis_graph',
             },
             {

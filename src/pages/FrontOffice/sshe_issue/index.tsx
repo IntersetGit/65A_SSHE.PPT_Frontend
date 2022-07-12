@@ -27,16 +27,25 @@ import { Button, Dropdown, Menu, Tooltip } from 'antd';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import { useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { addIssue, getIssue, getIssueHazard, getIssueType } from './api';
+import {
+  addIssue,
+  deleteIssue,
+  editIssue,
+  getIssue,
+  getIssueHazard,
+  getIssueType,
+} from './api';
 import { columns } from './column';
 import { status } from './enums';
 import Map, { Latlngtype } from './map';
+import ViewDrawer from './viewdrawer';
 
 const Issue = () => {
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [isShowMapmodal, setShowMapmodal] = useState(false);
   const [dataSource, setDatasource] = useState<APITypes.SSHEIssueApitype[]>([]);
   const [maplatlng, setmaplatlng] = useState<Latlngtype | null>(null);
+  const [viewdrawer, setviewdrawer] = useState<boolean>(false);
   const [selectedRow, setselectedRow] =
     useState<APITypes.SSHEIssueApitype | null>(null);
   const [mapmode, setmapmode] = useState<'select' | 'display'>('select');
@@ -54,9 +63,50 @@ const Issue = () => {
     setShowMapmodal(!isShowMapmodal);
   };
 
+  const showviewdrawer = () => {
+    setviewdrawer(!viewdrawer);
+  };
+
   const handleFinish = async (values: APITypes.SSHEIssueFormType) => {
     console.log(values);
-    handleAddIssue(values);
+
+    if (selectedRow) {
+      handleUpdateIssue(values);
+    } else {
+      handleAddIssue(values);
+    }
+  };
+
+  const handleUpdateIssue = (values: APITypes.SSHEIssueFormType) => {
+    Swal.fire({
+      title: 'แก้ไขข้อมูล',
+      text: 'ยืนยันการแก้ไขข้อมูล',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await editIssue({
+            data: {
+              ...values,
+              id: selectedRow?.id,
+              close: values.close ? 1 : 0,
+            },
+          });
+          Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
+          setShowDrawer(false);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        } catch (error) {
+          Swal.fire('แก้ไขข้อมูลไม่สำเร็จ', '', 'error');
+        }
+      }
+    });
   };
 
   const handleAddIssue = (values: APITypes.SSHEIssueFormType) => {
@@ -72,9 +122,9 @@ const Issue = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await addIssue({ data: values });
+          await addIssue({ data: { ...values, close: values.close ? 1 : 0 } });
           Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
-
+          setShowDrawer(false);
           if (actionRef.current) {
             actionRef.current.reload();
           }
@@ -107,14 +157,35 @@ const Issue = () => {
   const onMenuClick = (event: MenuInfo, record: APITypes.SSHEIssueApitype) => {
     const { key } = event;
     if (key === 'edit') {
-      console.log('edit');
       setselectedRow(record);
       form.setFieldsValue(record);
       setShowDrawer(true);
     } else if (key === 'view') {
-      console.log('view');
+      setselectedRow(record);
+      showviewdrawer();
     } else if (key === 'delete') {
-      console.log('delete');
+      Swal.fire({
+        title: 'ลบข้อมูล',
+        text: 'ยืนยันการลบข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await deleteIssue(record.id);
+            Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          } catch (error) {
+            Swal.fire('ลบข้อมูลไม่สำเร็จ', '', 'error');
+          }
+        }
+      });
     }
   };
 
@@ -217,7 +288,7 @@ const Issue = () => {
       />
       {/* Drawer Form */}
       <DrawerForm<APITypes.SSHEIssueFormType>
-        title={'ADD ISSUE'}
+        title={'MANAGE ISSUE'}
         form={form}
         visible={isShowDrawer}
         onFinish={handleFinish}
@@ -278,6 +349,15 @@ const Issue = () => {
                   const f = form.getFieldsValue();
                   if (f.lat && f.long) {
                     console.log('Do this');
+
+                    if (
+                      typeof f.lat === 'string' ||
+                      typeof f.long === 'string'
+                    ) {
+                      f.lat = parseFloat(f.lat);
+                      f.long = parseFloat(f.long);
+                    }
+
                     setmaplatlng({ lat: f.lat, lng: f.long });
                   }
                   setmapmode('select');
@@ -405,6 +485,13 @@ const Issue = () => {
         markerVal={maplatlng}
         visible={isShowMapmodal}
         onCancel={showMapModal}
+      />
+
+      {/* ViewDrawer */}
+      <ViewDrawer
+        data={selectedRow}
+        onClose={showviewdrawer}
+        visible={viewdrawer}
       />
     </>
   );

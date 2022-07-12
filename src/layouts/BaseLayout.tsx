@@ -1,11 +1,13 @@
 import ICONMAP from '@/components/Iconmap ';
 import PageMiddleware from '@/components/PageMiddleware';
-import type {
+import {
   BasicLayoutProps as ProLayoutProps,
   MenuDataItem,
+  PageContainer,
+  ProLayout,
+  SettingDrawer,
   Settings,
 } from '@ant-design/pro-layout';
-import { PageContainer, ProLayout } from '@ant-design/pro-layout';
 import type { MenuProps } from 'antd';
 import { ConfigProvider } from 'antd';
 import enUS from 'antd/lib/locale/en_US';
@@ -135,6 +137,17 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       <PageContainer>
         <ConfigProvider locale={enUS}>
           <PageMiddleware>{children}</PageMiddleware>
+          <SettingDrawer
+            disableUrlParams
+            enableDarkTheme
+            settings={initialState?.settings}
+            onSettingChange={(settings) => {
+              setInitialState((preInitialState) => ({
+                ...preInitialState,
+                settings,
+              }));
+            }}
+          />
         </ConfigProvider>
       </PageContainer>
     </ProLayout>
