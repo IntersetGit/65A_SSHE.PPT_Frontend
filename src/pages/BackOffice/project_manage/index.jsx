@@ -41,9 +41,9 @@ const ProjectManage = (props) => {
   const [values, setValues] = useState('Favorite');
   const [project, setproject] = useState([]);
   const [companyselectedItems, setcompanySelectedItems] = useState([]);
-  const filteredOptions = data.filter(
-    (o) => !companyselectedItems.includes(o.value),
-  );
+  const filteredOptions = data.filter((o) => {
+    return o;
+  });
 
   useEffect(() => {
     form.setFieldsValue({ favorite_status: 0 });
@@ -299,7 +299,7 @@ const ProjectManage = (props) => {
 
   useEffect(() => {
     console.log(companyselectedItems);
-    console.log(filteredOptions);
+    console.log('optipn', filteredOptions);
   }, [companyselectedItems]);
   const onMenuClick = async (event, record) => {
     const { key } = event;

@@ -208,7 +208,7 @@ const NonadUsermanage = (props) => {
         console.log(res);
         let arrData = [];
         res.items.forEach((v, k) => {
-          arrData.push({ label: v.company_name, value: v.company_id });
+          arrData.push({ label: v.company_name, value: v.id });
         });
         setcompany(arrData);
       })
@@ -234,6 +234,9 @@ const NonadUsermanage = (props) => {
   }, []);
 
   const showDrawer = (type) => {
+    if (type == 1) {
+      formCrete.setFieldsValue({ password: 'user@123!!!' });
+    }
     setdrawerType(type);
     setShowDrawer(true);
   };
@@ -474,7 +477,7 @@ const NonadUsermanage = (props) => {
                   name="company_id"
                   rules={[{ required: true, message: 'กรุณากรอกรหัสบริษัท' }]}
                 >
-                  <Select placeholder="รหัสบริษัท" options={company}></Select>
+                  <Select options={company}></Select>
                 </Form.Item>
 
                 <Form.Item

@@ -16,6 +16,7 @@ import {
   Menu,
   Select,
   Space,
+  Table,
 } from 'antd';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -29,6 +30,7 @@ const { TextArea } = Input;
 const ContractorCompanyManage = (props) => {
   const [comusermanage, setcomusermanage] = useState([]);
   const [subcontract, setsubcontract] = useState([]);
+  const [project, setproject] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
@@ -42,6 +44,7 @@ const ContractorCompanyManage = (props) => {
         res.items.forEach((v, k) => {
           v.key = k + 1;
           v.number = k + 1;
+          v.subcontract = v.subcontract_name;
         });
         setcomusermanage(res.items);
       })
@@ -55,6 +58,17 @@ const ContractorCompanyManage = (props) => {
           arrData.push({ label: v.subcontract_name, value: v.id });
         });
         setsubcontract(arrData);
+        console.log(arrData);
+      })
+      .catch((err) => console.error(err));
+
+    request('master/getProject', { medthod: 'get' })
+      .then((res) => {
+        let arrData = [];
+        res.items.forEach((v, k) => {
+          arrData.push({ label: v.project_name, value: v.id });
+        });
+        setproject(arrData);
         console.log(arrData);
       })
       .catch((err) => console.error(err));
@@ -287,6 +301,7 @@ const ContractorCompanyManage = (props) => {
       hideInSearch: true,
       sorter: (a, b) => a.number - b.number,
     },
+    Table.EXPAND_COLUMN,
     {
       title: 'Company',
       dataIndex: 'company_name',
@@ -300,7 +315,6 @@ const ContractorCompanyManage = (props) => {
       align: 'center',
       render: (record) => {
         const data = subcontract.find((e) => e.value === record);
-        console.log(record);
         return <>{<div key={data?.value}>{data?.label}</div>}</>;
       },
     },
@@ -342,15 +356,19 @@ const ContractorCompanyManage = (props) => {
       <ProTable
         columns={columns}
         dataSource={comusermanage}
+        rowSelection={{}}
         expandable={{
           expandedRowRender: (record) => (
-            <p
-              style={{
-                margin: 0,
-              }}
-            >
-              {record.address}
-            </p>
+            <>
+              {record.project.map((v, k) => {
+                return (
+                  <span style={{ margin: 0 }} key={v.project_id}>
+                    {' '}
+                    {v.project_name} ,{' '}
+                  </span>
+                );
+              })}
+            </>
           ),
           rowExpandable: (record) => record.company_name !== 'Not Expandable',
         }}
@@ -471,12 +489,6 @@ const ContractorCompanyManage = (props) => {
                   display: 'inline-block',
                   width: 'calc(100% - 12px)',
                 }}
-                rules={[
-                  {
-                    required: true,
-                    message: 'กรุณาระบุชื่อบริษัท Subcontract',
-                  },
-                ]}
               >
                 <Select options={subcontract}></Select>
               </Form.Item>
