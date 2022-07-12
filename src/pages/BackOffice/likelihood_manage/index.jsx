@@ -4,7 +4,6 @@ import {
   EyeOutlined,
   MoreOutlined,
   PlusOutlined,
-  RedoOutlined,
 } from '@ant-design/icons';
 import { ProDescriptions } from '@ant-design/pro-components';
 import {
@@ -15,78 +14,75 @@ import {
   Form,
   Input,
   Menu,
+  Select,
   Space,
   Table,
 } from 'antd';
-import { useForm } from 'antd/lib/form/Form';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
+import { likelihood_value } from '../../../../dummy_data/likelihood_value';
 
 const { Search } = Input;
 const { TextArea } = Input;
 
-const ActivityManage = (props) => {
-  const [projecttype, setprojecttype] = useState([]);
+const LikelihoodManage = (props) => {
+  const [likelihood, setlikelihood] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
-  const [isShowDrawer, setShowDrawer] = useState(false);
-  const [form] = useForm();
+  const [form] = Form.useForm();
 
   useEffect(() => {
     reload();
   }, []);
 
   const reload = (search = null) => {
-    request('master/getProjecttype', {
+    request('master/getlikeHood', {
       medthod: 'get',
       params: { search: search },
     })
       .then((res) => {
-        let arrData = [];
         res.items.forEach((v, k) => {
-          v.number = `PT-${k + 1}`;
+          v.number = k + 1;
           v.key = k + 1;
         });
-        setprojecttype(res.items);
+        setlikelihood(res.items);
         console.log(res.items);
       })
       .catch((err) => console.error(err));
   };
 
-  const AddProjectType = (type, _data = {}) => {
+  const AddLikelihood = (type, _data = {}) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
-        console.log([
-          ...projecttype,
-          { key: projecttype.length + 1, ..._data },
-        ]);
-        setprojecttype([
-          ...projecttype,
-          { key: projecttype.length + 1, ..._data },
+        console.log([...likelihood, { key: likelihood.length + 1, ..._data }]);
+        setlikelihood([
+          ...likelihood,
+          { key: likelihood.length + 1, ..._data },
         ]);
         break;
 
       case 'UPDATE':
-        const indexs = projecttype.findIndex((e) => e.id == _data.id);
+        const indexs = likelihood.findIndex((e) => e.id == _data.id);
         if (indexs != -1) {
-          let arr = [...projecttype];
+          let arr = [...likelihood];
 
           arr[indexs] = _data;
 
-          setprojecttype(arr);
+          setlikelihood(arr);
           console.log(arr);
         }
         break;
 
       case 'DELETE':
         console.log(_data);
-        const newState = [...projecttype];
+        const newState = [...likelihood];
         const newArr = newState.filter((e) => e.key != _data.key);
 
-        setprojecttype(newArr);
+        setlikelihood(newArr);
         break;
 
       default:
@@ -94,13 +90,13 @@ const ActivityManage = (props) => {
     }
   };
 
-  const showDrawer = () => {
-    setShowDrawer(true);
-  };
-
   const showModal = (type) => {
     setdrawerType(type);
     setShowModal(true);
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const hideModal = () => {
@@ -122,15 +118,15 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request('master/manageProjecttype', {
+          request('master/manageLikeHood', {
             method: 'post',
             data: values,
           }).then((res) => {
             if (res.status_code) {
-              AddProjectType('ADD', {
+              AddLikelihood('ADD', {
                 id: res.items,
                 key: res.items,
-                number: `PT-${projecttype.length + 1}`,
+                number: likelihood.length + 1,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
@@ -150,7 +146,7 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request('master/manageProjecttype', {
+          request('master/manageLikeHood', {
             method: 'post',
             data: {
               ...values,
@@ -158,7 +154,7 @@ const ActivityManage = (props) => {
             },
           }).then((res) => {
             if (res.status_code === 201) {
-              AddProjectType('UPDATE', {
+              AddLikelihood('UPDATE', {
                 ...values,
                 key: selectedrow.key,
                 id: selectedrow.id,
@@ -223,11 +219,11 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request(`master/deleteProjecttype/${record.id}`, {
+          request(`master/deleteLikeHood/${record.id}`, {
             method: 'delete',
           }).then((res) => {
             if (res.status_code == 200) {
-              AddProjectType('DELETE', record);
+              AddLikelihood('DELETE', record);
               reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
@@ -247,17 +243,43 @@ const ActivityManage = (props) => {
 
   const columns = [
     {
-      title: 'Project Type ID',
+      title: 'No',
       dataIndex: 'number',
       key: 'number',
       align: 'center',
       sorter: (a, b) => a.number - b.number,
     },
     {
-      title: 'Project Type Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Likelihood',
+      dataIndex: 'name_eng',
+      key: 'name_eng',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
+    },
+    {
+      title: 'ภาษาไทย',
+      dataIndex: 'name_thai',
+      key: 'name_thai',
+      align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
+    },
+    {
+      title: 'Value',
+      dataIndex: 'value',
+      key: 'value',
+      align: 'center',
+      render: (record) => {
+        const data = likelihood_value.find((e) => e.value === record);
+        return (
+          <p align="left" key={data?.value}>
+            {data?.label}
+          </p>
+        );
+      },
     },
     {
       title: 'Action',
@@ -280,7 +302,7 @@ const ActivityManage = (props) => {
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
         <Space>
-          <p>ชื่อประเภทโครงการ</p>
+          <p>ค้นหาด้วยชื่อ</p>
           <Search
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
@@ -291,27 +313,17 @@ const ActivityManage = (props) => {
             }}
           />
         </Space>
-
-        <Button
-          onClick={() => {
-            reload();
-          }}
-          style={{ marginLeft: 10 }}
-        >
-          <RedoOutlined />
-        </Button>
-
         <Button
           type="primary"
           style={{ float: 'right' }}
           icon={<PlusOutlined />}
           onClick={() => showModal(1)}
         >
-          เพิ่ม ประเภท
+          เพิ่ม Likelihood
         </Button>
         <Table
           columns={columns}
-          dataSource={projecttype}
+          dataSource={likelihood}
           expandable
           size={'middle'}
           scroll={{
@@ -324,7 +336,7 @@ const ActivityManage = (props) => {
       </Card>
 
       <Drawer
-        title="Project Type"
+        title="Likelihood"
         headerStyle={{ textAlign: 'center' }}
         onClose={hideModal}
         onCancel={hideModal}
@@ -337,21 +349,35 @@ const ActivityManage = (props) => {
         <Form
           {...formItemLayout}
           layout="vertical"
-          name="projecttypeform"
-          id="projecttypeform"
+          name="likelihoodform"
+          id="likelihoodform"
           form={form}
           onFinish={onFinish}
           size="large"
           initialValues={{}}
         >
           <Form.Item
-            label="Project Type Name"
-            name="name"
-            rules={[
-              { required: true, message: 'กรุณาใส่ชื่อ Project Type Name' },
-            ]}
+            label="Likelihood"
+            name="name_eng"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Likelihood' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="ภาษาไทย"
+            name="name_thai"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อภาษาไทย' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Value"
+            name="value"
+            rules={[{ required: true, message: 'กรุณาเลือก Value' }]}
+          >
+            <Select options={likelihood_value}></Select>
           </Form.Item>
 
           <Form.Item label="คำอธิบาย" name="description">
@@ -380,16 +406,16 @@ const ActivityManage = (props) => {
         }}
         closable={false}
       >
-        {selectedrow?.name && (
+        {selectedrow?.id && (
           <ProDescriptions
             column={1}
             bordered
-            title={selectedrow?.name}
+            title={selectedrow?.name_eng}
             request={async () => ({
               data: selectedrow || {},
             })}
             params={{
-              id: selectedrow?.name,
+              id: selectedrow?.name_eng,
             }}
             columns={[...columns, ...display]}
           />
@@ -399,4 +425,4 @@ const ActivityManage = (props) => {
   );
 };
 
-export default ActivityManage;
+export default LikelihoodManage;

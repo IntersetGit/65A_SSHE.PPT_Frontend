@@ -329,6 +329,7 @@ const ProjectManage = (props) => {
             if (res.status_code == 200) {
               AddProject('DELETE', record);
               setLoading(false);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });

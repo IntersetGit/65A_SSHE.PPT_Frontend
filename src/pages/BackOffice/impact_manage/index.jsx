@@ -217,6 +217,7 @@ const Impact = (props) => {
           }).then((res) => {
             if (res.status_code == 200) {
               AddImpact('DELETE', record);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -246,12 +247,18 @@ const Impact = (props) => {
       dataIndex: 'name',
       key: 'name',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
     },
     {
       title: 'ภาษาไทย',
       dataIndex: 'name_thai',
       key: 'name_thai',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
     },
     {
       title: 'Action',

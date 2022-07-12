@@ -340,7 +340,7 @@ const NonadUsermanage = (props) => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async ({ id }) => {
     try {
       Swal.fire({
         title: 'กรุณายืนยันการลบข้อมูล?',

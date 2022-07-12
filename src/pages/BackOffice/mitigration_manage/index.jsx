@@ -239,6 +239,7 @@ const Mitigration = (props) => {
           }).then((res) => {
             if (res.status_code == 200) {
               AddMitigration('DELETE', record);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -268,12 +269,18 @@ const Mitigration = (props) => {
       dataIndex: 'name',
       key: 'name',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
     },
     {
       title: 'ภาษาไทย',
       dataIndex: 'name_thai',
       key: 'name_thai',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
     },
     {
       title: 'Hazard',
@@ -282,7 +289,11 @@ const Mitigration = (props) => {
       align: 'center',
       render: (record) => {
         const data = impacttype.find((e) => e.value === record);
-        return <>{<div key={data?.value}>{data?.label}</div>}</>;
+        return (
+          <p align="left" key={data?.value}>
+            {data?.label}
+          </p>
+        );
       },
     },
     {

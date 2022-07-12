@@ -38,6 +38,8 @@ const Mitigation2: React.FC = () => <PictureLoader source="mitigation2.png" />;
 const Procedure: React.FC = () => <PictureLoader source="procedure.png" />;
 const Project: React.FC = () => <PictureLoader source="project.png" />;
 const Project2: React.FC = () => <PictureLoader source="project2.png" />;
+const Consequence: React.FC = () => <PictureLoader source="Consequence2.png" />;
+const Likelihood: React.FC = () => <PictureLoader source="likelihood.png" />;
 const RiskAssessment: React.FC = () => (
   <PictureLoader source="Risk Assessment.png" />
 );
@@ -99,6 +101,12 @@ let ICONMAP: IconMaptype = {
   project: <Icon component={Project as React.ForwardRefExoticComponent<any>} />,
   project2: (
     <Icon component={Project2 as React.ForwardRefExoticComponent<any>} />
+  ),
+  consequence: (
+    <Icon component={Consequence as React.ForwardRefExoticComponent<any>} />
+  ),
+  likelihood: (
+    <Icon component={Likelihood as React.ForwardRefExoticComponent<any>} />
   ),
   'Risk Assessment': (
     <Icon component={RiskAssessment as React.ForwardRefExoticComponent<any>} />

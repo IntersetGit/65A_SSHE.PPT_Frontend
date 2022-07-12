@@ -239,6 +239,7 @@ const HazardManage = (props) => {
           }).then((res) => {
             if (res.status_code == 200) {
               AddHazard('DELETE', record);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });

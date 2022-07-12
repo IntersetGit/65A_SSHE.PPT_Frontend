@@ -75,6 +75,18 @@ const backoffice_menu = {
               component: 'BackOffice/procedure_jsea_manage',
             },
             {
+              path: '/backoffice/risk-manage/consequence_manage',
+              icon: 'consequence',
+              name: 'Consequence',
+              component: 'BackOffice/consequence_manage',
+            },
+            {
+              path: '/backoffice/risk-manage/likelihood_manage',
+              icon: 'likelihood',
+              name: 'Likelihood',
+              component: 'BackOffice/likelihood_manage',
+            },
+            {
               path: '/backoffice/risk-manage/risk_identification_template',
               icon: 'Risk Identification',
               name: 'Risk Template',

@@ -226,6 +226,7 @@ const IncidentofTypeManage = (props) => {
           }).then((res) => {
             if (res.status_code == 200) {
               AddIncidentType('DELETE', record);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });

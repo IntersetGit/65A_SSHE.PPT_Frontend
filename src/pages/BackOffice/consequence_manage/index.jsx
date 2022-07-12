@@ -4,7 +4,6 @@ import {
   EyeOutlined,
   MoreOutlined,
   PlusOutlined,
-  RedoOutlined,
 } from '@ant-design/icons';
 import { ProDescriptions } from '@ant-design/pro-components';
 import {
@@ -15,78 +14,80 @@ import {
   Form,
   Input,
   Menu,
+  Select,
   Space,
   Table,
 } from 'antd';
-import { useForm } from 'antd/lib/form/Form';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
+import { consequence_type } from '../../../../dummy_data/consequence_type';
+import { consequence_value } from '../../../../dummy_data/consequence_value';
 
 const { Search } = Input;
 const { TextArea } = Input;
 
-const ActivityManage = (props) => {
-  const [projecttype, setprojecttype] = useState([]);
+const ConsequenceManage = (props) => {
+  const [consequence, setconsequence] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
+  const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
-  const [isShowDrawer, setShowDrawer] = useState(false);
-  const [form] = useForm();
+  const [form] = Form.useForm();
 
   useEffect(() => {
     reload();
   }, []);
 
   const reload = (search = null) => {
-    request('master/getProjecttype', {
+    request('master/getConsequence', {
       medthod: 'get',
       params: { search: search },
     })
       .then((res) => {
-        let arrData = [];
         res.items.forEach((v, k) => {
-          v.number = `PT-${k + 1}`;
+          v.number = k + 1;
           v.key = k + 1;
+          v.type = v.type_consequence;
         });
-        setprojecttype(res.items);
+        setconsequence(res.items);
         console.log(res.items);
       })
       .catch((err) => console.error(err));
   };
 
-  const AddProjectType = (type, _data = {}) => {
+  const AddConsequence = (type, _data = {}) => {
     console.log('onSaveData', type);
     switch (type) {
       case 'ADD':
         console.log([
-          ...projecttype,
-          { key: projecttype.length + 1, ..._data },
+          ...consequence,
+          { key: consequence.length + 1, ..._data },
         ]);
-        setprojecttype([
-          ...projecttype,
-          { key: projecttype.length + 1, ..._data },
+        setconsequence([
+          ...consequence,
+          { key: consequence.length + 1, ..._data },
         ]);
         break;
 
       case 'UPDATE':
-        const indexs = projecttype.findIndex((e) => e.id == _data.id);
+        const indexs = consequence.findIndex((e) => e.id == _data.id);
         if (indexs != -1) {
-          let arr = [...projecttype];
+          let arr = [...consequence];
 
           arr[indexs] = _data;
 
-          setprojecttype(arr);
+          setconsequence(arr);
           console.log(arr);
         }
         break;
 
       case 'DELETE':
         console.log(_data);
-        const newState = [...projecttype];
+        const newState = [...consequence];
         const newArr = newState.filter((e) => e.key != _data.key);
 
-        setprojecttype(newArr);
+        setconsequence(newArr);
         break;
 
       default:
@@ -94,13 +95,13 @@ const ActivityManage = (props) => {
     }
   };
 
-  const showDrawer = () => {
-    setShowDrawer(true);
-  };
-
   const showModal = (type) => {
     setdrawerType(type);
     setShowModal(true);
+  };
+
+  const showDrawer = () => {
+    setShowDrawer(true);
   };
 
   const hideModal = () => {
@@ -122,15 +123,16 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request('master/manageProjecttype', {
+          request('master/manageConsequence', {
             method: 'post',
             data: values,
           }).then((res) => {
             if (res.status_code) {
-              AddProjectType('ADD', {
+              AddConsequence('ADD', {
                 id: res.items,
                 key: res.items,
-                number: `PT-${projecttype.length + 1}`,
+                number: consequence.length + 1,
+                type_consequence: values.type,
                 ...values,
               });
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
@@ -139,6 +141,7 @@ const ActivityManage = (props) => {
         }
       });
     } else if (drawerType == 2) {
+      console.log(values);
       Swal.fire({
         title: 'แก้ไขข้อมูล',
         text: 'ยืนยันการแก้ไขข้อมูล',
@@ -150,7 +153,7 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request('master/manageProjecttype', {
+          request('master/manageConsequence', {
             method: 'post',
             data: {
               ...values,
@@ -158,11 +161,12 @@ const ActivityManage = (props) => {
             },
           }).then((res) => {
             if (res.status_code === 201) {
-              AddProjectType('UPDATE', {
+              AddConsequence('UPDATE', {
                 ...values,
                 key: selectedrow.key,
                 id: selectedrow.id,
                 number: selectedrow.number,
+                type_consequence: values.type,
               });
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
@@ -223,11 +227,11 @@ const ActivityManage = (props) => {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          request(`master/deleteProjecttype/${record.id}`, {
+          request(`master/deleteConsqeuence/${record.id}`, {
             method: 'delete',
           }).then((res) => {
             if (res.status_code == 200) {
-              AddProjectType('DELETE', record);
+              AddConsequence('DELETE', record);
               reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
@@ -247,17 +251,57 @@ const ActivityManage = (props) => {
 
   const columns = [
     {
-      title: 'Project Type ID',
+      title: 'No',
       dataIndex: 'number',
       key: 'number',
       align: 'center',
       sorter: (a, b) => a.number - b.number,
     },
     {
-      title: 'Project Type Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Consequence',
+      dataIndex: 'name_eng',
+      key: 'name_eng',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
+    },
+    {
+      title: 'ภาษาไทย',
+      dataIndex: 'name_thai',
+      key: 'name_thai',
+      align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type_consequence',
+      key: 'type_consequence',
+      align: 'center',
+      render: (record) => {
+        const data = consequence_type.find((e) => e.value === record);
+        return (
+          <p align="left" key={data?.value}>
+            {data?.label}
+          </p>
+        );
+      },
+    },
+    {
+      title: 'Value',
+      dataIndex: 'value',
+      key: 'value',
+      align: 'center',
+      render: (record) => {
+        const data = consequence_value.find((e) => e.value === record);
+        return (
+          <p align="left" key={data?.value}>
+            {data?.label}
+          </p>
+        );
+      },
     },
     {
       title: 'Action',
@@ -280,7 +324,7 @@ const ActivityManage = (props) => {
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
         <Space>
-          <p>ชื่อประเภทโครงการ</p>
+          <p>ค้นหาด้วยชื่อ</p>
           <Search
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
@@ -291,27 +335,17 @@ const ActivityManage = (props) => {
             }}
           />
         </Space>
-
-        <Button
-          onClick={() => {
-            reload();
-          }}
-          style={{ marginLeft: 10 }}
-        >
-          <RedoOutlined />
-        </Button>
-
         <Button
           type="primary"
           style={{ float: 'right' }}
           icon={<PlusOutlined />}
           onClick={() => showModal(1)}
         >
-          เพิ่ม ประเภท
+          เพิ่ม Consequence
         </Button>
         <Table
           columns={columns}
-          dataSource={projecttype}
+          dataSource={consequence}
           expandable
           size={'middle'}
           scroll={{
@@ -324,7 +358,7 @@ const ActivityManage = (props) => {
       </Card>
 
       <Drawer
-        title="Project Type"
+        title="Consequence"
         headerStyle={{ textAlign: 'center' }}
         onClose={hideModal}
         onCancel={hideModal}
@@ -337,21 +371,43 @@ const ActivityManage = (props) => {
         <Form
           {...formItemLayout}
           layout="vertical"
-          name="projecttypeform"
-          id="projecttypeform"
+          name="consequenceform"
+          id="consequenceform"
           form={form}
           onFinish={onFinish}
           size="large"
           initialValues={{}}
         >
           <Form.Item
-            label="Project Type Name"
-            name="name"
-            rules={[
-              { required: true, message: 'กรุณาใส่ชื่อ Project Type Name' },
-            ]}
+            label="Consequence"
+            name="name_eng"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อ Consequence' }]}
           >
             <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="ภาษาไทย"
+            name="name_thai"
+            rules={[{ required: true, message: 'กรุณาใส่ชื่อภาษาไทย' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Type"
+            name="type"
+            rules={[{ required: true, message: 'กรุณาเลือกประเภท' }]}
+          >
+            <Select options={consequence_type}></Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Value"
+            name="value"
+            rules={[{ required: true, message: 'กรุณาเลือก Value' }]}
+          >
+            <Select options={consequence_value}></Select>
           </Form.Item>
 
           <Form.Item label="คำอธิบาย" name="description">
@@ -380,16 +436,16 @@ const ActivityManage = (props) => {
         }}
         closable={false}
       >
-        {selectedrow?.name && (
+        {selectedrow?.id && (
           <ProDescriptions
             column={1}
             bordered
-            title={selectedrow?.name}
+            title={selectedrow?.name_eng}
             request={async () => ({
               data: selectedrow || {},
             })}
             params={{
-              id: selectedrow?.name,
+              id: selectedrow?.name_eng,
             }}
             columns={[...columns, ...display]}
           />
@@ -399,4 +455,4 @@ const ActivityManage = (props) => {
   );
 };
 
-export default ActivityManage;
+export default ConsequenceManage;

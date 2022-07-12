@@ -220,6 +220,7 @@ const IssueTypeManage = (props) => {
           }).then((res) => {
             if (res.status_code == 200) {
               AddIssueType('DELETE', record);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });

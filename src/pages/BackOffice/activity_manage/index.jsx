@@ -20,13 +20,12 @@ import {
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { request } from 'umi';
-import { activity_data } from '../../../../dummy_data/activity_data';
 
 const { Search } = Input;
 const { TextArea } = Input;
 
 const ActivityManage = (props) => {
-  const [activity, setactivity] = useState(activity_data);
+  const [activity, setactivity] = useState([]);
   const [isShowModal, setShowModal] = useState(false);
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [drawerType, setdrawerType] = useState(1);
@@ -220,6 +219,7 @@ const ActivityManage = (props) => {
           }).then((res) => {
             if (res.status_code == 200) {
               AddActivity('DELETE', record);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -249,6 +249,9 @@ const ActivityManage = (props) => {
       dataIndex: 'name',
       key: 'name',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
     },
     {
       title: 'ภาษาไทย',
