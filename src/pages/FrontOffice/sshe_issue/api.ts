@@ -57,15 +57,17 @@ export async function getIssue(
     ...(options || {}),
   });
 
-  result.items.forEach((v, k) => {
-    v.key = k + 1;
-  });
+  if (result.items !== null) {
+    result.items.forEach((v, k) => {
+      v.key = k + 1;
+    });
+  }
 
   console.log(result);
 
   return Promise.resolve({
-    data: result.items,
-    total: result.items.length,
+    data: result.items === null ? [] : result.items,
+    total: result.items === null ? 0 : result.items.length,
     success: true,
   });
 }

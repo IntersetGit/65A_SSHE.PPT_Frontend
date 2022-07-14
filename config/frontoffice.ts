@@ -58,39 +58,40 @@ const frontoffice_menu = {
           component: './FrontOffice/sshe_incident',
         },
         {
-          path: '/frontoffice/analysis',
+          path: '/frontoffice/sshe_analysis',
           type: 'group',
           name: 'SSHE ANALYSIS',
           icon: 'SSHE-Analysis',
-          routes: [
-            {
-              path: '/frontoffice/analysis/analysis_report',
-              icon: 'Analysis-Report',
-              name: 'ANALYSIS REPORT',
-              component: './FrontOffice/analysis_report',
-            },
-            {
-              path: '/frontoffice/analysis/analyze_of_issues',
-              icon: 'SSHE-Statistic',
-              name: 'SUMMERY STATIC',
-              component: './FrontOffice/analysis_graph',
-            },
-            {
-              path: '/frontoffice/analysis/analysis_graph',
-              icon: 'SSHE-Statistic',
-              name: 'ANALYSIS GRAPH',
-              component: './FrontOffice/analysis_graph',
-            },
-            {
-              path: '/frontoffice/analysis/sshe_kpi',
-              icon: 'SSHE-Statistic',
-              name: 'SSHE KPI',
-              component: './FrontOffice/analysis_graph',
-            },
-            {
-              component: '404',
-            },
-          ],
+          component: './FrontOffice/analysis_graph',
+          // routes: [
+          //   {
+          //     path: '/frontoffice/analysis/analysis_report',
+          //     icon: 'Analysis-Report',
+          //     name: 'ANALYSIS REPORT',
+          //     component: './FrontOffice/analysis_report',
+          //   },
+          //   {
+          //     path: '/frontoffice/analysis/analyze_of_issues',
+          //     icon: 'SSHE-Statistic',
+          //     name: 'SUMMERY STATIC',
+          //     component: './FrontOffice/analysis_graph',
+          //   },
+          //   {
+          //     path: '/frontoffice/analysis/analysis_graph',
+          //     icon: 'SSHE-Statistic',
+          //     name: 'ANALYSIS GRAPH',
+          //     component: './FrontOffice/analysis_graph',
+          //   },
+          //   {
+          //     path: '/frontoffice/analysis/sshe_kpi',
+          //     icon: 'SSHE-Statistic',
+          //     name: 'SSHE KPI',
+          //     component: './FrontOffice/analysis_graph',
+          //   },
+          //   {
+          //     component: '404',
+          //   },
+          // ],
         },
         {
           component: '404',

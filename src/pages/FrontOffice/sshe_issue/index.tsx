@@ -8,6 +8,8 @@ import {
   FileExcelOutlined,
   MoreOutlined,
   PlusOutlined,
+  RedoOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import {
   ActionType,
@@ -16,6 +18,7 @@ import {
   ProForm,
   ProFormCheckbox,
   ProFormDatePicker,
+  ProFormDateRangePicker,
   ProFormInstance,
   ProFormSelect,
   ProFormText,
@@ -51,6 +54,7 @@ const Issue = () => {
   const [mapmode, setmapmode] = useState<'select' | 'display'>('select');
   const formRef = useRef<ProFormInstance>();
   const [form] = ProForm.useForm();
+  const [tableform] = ProForm.useForm();
   const actionRef = useRef<ActionType>();
 
   const showModal = () => {
@@ -233,14 +237,47 @@ const Issue = () => {
   return (
     <>
       <ProTable
-        search={{
-          labelWidth: 'auto',
-        }}
+        // search={{
+        //   labelWidth: 'auto',
+        //   // optionRender: (searchConfig,formProps,dom) => [
+        //   //   <p>{formProps.form.}</p>
+        //   // ]
+        // }}
+        search={false}
+        headerTitle={
+          <ProForm
+            form={tableform}
+            layout={'inline'}
+            submitter={{
+              render: false,
+            }}
+          >
+            <ProFormDateRangePicker
+              label="Form - To Date"
+              name="date"
+              fieldProps={{
+                format: 'YYYY-MM-DD',
+              }}
+            />
+            <ProFormSelect
+              label="Primary Case"
+              name="primary_case"
+              request={async () => {
+                return getIssueType();
+              }}
+            />
+            <ProFormSelect label="Process" name="status" options={status} />
+            <ProFormSelect label="Project Name" name="project_name" />
+          </ProForm>
+        }
         columns={comparedColums}
         actionRef={actionRef}
         request={getIssue}
         onDataSourceChange={setDatasource}
         columnEmptyText={'ไม่พบข้อมูล'}
+        params={{
+          ...tableform.getFieldsValue(),
+        }}
         footer={() => [
           <Button
             type="primary"
@@ -254,7 +291,61 @@ const Issue = () => {
             Alert Map
           </Button>,
         ]}
+        toolbar={{
+          settings: [],
+          onSearch: (value: string) => {
+            alert(value);
+          },
+        }}
         toolBarRender={() => [
+          <Button
+            type="primary"
+            key={'search'}
+            icon={<SearchOutlined />}
+            onClick={async () => {
+              console.log(tableform.getFieldsValue());
+              const tablevalue = tableform.getFieldsValue();
+              if (tablevalue.date) {
+                if (
+                  tablevalue.date[0] &&
+                  typeof tablevalue.date[0] === 'object'
+                )
+                  tablevalue.date[0] = tablevalue.date[0].format('YYYY-MM-DD');
+                if (
+                  tablevalue.date[1] &&
+                  typeof tablevalue.date[1] === 'object'
+                )
+                  tablevalue.date[1] = tablevalue.date[1].format('YYYY-MM-DD');
+                tableform.setFieldsValue({ date: tablevalue.date });
+              }
+              actionRef.current?.reload();
+            }}
+          ></Button>,
+          <Button
+            type="default"
+            key={'search'}
+            icon={<RedoOutlined />}
+            onClick={() => {
+              tableform.resetFields();
+              actionRef.current?.reload();
+            }}
+          ></Button>,
+          <Button
+            type="default"
+            key={'export_excel'}
+            icon={<FileExcelOutlined />}
+          >
+            Export Excel
+          </Button>,
+          <Button
+            type="default"
+            key={'download_template'}
+            style={{}}
+            icon={<DownloadOutlined />}
+          >
+            Download Template
+          </Button>,
+
           <Button
             type="primary"
             style={{ float: 'right' }}
@@ -263,22 +354,6 @@ const Issue = () => {
             onClick={() => showModal()}
           >
             เพิ่ม ISSUE
-          </Button>,
-          <Button
-            type="default"
-            key={'download_template'}
-            style={{ float: 'right' }}
-            icon={<DownloadOutlined />}
-          >
-            Download Template
-          </Button>,
-          <Button
-            type="default"
-            key={'export_excel'}
-            style={{ float: 'right' }}
-            icon={<FileExcelOutlined />}
-          >
-            Export Excel
           </Button>,
         ]}
         size={'middle'}
