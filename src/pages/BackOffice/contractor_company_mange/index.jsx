@@ -4,10 +4,12 @@ import {
   EyeOutlined,
   MoreOutlined,
   PlusOutlined,
+  RedoOutlined,
 } from '@ant-design/icons';
-import { ProDescriptions, ProTable } from '@ant-design/pro-components';
+import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
+  Card,
   Col,
   Drawer,
   Dropdown,
@@ -38,7 +40,11 @@ const ContractorCompanyManage = (props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    request('master/getCompany', { method: 'get' })
+    reload();
+  }, []);
+
+  const reload = (search) => {
+    request('master/getCompany', { method: 'get', params: { search: search } })
       .then((res) => {
         console.log(res);
         res.items.forEach((v, k) => {
@@ -72,7 +78,7 @@ const ContractorCompanyManage = (props) => {
         console.log(arrData);
       })
       .catch((err) => console.error(err));
-  }, []);
+  };
 
   const AddComData = (type, _data) => {
     console.log('onSaveData', type);
@@ -222,7 +228,7 @@ const ContractorCompanyManage = (props) => {
   ];
 
   const onMenuClick = async (event, record) => {
-    record = record.props.record;
+    // record = record.props.record;
     const { key } = event;
     if (key === 'edit') {
       showModal(2);
@@ -258,37 +264,18 @@ const ContractorCompanyManage = (props) => {
 
   const display = [
     {
-      title: 'Company Name',
-      dataIndex: 'company',
-      key: 'Company Name',
+      title: 'Project Name',
+      dataIndex: 'project',
+      key: 'Project Name',
       render: (record) => {
         return (
           <>
             {record.map((v, k) => {
-              return <div key={v.company_id}>{v.company_name}</div>;
+              return <div key={v.project_id}>{v.project_name}</div>;
             })}
           </>
         );
       },
-    },
-    {
-      title: 'Project Type ID',
-      dataIndex: 'project_type_id',
-      key: 'Project_type_id',
-      render: (record) => {
-        const data = subcontract.find((e) => e.value === record);
-        return <>{<div key={data?.value}>{data?.label}</div>}</>;
-      },
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'Description',
-    },
-    {
-      title: 'Favorite Status',
-      dataIndex: 'favorite_status',
-      key: 'Favorite Status',
     },
   ];
 
@@ -301,7 +288,7 @@ const ContractorCompanyManage = (props) => {
       hideInSearch: true,
       sorter: (a, b) => a.number - b.number,
     },
-    Table.EXPAND_COLUMN,
+    { ...Table.EXPAND_COLUMN, hideInDescriptions: true },
     {
       title: 'Company',
       dataIndex: 'company_name',
@@ -344,50 +331,61 @@ const ContractorCompanyManage = (props) => {
 
   return (
     <>
-      {/* <Card style={{ marginTop: '1rem' }} bordered={true}> */}
-      {/* <Space>
-          <p>ชื่อโครงการ</p>
+      <Card style={{ marginTop: '1rem' }} bordered={true}>
+        <Space>
+          <p>ชื่อบริษัท</p>
           <Search
             placeholder="Search"
             style={{ width: 300, marginBottom: 10 }}
             enterButton
+            allowClear
+            onSearch={(search) => {
+              reload(search);
+            }}
           />
-        </Space> */}
-      <ProTable
-        columns={columns}
-        dataSource={comusermanage}
-        rowSelection={{}}
-        expandable={{
-          expandedRowRender: (record) => (
-            <>
-              {record.project.map((v, k) => {
-                return (
-                  <span style={{ margin: 0 }} key={v.project_id}>
-                    {' '}
-                    {v.project_name} ,{' '}
-                  </span>
-                );
-              })}
-            </>
-          ),
-          rowExpandable: (record) => record.company_name !== 'Not Expandable',
-        }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            style={{ float: 'right' }}
-            icon={<PlusOutlined />}
-            onClick={() => showModal(1)}
-          >
-            เพิ่ม
-          </Button>,
-        ]}
-        size={'middle'}
-        scroll={{
-          y: 240,
-        }}
-      />
-      {/* </Card> */}
+        </Space>
+
+        <Button
+          onClick={() => {
+            reload();
+          }}
+          style={{ marginLeft: 10 }}
+        >
+          <RedoOutlined />
+        </Button>
+
+        <Button
+          type="primary"
+          style={{ float: 'right' }}
+          icon={<PlusOutlined />}
+          onClick={() => showModal(1)}
+        >
+          เพิ่ม
+        </Button>
+
+        <Table
+          columns={columns}
+          dataSource={comusermanage}
+          expandable={{
+            expandedRowRender: (record) => (
+              <>
+                {record.project.map((v, k) => {
+                  return (
+                    <span style={{ margin: 0 }} key={v.project_id}>
+                      {' '}
+                      {v.project_name} ,{' '}
+                    </span>
+                  );
+                })}
+              </>
+            ),
+            rowExpandable: (record) => record.company_name !== 'Not Expandable',
+          }}
+          scroll={{
+            y: 240,
+          }}
+        />
+      </Card>
 
       <Drawer
         title="บริษัทผู้รับเหมา"
@@ -528,7 +526,7 @@ const ContractorCompanyManage = (props) => {
             params={{
               id: selectedrow?.company_name,
             }}
-            columns={columns}
+            columns={[...columns, ...display]}
           />
         )}
       </Drawer>

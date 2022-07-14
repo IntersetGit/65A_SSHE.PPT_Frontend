@@ -205,12 +205,12 @@ const NonadUsermanage = (props) => {
 
     request('master/getCompany', { method: 'get' })
       .then((res) => {
-        console.log(res);
         let arrData = [];
         res.items.forEach((v, k) => {
           arrData.push({ label: v.company_name, value: v.id });
         });
         setcompany(arrData);
+        console.log(arrData);
       })
       .catch((error) => {
         console.log(error);
