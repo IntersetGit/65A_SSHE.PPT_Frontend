@@ -158,6 +158,7 @@ const ContractorCompanyManage = (props) => {
                   ...values,
                 });
                 console.log(res);
+                reload();
                 Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
               }
             });
@@ -190,6 +191,7 @@ const ContractorCompanyManage = (props) => {
                   number: selectedrow.number,
                   subcontract_id: values.subcontract,
                 });
+                reload();
                 Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
               }
             });
@@ -254,6 +256,7 @@ const ContractorCompanyManage = (props) => {
           }).then((res) => {
             if (res.status_code == 200) {
               AddComData('DELETE', record);
+              reload();
               Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -488,7 +491,7 @@ const ContractorCompanyManage = (props) => {
                   width: 'calc(100% - 12px)',
                 }}
               >
-                <Select options={subcontract}></Select>
+                <Select allowClear options={subcontract}></Select>
               </Form.Item>
             </Form.Item>
           </Col>

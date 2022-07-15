@@ -135,6 +135,7 @@ const ConsequenceManage = (props) => {
                 type_consequence: values.type,
                 ...values,
               });
+              reload();
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -168,6 +169,7 @@ const ConsequenceManage = (props) => {
                 number: selectedrow.number,
                 type_consequence: values.type,
               });
+              reload();
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
           });

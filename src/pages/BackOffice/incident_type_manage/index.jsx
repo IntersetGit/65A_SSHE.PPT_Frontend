@@ -131,6 +131,7 @@ const IncidentofTypeManage = (props) => {
                 number: `IT-00${incidenttype.length + 1}`,
                 ...values,
               });
+              reload();
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -162,6 +163,7 @@ const IncidentofTypeManage = (props) => {
                 id: selectedrow.id,
                 number: selectedrow.number,
               });
+              reload();
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
           });

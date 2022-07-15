@@ -141,6 +141,7 @@ const HazardManage = (props) => {
                 ).label,
                 ...values,
               });
+              reload();
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -175,6 +176,7 @@ const HazardManage = (props) => {
                   (e) => e.value === values.issue_type_id,
                 ).label,
               });
+              reload();
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
           });

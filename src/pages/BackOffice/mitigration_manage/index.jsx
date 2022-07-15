@@ -144,6 +144,7 @@ const Mitigration = (props) => {
                 number: `ExC${mitigration.length + 1}`,
                 ...values,
               });
+              reload();
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -175,6 +176,7 @@ const Mitigration = (props) => {
                 id: selectedrow.id,
                 number: selectedrow.number,
               });
+              reload();
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
           });

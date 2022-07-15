@@ -125,6 +125,7 @@ const IssueTypeManage = (props) => {
                 number: `ST-00${issue.length + 1}`,
                 ...values,
               });
+              reload();
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -156,6 +157,7 @@ const IssueTypeManage = (props) => {
                 id: selectedrow.id,
                 number: selectedrow.number,
               });
+              reload();
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
           });

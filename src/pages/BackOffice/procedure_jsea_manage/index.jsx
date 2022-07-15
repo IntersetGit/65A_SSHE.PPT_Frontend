@@ -150,6 +150,7 @@ const ProcedureJsea = (props) => {
                 number: `TP${procedurejsea.length + 1}`,
                 ...values,
               });
+              reload();
               Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
             }
           });
@@ -181,6 +182,7 @@ const ProcedureJsea = (props) => {
                 id: selectedrow.id,
                 number: selectedrow.number,
               });
+              reload();
               Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
             }
           });

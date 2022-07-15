@@ -209,7 +209,7 @@ const ProjectManage = (props) => {
                 number: selectedrow.number,
                 ...values,
               });
-              Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+              Swal.fire('แก้ไขข้อมูลสำเร็จ', '', 'success');
               setLoading(false);
               reload();
             }
