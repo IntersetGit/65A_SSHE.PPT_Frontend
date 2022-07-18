@@ -1,9 +1,0 @@
-.columnTools {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
-.headerTitle {
-    font-weight: 600;
-    font-size: 18px;
-}

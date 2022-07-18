@@ -1,6 +1,6 @@
 import { Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { FC, Fragment } from 'react';
+import { Fragment } from 'react';
 
 type tempDataT = {
   catagory: string;
@@ -54,7 +54,7 @@ const data = [
   },
 ];
 
-const KpisPage: FC = () => {
+const KpisPage = () => {
   return (
     <Fragment>
       <Table columns={columns} dataSource={data} pagination={false} />

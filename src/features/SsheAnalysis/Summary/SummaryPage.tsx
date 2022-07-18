@@ -3,12 +3,40 @@ import { Fragment } from 'react';
 
 const dataPie = [
   {
-    type: 'Unsafe Action Issue',
-    value: 16,
+    type: 'Mobile Toilet',
+    value: 2,
   },
   {
-    type: 'Unsafe Condition Issue',
-    value: 84,
+    type: 'Sub soil Top soil Separation',
+    value: 3,
+  },
+  {
+    type: 'Chemical',
+    value: 3,
+  },
+  {
+    type: 'Dip Tray',
+    value: 3,
+  },
+  {
+    type: 'Dust Control',
+    value: 5,
+  },
+  {
+    type: 'Hazaradous Waste',
+    value: 5,
+  },
+  {
+    type: 'Bentonite Frac out Management',
+    value: 8,
+  },
+  {
+    type: 'Health (Rest area)',
+    value: 15,
+  },
+  {
+    type: 'Waste Management',
+    value: 56,
   },
 ];
 
@@ -40,12 +68,12 @@ const config: PieConfig = {
   ],
 };
 
-const UnsafePage = () => {
+const SummaryPage = () => {
   return (
     <Fragment>
-      <Pie height={360} {...config} />
+      <Pie width={200} height={360} {...config} />
     </Fragment>
   );
 };
 
-export default UnsafePage;
+export default SummaryPage;
