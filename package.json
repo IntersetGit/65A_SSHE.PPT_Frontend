@@ -10,8 +10,8 @@
     "test": "umi-test",
     "serve": "set PORT=3000 && umi-serve",
     "linux:serve": "PORT=3000 umi-serve",
-    "pm2:linux" : "pm2 start npm --name 'Frontend App' -- run linux:serve",
-    "b:serve" : "npm run build && npm run serve",
+    "pm2:linux": "pm2 start npm --name 'Frontend App' -- run linux:serve",
+    "b:serve": "npm run build && npm run serve",
     "test:coverage": "umi-test --coverage"
   },
   "gitHooks": {
