@@ -245,6 +245,78 @@ const NonadUsermanage = (props) => {
     setShowDrawers(true);
   };
 
+  const onFinishCreate = async (value) => {
+    let filterRoles = await roles.find(
+      (data) => data.roles_name === value.roles_id,
+    );
+    setLoading(true);
+    Swal.fire({
+      title: 'บันทึกข้อมูล',
+      text: 'ยืนยันการบันทึกข้อมูล',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          request('system/addUserAD', {
+            method: 'post',
+            data: {
+              username: value.username,
+              roles_id: filterRoles.id,
+              is_ad: true,
+            },
+          });
+        }
+      })
+      .then((data) => {
+        reload();
+        Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+      })
+      .catch((error) => {
+        Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
+        setLoading(false);
+        formAD.resetFields();
+        reload();
+      });
+  };
+
+  const onFinishEdit = async (value) => {
+    try {
+      let filterRoles = await roles.find(
+        (data) => data.roles_name === value.roles_id,
+      );
+      Swal.fire({
+        title: 'กรุณายืนยันการแก้ไขข้อมูล',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#218838',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let resp = await request('/system/updateRoleUser', {
+            method: 'put',
+            data: {
+              id: dataEdit.id,
+              roles_id: filterRoles.id,
+            },
+          });
+          await Swal.fire('', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
+          reload();
+          handleCancel();
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire('', 'มีบางอย่างผิดพลาด', 'success');
+    }
+  };
+
   const onFinishAD = (values) => {
     console.log(drawerType);
     if (drawerType == 1) {
@@ -261,7 +333,10 @@ const NonadUsermanage = (props) => {
         if (result.isConfirmed) {
           request('system/addUserAD', {
             method: 'post',
-            data: values,
+            data: {
+              ...values,
+              is_ad: false,
+            },
           }).then((data) => {
             reload();
             Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
@@ -310,16 +385,23 @@ const NonadUsermanage = (props) => {
       help: `กำลังโหลดข้อมูล...`,
     });
     setLoading(true);
-    request(`system/findUserAD?user_name=${value}`, { method: 'get' }).then(
-      (res) => {
-        console.log(res);
+    request(`system/findUserAD?username=${value}`, { method: 'get' })
+      .then((data) => {
+        console.log(data);
         setStatusValidation({
-          help: `${res.data.items.username}`,
+          help: `${data.data.items.displayName}`,
         });
         console.log(res);
         setLoading(false);
-      },
-    );
+      })
+      .catch((error) => {
+        console.log(error);
+        setStatusValidation({
+          validateStatus: 'error',
+          help: 'ไม่พบรหัสผู้ใช้ใน AD ',
+        });
+        setLoading(false);
+      });
   };
 
   const handleEdit = async ({ id }) => {
@@ -441,10 +523,9 @@ const NonadUsermanage = (props) => {
               columns={columns}
               dataSource={data}
               style={{ marginTop: 20 }}
-              scroll={{
-                y: 240,
+              pagination={{
+                pageSize: 8,
               }}
-              pagination={{}}
             />
           </div>
         </Col>
@@ -563,7 +644,7 @@ const NonadUsermanage = (props) => {
                     name="adform"
                     id="adform"
                     form={formAD}
-                    // onFinish={onFinishCrete}
+                    onFinish={onFinishCreate}
                     size="large"
                     initialValues={{}}
                   >
@@ -571,6 +652,7 @@ const NonadUsermanage = (props) => {
                       name="username"
                       label="Username"
                       rules={[{ required: true }]}
+                      {...statusValidation}
                     >
                       <Search
                         placeholder="Username"
@@ -609,7 +691,7 @@ const NonadUsermanage = (props) => {
                   <Form
                     form={formEdit}
                     layout="vertical"
-                    // onFinish={onFinishEdit}
+                    onFinish={onFinishEdit}
                     onFinishFailed={onFinishFailedAD}
                     initialValues={{
                       username: dataEdit.user_name,
@@ -657,7 +739,7 @@ const NonadUsermanage = (props) => {
           setselectedrow(undefined);
           setShowDrawers(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.id && (
           <ProDescriptions

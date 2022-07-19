@@ -323,9 +323,6 @@ const HazardManage = (props) => {
           dataSource={hazard}
           expandable
           size={'middle'}
-          scroll={{
-            y: 240,
-          }}
           pagination={{
             pageSize: 8,
           }}
@@ -389,7 +386,7 @@ const HazardManage = (props) => {
           setselectedrow(undefined);
           setShowDrawer(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.id && (
           <ProDescriptions

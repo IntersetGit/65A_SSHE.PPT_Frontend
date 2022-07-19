@@ -298,9 +298,6 @@ const IssueTypeManage = (props) => {
           dataSource={issue}
           expandable
           size={'middle'}
-          scroll={{
-            y: 240,
-          }}
           pagination={{
             pageSize: 8,
           }}
@@ -360,7 +357,7 @@ const IssueTypeManage = (props) => {
           setselectedrow(undefined);
           setShowDrawer(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.id && (
           <ProDescriptions

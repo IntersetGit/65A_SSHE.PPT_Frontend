@@ -249,6 +249,7 @@ const LikelihoodManage = (props) => {
       dataIndex: 'number',
       key: 'number',
       align: 'center',
+      width: '10%',
       sorter: (a, b) => a.number - b.number,
     },
     {
@@ -328,9 +329,6 @@ const LikelihoodManage = (props) => {
           dataSource={likelihood}
           expandable
           size={'middle'}
-          scroll={{
-            y: 240,
-          }}
           pagination={{
             pageSize: 8,
           }}
@@ -406,7 +404,7 @@ const LikelihoodManage = (props) => {
           setselectedrow(undefined);
           setShowDrawer(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.id && (
           <ProDescriptions

@@ -242,6 +242,7 @@ const Impact = (props) => {
       dataIndex: 'number',
       key: 'number',
       align: 'center',
+      width: '10%',
       sorter: (a, b) => a.number - b.number,
     },
     {
@@ -307,9 +308,6 @@ const Impact = (props) => {
           dataSource={impact}
           expandable
           size={'middle'}
-          scroll={{
-            y: 240,
-          }}
           pagination={{
             pageSize: 8,
           }}
@@ -377,7 +375,7 @@ const Impact = (props) => {
           setselectedrow(undefined);
           setShowDrawer(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.id && (
           <ProDescriptions

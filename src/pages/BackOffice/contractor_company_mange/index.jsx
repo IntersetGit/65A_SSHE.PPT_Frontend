@@ -130,6 +130,7 @@ const ContractorCompanyManage = (props) => {
   };
 
   const hideModal = () => {
+    form.resetFields();
     setShowModal(false);
   };
 
@@ -384,8 +385,8 @@ const ContractorCompanyManage = (props) => {
             ),
             rowExpandable: (record) => record.company_name !== 'Not Expandable',
           }}
-          scroll={{
-            y: 240,
+          pagination={{
+            pageSize: 8,
           }}
         />
       </Card>
@@ -516,7 +517,7 @@ const ContractorCompanyManage = (props) => {
           setselectedrow(undefined);
           setShowDrawer(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.id && (
           <ProDescriptions

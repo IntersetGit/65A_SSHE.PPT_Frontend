@@ -316,9 +316,6 @@ const ActivityManage = (props) => {
           dataSource={projecttype}
           expandable
           size={'middle'}
-          scroll={{
-            y: 240,
-          }}
           pagination={{
             pageSize: 8,
           }}
@@ -380,7 +377,7 @@ const ActivityManage = (props) => {
           setselectedrow(undefined);
           setShowDrawer(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.name && (
           <ProDescriptions

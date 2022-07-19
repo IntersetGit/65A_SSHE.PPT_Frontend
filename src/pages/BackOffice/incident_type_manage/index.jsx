@@ -304,9 +304,6 @@ const IncidentofTypeManage = (props) => {
           dataSource={incidenttype}
           expandable
           size={'middle'}
-          scroll={{
-            y: 240,
-          }}
           pagination={{
             pageSize: 8,
           }}
@@ -366,7 +363,7 @@ const IncidentofTypeManage = (props) => {
           setselectedrow(undefined);
           setShowDrawer(false);
         }}
-        closable={false}
+        closable={true}
       >
         {selectedrow?.id && (
           <ProDescriptions
