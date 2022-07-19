@@ -5,7 +5,6 @@ import {
   MenuDataItem,
   PageContainer,
   ProLayout,
-  SettingDrawer,
   Settings,
 } from '@ant-design/pro-layout';
 import type { MenuProps } from 'antd';
@@ -137,7 +136,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       <PageContainer>
         <ConfigProvider locale={enUS}>
           <PageMiddleware>{children}</PageMiddleware>
-          <SettingDrawer
+          {/* <SettingDrawer
             disableUrlParams
             enableDarkTheme
             settings={initialState?.settings}
@@ -147,7 +146,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
                 settings,
               }));
             }}
-          />
+          /> */}
         </ConfigProvider>
       </PageContainer>
     </ProLayout>

@@ -30,12 +30,14 @@ const RightNavContent = () => {
         </Tooltip>
         <Tooltip title={'Manual'}>
           <p>
-            <img
-              src="/assets/manual 64x64.png"
-              width={40}
-              height={40}
-              alt="manual-icon"
-            />
+            <a href="/PTT-SSHE-AI-Prototype2-v1.5.pdf">
+              <img
+                src="/assets/manual 64x64.png"
+                width={40}
+                height={40}
+                alt="manual-icon"
+              />
+            </a>
           </p>
         </Tooltip>
         <Tooltip title={'การแจ้งเตือน'}>

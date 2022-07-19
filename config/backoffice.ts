@@ -135,13 +135,13 @@ const backoffice_menu = {
             {
               path: '/backoffice/settings/issue_info',
               icon: 'SSHE-Incident',
-              name: 'Issue Info',
+              name: 'Alert',
               component: 'BackOffice/issue_info',
             },
             {
               path: '/backoffice/settings/alert',
               icon: 'redalarm',
-              name: 'Incident Info/KPI Info',
+              name: 'KPI',
               component: 'BackOffice/alert',
             },
             {

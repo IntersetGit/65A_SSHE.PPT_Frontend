@@ -252,22 +252,33 @@ const Issue = () => {
               render: false,
             }}
           >
-            <ProFormDateRangePicker
-              label="Form - To Date"
-              name="date"
-              fieldProps={{
-                format: 'YYYY-MM-DD',
-              }}
+            <ProForm.Group>
+              <ProFormDateRangePicker
+                label="Form - To Date"
+                name="date"
+                fieldProps={{
+                  format: 'YYYY-MM-DD',
+                }}
+              />
+              <ProFormSelect
+                label="Primary Case"
+                name="primary_case"
+                request={async () => {
+                  return getIssueType();
+                }}
+              />
+            </ProForm.Group>
+            <ProFormSelect
+              className="form-issue-margin-t"
+              label="Process"
+              name="status"
+              options={status}
             />
             <ProFormSelect
-              label="Primary Case"
-              name="primary_case"
-              request={async () => {
-                return getIssueType();
-              }}
+              className="form-issue-margin-t"
+              label="Project Name"
+              name="project_name"
             />
-            <ProFormSelect label="Process" name="status" options={status} />
-            <ProFormSelect label="Project Name" name="project_name" />
           </ProForm>
         }
         columns={comparedColums}

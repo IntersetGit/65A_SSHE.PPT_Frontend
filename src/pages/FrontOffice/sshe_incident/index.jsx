@@ -461,7 +461,7 @@ const Incident = () => {
               </Form.Item>
             </Card>
 
-            <Tabs defaultActiveKey="1">
+            <Tabs type="card" defaultActiveKey="1">
               <TabPane tab="General Information" key="1">
                 <Row gutter={[8, 8]}>
                   <Col xl={12} md={24} sm={24} xs={24}>
@@ -750,8 +750,23 @@ const Incident = () => {
                   </Form.Item>
                 </Card>
               </TabPane>
-              <TabPane tab="Why did the incident happen?" key="6">
-                <Card title="Why did the incident happen?">
+              <TabPane tab={'Why did the incident happen?'} key="6">
+                <Card
+                  title={
+                    <div>
+                      Why did the incident happen?
+                      <a href="/SCAT-Chart.pdf">
+                        <img
+                          src="/assets/free-question-icon-1149-thumb.png"
+                          width={40}
+                          height={40}
+                          style={{ marginLeft: '4%' }}
+                          alt="manual-icon"
+                        />
+                      </a>
+                    </div>
+                  }
+                >
                   <Form.Item
                     label="Unsafe workplace conditions: (Check all that apply)"
                     name="unsafe_workplace_conditions"
