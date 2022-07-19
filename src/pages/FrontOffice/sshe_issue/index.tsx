@@ -464,7 +464,7 @@ const Issue = () => {
               return getIssueType();
             }}
             showSearch
-            name={'issue_type_id'}
+            name={'primary_case'}
             rules={[
               {
                 required: true,
