@@ -609,7 +609,7 @@ const NonadUsermanage = (props) => {
                   label="กลุ่มผู้ใช้งาน"
                   rules={[{ required: true, message: 'กรุณาเลือกข้อมูล' }]}
                 >
-                  <Select placeholder="กลุ่มผู้ใช้งาน" options={roles} />
+                  <Select options={roles} />
                 </Form.Item>
 
                 <Form.Item
@@ -617,7 +617,7 @@ const NonadUsermanage = (props) => {
                   label="ชื่อโครงการ"
                   rules={[{ required: true, message: 'กรุณาเลือกโครงการ' }]}
                 >
-                  <Select placeholder="กลุ่มผู้ใช้งาน" options={project} />
+                  <Select options={project} allowClear />
                 </Form.Item>
 
                 <Form.Item>
@@ -625,9 +625,7 @@ const NonadUsermanage = (props) => {
                     <Button type="primary" htmlType="sumbit">
                       ตกลง
                     </Button>
-                    <Button type="primary" onClick={handleCancelAD}>
-                      ยกเลิก
-                    </Button>
+                    <Button onClick={handleCancelAD}>ยกเลิก</Button>
                   </Space>
                 </Form.Item>
               </Form>

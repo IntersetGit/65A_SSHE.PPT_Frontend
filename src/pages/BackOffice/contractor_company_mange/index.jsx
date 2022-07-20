@@ -499,12 +499,10 @@ const ContractorCompanyManage = (props) => {
 
           <Form.Item>
             <Space style={{ float: 'right' }}>
-              <Button size="medium" type="primary" htmlType="sumbit">
+              <Button type="primary" htmlType="sumbit">
                 ตกลง
               </Button>
-              <Button size="medium" type="primary" onClick={hideModal}>
-                ยกเลิก
-              </Button>
+              <Button onClick={hideModal}>ยกเลิก</Button>
             </Space>
           </Form.Item>
         </Form>

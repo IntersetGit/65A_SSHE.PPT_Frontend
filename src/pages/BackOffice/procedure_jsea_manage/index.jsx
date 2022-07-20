@@ -394,11 +394,7 @@ const ProcedureJsea = (props) => {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="ภาษาไทย"
-            name="name_thai"
-            rules={[{ required: true, message: 'กรุณาใส่ชื่อภาษาไทย' }]}
-          >
+          <Form.Item label="ภาษาไทย" name="name_thai">
             <Input />
           </Form.Item>
 
@@ -411,9 +407,7 @@ const ProcedureJsea = (props) => {
               <Button type="primary" htmlType="sumbit">
                 ตกลง
               </Button>
-              <Button type="primary" onClick={hideModal}>
-                ยกเลิก
-              </Button>
+              <Button onClick={hideModal}>ยกเลิก</Button>
             </Space>
           </Form.Item>
         </Form>

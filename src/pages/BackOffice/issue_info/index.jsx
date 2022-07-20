@@ -1,4 +1,16 @@
-import { Button, Card, Col, Form, InputNumber, Row, Space, Table } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  InputNumber,
+  message,
+  Row,
+  Space,
+  Table,
+  Upload,
+} from 'antd';
 import { useState } from 'react';
 import { colors } from './colors';
 import { colorse } from './colorse';
@@ -40,6 +52,23 @@ const IssueInfo = () => {
       setValue(e);
     }
     console.log('changed', e.target.id);
+  };
+
+  const props = {
+    name: 'file',
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+
+    onChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+
+      if (info.file.status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
   };
 
   const columns = [
@@ -151,8 +180,8 @@ const IssueInfo = () => {
         size="large"
       >
         <div className="site-card-wrapper">
-          <Row gutter={16}>
-            <Col className="gutter-row" span={12}>
+          <Row gutter={[16, 24]}>
+            <Col xs={24} sm={12} md={12} lg={12} xl={12}>
               <Card title="Setting : SSHE Issue Alert" bordered={false}>
                 <Table
                   columns={columns}
@@ -161,13 +190,36 @@ const IssueInfo = () => {
                 ></Table>
               </Card>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12} md={12} lg={12} xl={12}>
               <Card title="Setting : Risk Assessment " bordered={false}>
                 <Table
                   columns={columnz}
                   dataSource={colorse}
                   pagination={false}
                 ></Table>
+              </Card>
+            </Col>
+
+            <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+              <Card title="Setting : SSHE Incident " bordered={false}>
+                <Form.Item
+                  name="scat_chart"
+                  label="Scat Chart"
+                  labelCol={{ span: 4 }}
+                >
+                  <Upload {...props}>
+                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                  </Upload>
+                </Form.Item>
+
+                <Form.Item>
+                  <Space style={{ paddingTop: '20px', float: 'left' }}>
+                    <Button type="primary" htmlType="sumbit">
+                      บันทึก
+                    </Button>
+                    <Button>ยกเลิก</Button>
+                  </Space>
+                </Form.Item>
               </Card>
             </Col>
           </Row>
