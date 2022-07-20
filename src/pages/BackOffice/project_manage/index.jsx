@@ -46,7 +46,6 @@ const ProjectManage = (props) => {
   });
 
   useEffect(() => {
-    form.setFieldsValue({ favorite_status: 0 });
     reload();
   }, []);
 
@@ -140,6 +139,7 @@ const ProjectManage = (props) => {
   };
 
   const showModal = (type) => {
+    form.setFieldsValue({ favorite_status: 0 });
     setdrawerType(type);
     setShowModal(true);
   };
@@ -507,9 +507,7 @@ const ProjectManage = (props) => {
                   <Button type="primary" htmlType="sumbit">
                     ตกลง
                   </Button>
-                  <Button type="primary" onClick={hideModal}>
-                    ยกเลิก
-                  </Button>
+                  <Button onClick={hideModal}>ยกเลิก</Button>
                 </Space>
               </Form.Item>
             </TabPane>

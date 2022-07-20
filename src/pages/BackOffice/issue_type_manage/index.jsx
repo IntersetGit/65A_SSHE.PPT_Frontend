@@ -342,9 +342,7 @@ const IssueTypeManage = (props) => {
               <Button type="primary" htmlType="sumbit">
                 ตกลง
               </Button>
-              <Button type="primary" onClick={hideModal}>
-                ยกเลิก
-              </Button>
+              <Button onClick={hideModal}>ยกเลิก</Button>
             </Space>
           </Form.Item>
         </Form>
