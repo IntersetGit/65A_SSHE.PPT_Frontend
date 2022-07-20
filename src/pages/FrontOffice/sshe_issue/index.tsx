@@ -424,7 +424,7 @@ const Issue = () => {
 
         <ProForm.Group>
           <ProFormText label={'Lat'} width={270} name={'lat'} />
-          <ProFormText label={'Lng'} width={270} name={'long'} />
+          <ProFormText label={'Long'} width={270} name={'long'} />
           <ProForm.Item>
             <Tooltip overlay="Select Lat/Long">
               <span

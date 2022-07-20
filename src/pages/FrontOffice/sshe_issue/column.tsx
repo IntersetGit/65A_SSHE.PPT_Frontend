@@ -2,7 +2,7 @@ import { ProColumns } from '@ant-design/pro-components';
 import { getIssueType } from './api';
 import { days_tocolors, status } from './enums';
 
-const day_calculation = (date: string | Date) => {
+export const day_calculation = (date: string | Date) => {
   const day_1 = new Date(date);
   const day_2 = new Date();
   const diff = day_2.getTime() - day_1.getTime();

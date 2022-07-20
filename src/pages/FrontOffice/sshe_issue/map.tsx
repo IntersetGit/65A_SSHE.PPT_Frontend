@@ -8,6 +8,8 @@ import {
   withGoogleMap,
   withScriptjs,
 } from 'react-google-maps';
+import { day_calculation } from './column';
+import { days_tocolors } from './enums';
 
 type MapPropsType = {
   visible: boolean;
@@ -30,10 +32,31 @@ export type Latlngtype = {
   lng: number | undefined;
 };
 
-const svgMarker = () => {
+const date_render = (record: string | Date) => {
+  let rendered = undefined;
+  days_tocolors.forEach((v) => {
+    switch (v.symbols) {
+      case '<':
+        if (day_calculation(record) < v.days) {
+          rendered = v.color;
+        }
+        break;
+      case '>=':
+        if (day_calculation(record) >= v.days) {
+          rendered = v.color;
+        }
+        break;
+      default:
+        break;
+    }
+  });
+  return rendered;
+};
+
+const svgMarker = (color: string | undefined) => {
   return {
     path: 'M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z',
-    fillColor: 'blue',
+    fillColor: color ? color : '#fff',
     fillOpacity: 1,
     strokeWeight: 0,
     rotation: 0,
@@ -82,7 +105,7 @@ const MyMapComponent = withScriptjs(
             {props.dataSource.map((item) => (
               <Marker
                 key={item.id}
-                icon={svgMarker()}
+                icon={svgMarker(date_render(item.date))}
                 position={{
                   lat: parseFloat(item.lat),
                   lng: parseFloat(item.long),
