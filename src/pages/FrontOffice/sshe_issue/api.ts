@@ -98,3 +98,50 @@ export async function deleteIssue(
     },
   );
 }
+
+export async function getownProject(options?: { [key: string]: any }) {
+  let arr: APITypes.SelectType[] = [];
+  const result = await request<{
+    items: { id: string; project_name: string }[];
+    status_code: string | number;
+  }>('master/getProjectbyid', {
+    method: 'GET',
+    ...(options || {}),
+  });
+
+  result.items.forEach((v, k) => {
+    arr.push({ label: v.project_name, value: v.id });
+  });
+
+  return arr;
+}
+
+export async function getusersByProject(
+  params: {
+    // query
+    /**  หน้าปัจจุบัน */
+    current?: number;
+    id?: string;
+    /** ขนาดของหน้า */
+    pageSize?: number;
+  },
+  options?: { [key: string]: any },
+) {
+  let arr: APITypes.SelectType[] = [];
+  const result = await request<{
+    items: { users: { id: string; user_name: string }[] };
+    status_code: string | number;
+  }>(`system/users/info/${params.id}`, {
+    method: 'GET',
+    // params : {
+    //   ...params
+    // },
+    ...(options || {}),
+  });
+
+  result.items.users.forEach((v, k) => {
+    arr.push({ label: v.user_name, value: v.id });
+  });
+
+  return arr;
+}

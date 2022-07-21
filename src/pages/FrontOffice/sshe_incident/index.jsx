@@ -448,12 +448,18 @@ const Incident = () => {
               <Form.Item
                 label="Project"
                 name="project"
+                style={{
+                  width: '30%',
+                }}
                 rules={[{ required: true, message: 'กรุณาป้อนชื่อโปรเจค' }]}
               >
                 <Select showSearch />
               </Form.Item>
               <Form.Item
                 label="Company"
+                style={{
+                  width: '30%',
+                }}
                 name="company"
                 rules={[{ required: true, message: 'กรุณาป้อนชื่อบริษัท' }]}
               >

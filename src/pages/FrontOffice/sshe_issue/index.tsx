@@ -37,6 +37,8 @@ import {
   getIssue,
   getIssueHazard,
   getIssueType,
+  getownProject,
+  getusersByProject,
 } from './api';
 import { columns } from './column';
 import { status } from './enums';
@@ -56,6 +58,7 @@ const Issue = () => {
   const [form] = ProForm.useForm();
   const [tableform] = ProForm.useForm();
   const actionRef = useRef<ActionType>();
+  const [userlist, setuserlist] = useState<APITypes.SelectType[]>([]);
 
   const showModal = () => {
     setShowDrawer(true);
@@ -404,6 +407,15 @@ const Issue = () => {
           <ProFormSelect
             label={'Project Name'}
             width={'md'}
+            request={async () => {
+              return getownProject();
+            }}
+            fieldProps={{
+              onChange: async (value) => {
+                console.log(value);
+                setuserlist(await getusersByProject({ id: value }));
+              },
+            }}
             name={'project_id'}
           />
         </ProForm.Group>
@@ -512,9 +524,10 @@ const Issue = () => {
         </ProForm.Group>
 
         <ProForm.Group>
-          <ProFormText
+          <ProFormSelect
             label={'SHE Officer'}
             width={'md'}
+            options={userlist}
             name={'user_id'}
             rules={[
               {
