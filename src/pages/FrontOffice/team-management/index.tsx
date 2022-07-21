@@ -2,7 +2,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import {
   DrawerForm,
   ProFormInstance,
-  ProFormRadio,
   ProFormSelect,
   ProFormText,
   ProTable,
@@ -50,6 +49,7 @@ const TeamManagement: React.FC = () => {
         width={'40%'}
         formRef={formRef}
         layout={'vertical'}
+        size={'large'}
         autoFocusFirstInput
         onVisibleChange={(visible) => {
           setShowDrawer(visible);
@@ -69,8 +69,20 @@ const TeamManagement: React.FC = () => {
         <ProFormSelect
           options={[
             {
+              value: 'Project Manager',
+              label: 'Project Manager',
+            },
+            {
               value: 'IT Manager',
               label: 'IT Manager',
+            },
+            {
+              value: 'หัวหน้าทีมไฟฟ้า',
+              label: 'หัวหน้าทีมไฟฟ้า',
+            },
+            {
+              value: 'หัวหน้าทีมก่อสร้าง',
+              label: 'หัวหน้าทีมก่อสร้าง',
             },
           ]}
           name="position"
@@ -96,20 +108,25 @@ const TeamManagement: React.FC = () => {
           ]}
         />
 
-        <ProFormRadio.Group
-          name="sshe"
-          label="SSHE Officer"
-          radioType="button"
+        <ProFormSelect
           options={[
             {
-              label: 'SSHE Officer',
-              value: 1,
+              value: 'Company Admin',
+              label: 'Company Admin',
             },
             {
-              label: 'Non SSHE Officer',
-              value: 2,
+              value: 'SSHE Officer',
+              label: 'SSHE Officer',
+            },
+            {
+              value: 'Staff',
+              label: 'Staff',
             },
           ]}
+          name="roles"
+          label="Role"
+          placeholder={'กรุณาใส่ตำแหน่ง'}
+          rules={[{ required: true, message: 'โปรดใส่ตำแหน่งของคุณ' }]}
         />
       </DrawerForm>
     </>

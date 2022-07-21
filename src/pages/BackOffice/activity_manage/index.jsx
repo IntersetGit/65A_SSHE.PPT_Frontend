@@ -261,6 +261,9 @@ const ActivityManage = (props) => {
       dataIndex: 'name_thai',
       key: 'name_thai',
       align: 'center',
+      render: (record) => {
+        return <p align="left">{record}</p>;
+      },
     },
     {
       title: 'Action',

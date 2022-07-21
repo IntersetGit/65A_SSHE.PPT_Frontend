@@ -206,9 +206,12 @@ const IssueInfo = () => {
                   name="scat_chart"
                   label="Scat Chart"
                   labelCol={{ span: 4 }}
+                  valuePropName="fileList"
                 >
                   <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                    <Button icon={<UploadOutlined />} size="middle">
+                      Click to Upload
+                    </Button>
                   </Upload>
                 </Form.Item>
 

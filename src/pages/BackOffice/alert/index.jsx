@@ -20,9 +20,6 @@ const Alert = () => {
         res.items.forEach((v, k) => {
           v.key = k + 1;
           v.number = k + 1;
-          v.company.forEach((value, key) => {
-            value.key = key + 1;
-          });
           v.hour = 400000;
           v.fatal_case = 1;
           v.away_from_work_case = 1;
@@ -42,7 +39,6 @@ const Alert = () => {
           arrData.push({ label: v.name, value: v.id });
         });
         setproject(arrData);
-        console.log(arrData);
       })
       .catch((err) => console.error(err));
   };

@@ -314,7 +314,6 @@ const ContractorCompanyManage = (props) => {
       dataIndex: 'address',
       key: 'address',
       align: 'center',
-      hideInSearch: true,
     },
     {
       title: 'จัดการ',

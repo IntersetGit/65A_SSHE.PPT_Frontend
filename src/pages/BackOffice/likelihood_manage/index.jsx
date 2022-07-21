@@ -278,7 +278,7 @@ const LikelihoodManage = (props) => {
       render: (record) => {
         const data = likelihood_value.find((e) => e.value === record);
         return (
-          <p align="left" key={data?.value}>
+          <p align="center" key={data?.value}>
             {data?.label}
           </p>
         );

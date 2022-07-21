@@ -42,6 +42,17 @@ const NonadUsermanage = (props) => {
   const [formCrete] = Form.useForm();
   const [formEdit] = Form.useForm();
   const [usertype, setusertype] = useState(undefined);
+  const [filteredproject, setfilteredproject] = useState(undefined);
+
+  const onCompanychange = async (value) => {
+    let arr = [];
+    const result_comp = await request('master/getCompany', { method: 'get' });
+    const comp = result_comp.items.find((e) => e.id === value);
+    comp.project.forEach((v, k) => {
+      arr.push({ value: v.project_id, label: v.project_name });
+    });
+    setfilteredproject(arr);
+  };
 
   const menus = [
     {
@@ -486,6 +497,19 @@ const NonadUsermanage = (props) => {
     },
   };
 
+  const display = [
+    {
+      title: 'ชื่อบริษัท',
+      dataIndex: 'company_name',
+      key: 'company_name',
+    },
+    {
+      title: 'โปรเจคที่รับผิดชอบ',
+      dataIndex: 'project_name',
+      key: 'project_name',
+    },
+  ];
+
   return (
     <>
       <Card style={{ marginTop: '1rem' }} bordered={true}>
@@ -558,7 +582,7 @@ const NonadUsermanage = (props) => {
                   name="company_id"
                   rules={[{ required: true, message: 'กรุณากรอกรหัสบริษัท' }]}
                 >
-                  <Select options={company}></Select>
+                  <Select onChange={onCompanychange} options={company}></Select>
                 </Form.Item>
 
                 <Form.Item
@@ -617,7 +641,7 @@ const NonadUsermanage = (props) => {
                   label="ชื่อโครงการ"
                   rules={[{ required: true, message: 'กรุณาเลือกโครงการ' }]}
                 >
-                  <Select options={project} allowClear />
+                  <Select options={filteredproject} allowClear />
                 </Form.Item>
 
                 <Form.Item>
@@ -750,7 +774,7 @@ const NonadUsermanage = (props) => {
             params={{
               id: selectedrow?.user_name,
             }}
-            columns={columns}
+            columns={[...columns, ...display]}
           />
         )}
       </Drawer>
