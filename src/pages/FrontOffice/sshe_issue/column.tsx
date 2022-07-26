@@ -1,5 +1,5 @@
 import { ProColumns } from '@ant-design/pro-components';
-import { getIssueType } from './api';
+import { getIssueType, getownProject } from './api';
 import { days_tocolors, status } from './enums';
 
 export const day_calculation = (date: string | Date) => {
@@ -111,6 +111,9 @@ export const columns: ProColumns[] = [
     title: 'Project Name',
     key: 'project_name',
     valueType: 'select',
+    request: async () => {
+      return getownProject();
+    },
     hideInTable: true,
   },
   {

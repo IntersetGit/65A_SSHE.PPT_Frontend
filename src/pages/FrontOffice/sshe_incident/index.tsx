@@ -6,6 +6,7 @@ import {
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
+import { ProTable } from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -21,7 +22,6 @@ import {
   Row,
   Select,
   Space,
-  Table,
   Tabs,
   TimePicker,
   Upload,
@@ -30,6 +30,15 @@ import Search from 'antd/lib/input/Search';
 import { useEffect, useState } from 'react';
 import { request } from 'umi';
 import { incident_dummy_data } from '../../../../dummy_data/incident_dummy_data';
+import columns from './column';
+import {
+  actsbypeopleoption,
+  employeroptions,
+  reportoption,
+  suggest_incidentoption,
+  typeofincidentoptions,
+  wordplaceconditionoption,
+} from './enum';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
@@ -39,7 +48,7 @@ const props = {
   name: 'file',
   multiple: true,
   action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  onChange(info) {
+  onChange(info: any) {
     const { status } = info.file;
     if (status !== 'uploading') {
       console.log(info.file, info.fileList);
@@ -50,7 +59,7 @@ const props = {
       message.error(`${info.file.name} file upload failed.`);
     }
   },
-  onDrop(e) {
+  onDrop(e: any) {
     console.log('Dropped files', e.dataTransfer.files);
   },
 };
@@ -59,7 +68,7 @@ const Incident = () => {
   const [isTablefield, setTablefield] = useState(true);
   const [form] = Form.useForm();
   const [incidentdata, setincidentdata] = useState(incident_dummy_data);
-  const [selectedrow, setselectedrow] = useState(null);
+  const [selectedrow, setselectedrow] = useState<{} | null>(null);
   const [actiontype, setactiontype] = useState(1);
 
   useEffect(() => {
@@ -70,263 +79,52 @@ const Incident = () => {
       .catch((err) => {});
   }, []);
 
-  const AddDataState = (type, _data = {}) => {
-    switch (type) {
-      case 'ADD':
-        setincidentdata([...incidentdata, _data]);
-        break;
-
-      case 'EDIT':
-        const indexs = incidentdata.findIndex((e) => e.key == _data.key);
-        let arr = [...incidentdata];
-        console.log(indexs);
-        arr[indexs] = _data;
-
-        setincidentdata(arr);
-        break;
-
-      case 'DELETE':
-        const newState = [...incidentdata];
-        const newArr = newState.filter((e) => e.key != _data.key);
-        setincidentdata(newArr);
-        break;
-
-      default:
-        break;
-    }
+  const action_column = {
+    title: 'Action',
+    key: 'action',
+    render: (text: any, record: any) => (
+      <Dropdown.Button
+        icon={<MoreOutlined />}
+        type="text"
+        overlay={
+          <Menu>
+            <Menu.Item
+              key="1"
+              icon={<EditOutlined />}
+              onClick={() => {
+                setactiontype(2);
+                form.setFieldsValue(record);
+                setselectedrow(record);
+                setTablefield(false);
+              }}
+            >
+              แก้ไข
+            </Menu.Item>
+            <Menu.Item
+              key="2"
+              icon={<DeleteOutlined />}
+              // onClick={() => AddDataState('DELETE', record)}
+            >
+              ลบ
+            </Menu.Item>
+          </Menu>
+        }
+      ></Dropdown.Button>
+    ),
   };
 
-  const columns = [
-    {
-      title: 'Report No.',
-      dataIndex: 'key',
-      key: 'key',
-    },
-    {
-      title: 'Incident No.',
-      dataIndex: 'incident_id',
-      key: 'incident_id',
-    },
-    {
-      title: 'Project',
-      dataIndex: 'project',
-      key: 'project',
-    },
-    {
-      title: 'Company',
-      dataIndex: 'company',
-      key: 'company',
-    },
-    {
-      title: 'Date of Incident',
-      dataIndex: 'dateofincident',
-      key: 'dateofincident',
-    },
-    {
-      title: 'Location',
-      dataIndex: 'locationofincident',
-      key: 'locationofincident',
-    },
-    {
-      title: 'Incident Type',
-      dataIndex: 'typeofincident',
-      key: 'typeofincident',
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text, record) => (
-        <Dropdown.Button
-          icon={<MoreOutlined />}
-          type="text"
-          overlay={
-            <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  setactiontype(2);
-                  form.setFieldsValue(record);
-                  setselectedrow(record);
-                  setTablefield(false);
-                }}
-              >
-                แก้ไข
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<DeleteOutlined />}
-                onClick={() => AddDataState('DELETE', record)}
-              >
-                ลบ
-              </Menu.Item>
-            </Menu>
-          }
-        ></Dropdown.Button>
-      ),
-    },
-  ];
-
-  const table_data = [
-    {
-      key: '1',
-      report_no: 'Rp-001',
-      incident_no: 'l-x00190',
-      project: 'ปรับปรุง Tank Farm',
-      company: 'ABC',
-      doi: '20 ม.ค. 2565',
-      location: 'Tank Farm',
-      incidenttype: 'Lack of Machine',
-    },
-    {
-      key: '2',
-      report_no: 'Rp-002',
-      incident_no: 'l-x00191',
-      project: 'ต่อเติมอาคาร 101',
-      company: 'XYZ',
-      doi: '1 ก.พ. 2565',
-      location: 'บริเวณอาคาร 101',
-      incidenttype: 'Lack of Machine',
-    },
-    {
-      key: '3',
-      report_no: 'Rp-003',
-      incident_no: 'l-x00192',
-      project: 'วางท่อก๊าซ ระยอง-บ้านเพ',
-      company: 'อีตัล',
-      doi: '12 เม.ย. 2565',
-      location: 'K-291',
-      incidenttype: 'Lack of Equipment',
-    },
-  ];
-
-  const typeofincidentoptions = [
-    { label: 'Fatality', value: 'Fatality' },
-    { label: 'Lost Workday ', value: 'Lost Workday' },
-    { label: 'Medical Treatment ', value: 'Medical Treatment' },
-    { label: 'Near Miss  ', value: 'Near Miss' },
-    { label: 'Property Damage ', value: 'Property Damage' },
-    { label: 'Motor Vehicle Incident ', value: 'Motor Vehicle Incident' },
-    { label: 'Fire Incident First Aid ', value: 'Fire Incident First Aid' },
-    { label: 'Environmental Incident ', value: 'Environmental Incident' },
-    { label: 'Other ', value: 'Other' },
-  ];
-
-  const employeroptions = [
-    { label: 'Fatality', value: 'Fatality' },
-    { label: 'Medical Treatment', value: 'medical Treatment' },
-    { label: 'First Aid', value: 'First Aid' },
-    { label: 'Lost Time', value: 'Lost Time' },
-    { label: 'Restricted Work', value: 'Restricted Work' },
-  ];
-
-  const wordplaceconditionoption = [
-    { label: 'Inadequate guard', value: 'Inadequate guard' },
-    { label: 'Unguarded hazard', value: 'Unguarded hazard' },
-    {
-      label: 'Safety device is defective',
-      value: 'Safety device is defective',
-    },
-    {
-      label: 'Tool or equipm ent defectiove',
-      value: 'Tool or equipm ent defectiove',
-    },
-    {
-      label: 'Workstation layout is hazardous',
-      value: 'Workstation layout is hazardous',
-    },
-    { label: 'Unsafe lighting', value: 'Unsafe lighting' },
-    { label: 'Unsafe ventilation', value: 'Unsafe ventilation' },
-    {
-      label: 'Lack of needed personal protective equipm ent',
-      value: 'Lack of needed personal protective equipm ent',
-    },
-    {
-      label: 'Lack of appropriate equipm ent/tools',
-      value: 'Lack of appropriate equipm ent/tools',
-    },
-    { label: 'Unsafe clothing', value: 'Unsafe clothing' },
-    {
-      label: 'No training or insufficient training',
-      value: 'No training or insufficient training',
-    },
-    { label: 'Other', value: 'Other' },
-  ];
-
-  const actsbypeopleoption = [
-    {
-      label: 'Operating without permission',
-      value: 'Operating without permission',
-    },
-    { label: 'Operating at unsafe speed', value: 'Operating at unsafe speed' },
-    {
-      label: 'Servicing equipment that has power to it',
-      value: 'Servicing equipment that has power to it',
-    },
-    {
-      label: 'Making a safety device inoperative',
-      value: 'Making a safety device inoperative',
-    },
-    { label: 'Using defective equipment', value: 'Using defective equipment' },
-    {
-      label: 'Using equipment in an unapproved way',
-      value: 'Using equipment in an unapproved way',
-    },
-    { label: 'Unsafe lifting', value: 'Unsafe lifting' },
-    {
-      label: 'Taking an unsafe position or posture',
-      value: 'Taking an unsafe position or posture',
-    },
-    {
-      label: 'Distraction, teasing, horseplay',
-      value: 'Distraction, teasing, horseplay',
-    },
-    {
-      label: 'Failure to wear personal protective equipment',
-      value: 'Failure to wear personal protective equipment',
-    },
-    {
-      label: 'Failure to use the available equipment / tools',
-      value: 'Failure to use the available equipment / tools',
-    },
-    { label: 'Other', value: 'Other' },
-  ];
-
-  const suggest_incidentoption = [
-    { label: 'Stop this activity', value: 'Stop this activity' },
-    { label: 'Guard the hazard', value: 'Guard the hazard' },
-    { label: 'Train the employee(s)', value: 'Train the employee(s)' },
-    { label: 'Train the supervisor(s)', value: 'Train the supervisor(s)' },
-    { label: 'Redesign task steps', value: 'Redesign task steps' },
-    { label: 'Redesign work station', value: 'Redesign work station' },
-    { label: 'Write a new policy/rule', value: 'Write a new policy/rule' },
-    { label: 'Enforce existing policy', value: 'Enforce existing policy' },
-    {
-      label: 'Routinely inspect for the hazard',
-      value: 'Routinely inspect for the hazard',
-    },
-    {
-      label: 'Personal Protective Equipment',
-      value: 'Personal Protective Equipment',
-    },
-    { label: 'Other: ', value: 'Other: ' },
-  ];
-
-  const reportoption = [
-    { label: 'Yes', value: 'Yes' },
-    { label: 'No', value: 'No' },
-  ];
+  const map_column = [...columns, action_column];
 
   const typeofonChange = () => {};
 
-  const onFinish = (valuse) => {
+  const onFinish = (valuse: any) => {
     console.log(valuse);
     if (actiontype == 1) {
-      AddDataState('ADD', { key: incidentdata.length + 1, ...valuse });
+      // AddDataState('ADD', { key: incidentdata.length + 1, ...valuse });
     } else if (actiontype == 2) {
       const modified_value = { ...selectedrow, ...valuse };
       console.log(modified_value);
-      AddDataState('EDIT', modified_value);
+      // AddDataState('EDIT', modified_value);
     }
     handleClose();
   };
@@ -369,7 +167,11 @@ const Incident = () => {
             </Space>
           </div>
 
-          <Table columns={columns} dataSource={incidentdata} />
+          <ProTable
+            search={false}
+            columns={map_column}
+            dataSource={incidentdata}
+          />
         </Card>
       ) : (
         <Card>
