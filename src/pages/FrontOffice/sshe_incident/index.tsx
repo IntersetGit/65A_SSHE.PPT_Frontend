@@ -6,7 +6,13 @@ import {
   MoreOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { ProTable } from '@ant-design/pro-components';
+import {
+  ActionType,
+  EditableProTable,
+  ProForm,
+  ProFormText,
+  ProTable,
+} from '@ant-design/pro-components';
 import {
   Button,
   Card,
@@ -26,11 +32,10 @@ import {
   TimePicker,
   Upload,
 } from 'antd';
-import Search from 'antd/lib/input/Search';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
 import { incident_dummy_data } from '../../../../dummy_data/incident_dummy_data';
-import columns from './column';
+import { columns, corrective_columns, witness_columns } from './column';
 import {
   actsbypeopleoption,
   employeroptions,
@@ -70,6 +75,7 @@ const Incident = () => {
   const [incidentdata, setincidentdata] = useState(incident_dummy_data);
   const [selectedrow, setselectedrow] = useState<{} | null>(null);
   const [actiontype, setactiontype] = useState(1);
+  const actionRef = useRef<ActionType>();
 
   useEffect(() => {
     request('master/getProject', { method: 'get' })
@@ -142,38 +148,59 @@ const Incident = () => {
   return (
     <>
       {isTablefield ? (
-        <Card title={'การจัดการข้อมูล Incident'}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Space size={'large'}>
-              <p>IncidentCategory</p>
-              <Input placeholder="Search to Select" />
-              <Search placeholder="Search" />
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  setactiontype(1);
-                  setTablefield(false);
-                }}
-              >
-                เพิ่ม ISSUE{' '}
-              </Button>
-            </Space>
-          </div>
+        // <Card title={'การจัดการข้อมูล Incident'}>
+        //   <div
+        //     style={{
+        //       display: 'flex',
+        //       justifyContent: 'space-between',
+        //       alignItems: 'center',
+        //     }}
+        //   >
+        //     <Space size={'large'}>
+        //       <p>IncidentCategory</p>
+        //       <Input placeholder="Search to Select" />
+        //       <Search placeholder="Search" />
+        //     </Space>
+        //   </div>
 
-          <ProTable
-            search={false}
-            columns={map_column}
-            dataSource={incidentdata}
-          />
-        </Card>
+        <ProTable
+          search={false}
+          columns={map_column}
+          dataSource={incidentdata}
+          actionRef={actionRef}
+          columnEmptyText={'ไม่พบข้อมูล'}
+          size={'middle'}
+          headerTitle={
+            <ProForm
+              layout={'inline'}
+              submitter={{
+                render: false,
+              }}
+            >
+              <ProFormText label="Category" />
+            </ProForm>
+          }
+          toolbar={{
+            settings: [],
+            onSearch: (value: string) => {
+              alert(value);
+            },
+          }}
+          toolBarRender={() => [
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setactiontype(1);
+                setTablefield(false);
+              }}
+            >
+              ADD INCIDENT{' '}
+            </Button>,
+          ]}
+        />
       ) : (
+        // </Card>
         <Card>
           <Button type="text" icon={<LeftOutlined />} onClick={handleClose}>
             กลับ
@@ -186,44 +213,6 @@ const Incident = () => {
             form={form}
             labelAlign="left"
             colon={false}
-            // initialValues={{
-            //   key : selectedrow && selectedrow.key,
-            //   Incident_Discription: selectedrow && selectedrow.Incident_Discription,
-            //   Property_Damage_1: selectedrow && selectedrow.Property_Damage_1,
-            //   Property_Damage_2: selectedrow && selectedrow.Property_Damage_2,
-            //   Property_Damage_3: selectedrow && selectedrow.Property_Damage_3,
-            //   Property_Damage_4: selectedrow && selectedrow.Property_Damage_4,
-            //   acts_conditions_report: selectedrow && selectedrow.acts_conditions_report,
-            //   address: selectedrow && selectedrow.address,
-            //   age: selectedrow && selectedrow.age,
-            //   company: selectedrow && selectedrow.company,
-            //   company_activity: selectedrow && selectedrow.company_activity,
-            //   company_name: selectedrow && selectedrow.company_name,
-            //   dateofincident: selectedrow && moment(selectedrow.dateofincident) ,
-            //   dateofreport: selectedrow && moment(selectedrow.dateofreport),
-            //   department: selectedrow && selectedrow.department,
-            //   incident_id: selectedrow && selectedrow.incident_id,
-            //   locationofincident: selectedrow && selectedrow.locationofincident,
-            //   month: selectedrow && moment(selectedrow.month),
-            //   name_team_member: selectedrow && selectedrow.name_team_member,
-            //   nameofinjured: selectedrow && selectedrow.nameofinjured,
-            //   nationality: selectedrow && selectedrow.nationality,
-            //   personal_passport: selectedrow && selectedrow.personal_passport,
-            //   position: selectedrow && selectedrow.position,
-            //   prepared: selectedrow && selectedrow.prepared,
-            //   project: selectedrow && selectedrow.project,
-            //   similar_incident_near_miss: selectedrow && selectedrow.similar_incident_near_miss,
-            //   sub_contractor: selectedrow && selectedrow.sub_contractor,
-            //   sug_option: selectedrow && selectedrow.sug_option,
-            //   timeofincident: selectedrow && moment(selectedrow.timeofincident),
-            //   timeofreport: selectedrow && moment(selectedrow.timeofreport),
-            //   typeofincident: selectedrow && selectedrow.typeofincident,
-            //   unsafe_acts_by_people: selectedrow && selectedrow.unsafe_acts_by_people,
-            //   unsafe_acts_occur: selectedrow && selectedrow.unsafe_acts_occur,
-            //   unsafe_conditions_exist: selectedrow && selectedrow.unsafe_conditions_exist,
-            //   unsafe_workplace_conditions: selectedrow && selectedrow.unsafe_workplace_conditions,
-            //   year: selectedrow && moment(selectedrow.year)
-            // }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
@@ -485,7 +474,26 @@ const Incident = () => {
                 </Card>
               </TabPane>
               <TabPane tab="Witness or Witness Statement" key="3">
-                Waiting for implement Edittable Module...
+                <EditableProTable
+                  columns={witness_columns}
+                  footer={() => [
+                    <Button
+                      key="add-btn"
+                      type="primary"
+                      // onClick={() => {
+                      //   console.log(actionRef.current?.pageInfo);
+                      //   actionRef.current?.addEditRecord?.({
+                      //     keys: dataSource.length + 1,
+                      //     risk_no: dataSource.length + 1,
+                      //   });
+                      // }}
+                      icon={<PlusOutlined />}
+                    >
+                      เพิ่มข้อมูล
+                    </Button>,
+                  ]}
+                  recordCreatorProps={false}
+                />
               </TabPane>
               <TabPane tab="Property Damage" key="4">
                 <Card title="Property Damage">
@@ -677,8 +685,26 @@ const Incident = () => {
               </TabPane>
 
               <TabPane tab="Corrective/Preventive Action Tracking " key="8">
-                Corrective/Preventive Action Tracking
-                <p> Waiting for implement Edittable Module... </p>
+                <EditableProTable
+                  columns={corrective_columns}
+                  footer={() => [
+                    <Button
+                      key="add-btn"
+                      type="primary"
+                      // onClick={() => {
+                      //   console.log(actionRef.current?.pageInfo);
+                      //   actionRef.current?.addEditRecord?.({
+                      //     keys: dataSource.length + 1,
+                      //     risk_no: dataSource.length + 1,
+                      //   });
+                      // }}
+                      icon={<PlusOutlined />}
+                    >
+                      เพิ่มข้อมูล
+                    </Button>,
+                  ]}
+                  recordCreatorProps={false}
+                />
               </TabPane>
               <TabPane
                 tab="Attachment List / Investigation Team and Prepared/completed report"

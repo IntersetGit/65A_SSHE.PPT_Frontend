@@ -1,6 +1,6 @@
 import { ProColumns } from '@ant-design/pro-components';
 
-const columns: ProColumns[] = [
+export const columns: ProColumns[] = [
   {
     title: 'Report No.',
     dataIndex: 'key',
@@ -38,4 +38,32 @@ const columns: ProColumns[] = [
   },
 ];
 
-export default columns;
+export const witness_columns: ProColumns[] = [
+  {
+    title: 'Name',
+  },
+  {
+    title: 'Company',
+  },
+  {
+    title: 'Occupation/Position',
+  },
+];
+
+export const corrective_columns: ProColumns[] = [
+  {
+    title: 'List action(s) that have or will be taken to prevent a recurrence.',
+  },
+  {
+    title: 'Assigned To Whom',
+  },
+  {
+    title: 'Scheduled Completion Date',
+  },
+  {
+    title: 'Actual Completion Date',
+  },
+  {
+    title: 'Follow-up Date',
+  },
+];
