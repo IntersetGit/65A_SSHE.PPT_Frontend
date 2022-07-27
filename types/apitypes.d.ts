@@ -117,4 +117,14 @@ declare namespace APITypes {
     user_id: string;
     close: number;
   };
+
+  type TeamManagemenType = {
+    key?: number;
+    id: number;
+    number: number;
+    firstlast: string;
+    position: string;
+    role: string;
+    project_responsible: string;
+  };
 }

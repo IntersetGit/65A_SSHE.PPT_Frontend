@@ -5,6 +5,7 @@ export const data = [
     number: 1,
     firstlast: 'นายสมหวัง บังเกิด',
     position: 'Project Manager',
+    role: 'Company Admin',
     project_responsible: 'TP5-Phase3',
   },
   {
@@ -13,6 +14,7 @@ export const data = [
     number: 2,
     firstlast: 'นางสาวรัตนา แดงสนิท',
     position: 'SSHE Officer',
+    role: 'SSHE Officer',
     project_responsible: 'New Plant Tank Farm2',
   },
   {
@@ -21,6 +23,7 @@ export const data = [
     number: 3,
     firstlast: 'นายกำจร อภัยวงศ์',
     position: 'หัวหน้าทีมไฟฟ้า',
+    role: 'Staff',
     project_responsible: 'New Plant Tank Farm3',
   },
   {
@@ -29,6 +32,7 @@ export const data = [
     number: 4,
     firstlast: 'นายสมเกียรติ วงศ์ไทย',
     position: 'หัวหน้าทีมก่อสร้าง',
+    role: 'Staff',
     project_responsible: 'TP5-Phase3',
   },
   {
@@ -37,6 +41,7 @@ export const data = [
     number: 5,
     firstlast: 'นายก่อเกิด ณ ลำปาง',
     position: 'IT Manager',
+    role: 'SSHE Officer',
     project_responsible: 'TP5-Phase3',
   },
   {
@@ -45,6 +50,7 @@ export const data = [
     number: 6,
     firstlast: 'นางปวีณา จำเจริญใจ',
     position: 'Project CO-Ordinary',
+    role: 'Company Admin',
     project_responsible: '10KmPipeto EEC',
   },
   {
@@ -53,6 +59,7 @@ export const data = [
     number: 7,
     firstlast: 'Mr.Stephen Bornjovee',
     position: 'IT Staff',
+    role: 'Staff',
     project_responsible: '10KmPipeto EEC',
   },
 ];

@@ -257,9 +257,9 @@ const NonadUsermanage = (props) => {
   };
 
   const onFinishCreate = async (value) => {
-    let filterRoles = await roles.find(
-      (data) => data.roles_name === value.roles_id,
-    );
+    // let filterRoles = await roles.find(
+    //   (data) => data.value === value.roles_id,
+    // );
     setLoading(true);
     Swal.fire({
       title: 'บันทึกข้อมูล',
@@ -270,62 +270,61 @@ const NonadUsermanage = (props) => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'ยืนยัน',
       cancelButtonText: 'ยกเลิก',
-    })
-      .then((result) => {
-        if (result.isConfirmed) {
-          request('system/addUserAD', {
-            method: 'post',
-            data: {
-              username: value.username,
-              roles_id: filterRoles.id,
-              is_ad: true,
-            },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        request('system/addUserAD', {
+          method: 'post',
+          data: {
+            username: value.username,
+            roles_id: value.roles_id,
+            is_ad: 'true',
+          },
+        })
+          .then((data) => {
+            reload();
+            Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
+          })
+          .catch((error) => {
+            Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
+            setLoading(false);
+            formAD.resetFields();
+            reload();
           });
-        }
-      })
-      .then((data) => {
-        reload();
-        Swal.fire('บันทึกข้อมูลสำเร็จ', '', 'success');
-      })
-      .catch((error) => {
-        Swal.fire('', 'มีบางอย่างผิดพลาด หรือมีผู้ใช้ในระบบแล้ว', 'error');
-        setLoading(false);
-        formAD.resetFields();
-        reload();
-      });
+      }
+    });
+    handleCancel();
   };
 
   const onFinishEdit = async (value) => {
-    try {
-      let filterRoles = await roles.find(
-        (data) => data.roles_name === value.roles_id,
-      );
-      Swal.fire({
-        title: 'กรุณายืนยันการแก้ไขข้อมูล',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#218838',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'ยืนยัน',
-        cancelButtonText: 'ยกเลิก',
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          let resp = await request('/system/updateRoleUser', {
-            method: 'put',
-            data: {
-              id: dataEdit.id,
-              roles_id: filterRoles.id,
-            },
+    Swal.fire({
+      title: 'กรุณายืนยันการแก้ไขข้อมูล',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#218838',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        request('system/updateRoleUser', {
+          method: 'put',
+          data: {
+            id: dataEdit.id,
+            roles_id: value.roles_id,
+          },
+        })
+          .then((res) => {
+            if (res.status_code === 403) throw Error();
+            Swal.fire('', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
+            reload();
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire('', 'ไม่มีสิทธิ์ในการแก้ไขข้อมูลนี้', 'error');
           });
-          await Swal.fire('', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
-          reload();
-          handleCancel();
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      Swal.fire('', 'มีบางอย่างผิดพลาด', 'success');
-    }
+      }
+    });
+    handleCancel();
   };
 
   const onFinishAD = (values) => {
@@ -396,13 +395,13 @@ const NonadUsermanage = (props) => {
       help: `กำลังโหลดข้อมูล...`,
     });
     setLoading(true);
-    request(`system/findUserAD?username=${value}`, { method: 'get' })
+    request(`system/search/user/ad?username=${value}`, { method: 'get' })
       .then((data) => {
         console.log(data);
         setStatusValidation({
-          help: `${data.data.items.displayName}`,
+          help: `${data.items.displayName}`,
         });
-        console.log(res);
+        console.log(data);
         setLoading(false);
       })
       .catch((error) => {

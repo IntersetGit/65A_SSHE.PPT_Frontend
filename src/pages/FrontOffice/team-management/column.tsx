@@ -22,18 +22,17 @@ export const columns: ProColumns[] = [
     hideInSearch: true,
   },
   {
+    title: 'Role',
+    dataIndex: 'role',
+    key: 'role',
+    align: 'center',
+    hideInSearch: true,
+  },
+  {
     title: 'Project ที่รับผิดชอบ',
     dataIndex: 'project_responsible',
     key: 'project_responsible',
     align: 'center',
     hideInSearch: true,
-  },
-  {
-    title: 'Action',
-    dataIndex: 'action',
-    key: 'action',
-    align: 'center',
-    hideInSearch: true,
-    valueType: 'option',
   },
 ];

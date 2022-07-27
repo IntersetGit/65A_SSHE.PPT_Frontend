@@ -138,17 +138,17 @@ const Alert = () => {
             <Form.Item name="recordable_case" label="Recordable case">
               <InputNumber style={{ width: '100%' }} />
             </Form.Item>
+
+            <Form.Item>
+              <Space style={{ paddingTop: '20px', paddingLeft: '20px' }}>
+                <Button type="primary" size="large" htmlType="sumbit">
+                  ตกลง
+                </Button>
+                <Button size="large">ยกเลิก</Button>
+              </Space>
+            </Form.Item>
           </Form>
         </Card.Grid>
-
-        <Form.Item>
-          <Space style={{ paddingTop: '20px', paddingLeft: '20px' }}>
-            <Button type="primary" size="large" htmlType="sumbit">
-              ตกลง
-            </Button>
-            <Button size="large">ยกเลิก</Button>
-          </Space>
-        </Form.Item>
       </Card>
     </>
   );
