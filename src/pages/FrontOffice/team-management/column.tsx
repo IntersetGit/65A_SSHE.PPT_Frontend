@@ -6,6 +6,7 @@ export const columns: ProColumns[] = [
     dataIndex: 'number',
     key: 'number',
     align: 'center',
+    sorter: (a, b) => a.number - b.number,
     hideInSearch: true,
   },
   {
@@ -34,5 +35,15 @@ export const columns: ProColumns[] = [
     key: 'project_responsible',
     align: 'center',
     hideInSearch: true,
+  },
+  {
+    title: 'สถานะ',
+    dataIndex: 'isuse',
+    key: 'isuse',
+    align: 'center',
+    sorter: (a, b) => a.isuse - b.isuse,
+    render: (record) => {
+      return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
+    },
   },
 ];

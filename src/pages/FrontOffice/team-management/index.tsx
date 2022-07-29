@@ -17,6 +17,7 @@ import {
   Form,
   Input,
   Menu,
+  Radio,
   Select,
   Space,
 } from 'antd';
@@ -75,6 +76,7 @@ const TeamManagement = () => {
   };
 
   const showDrawer = (type: any) => {
+    form.setFieldsValue({ isuse: 0 });
     setdrawerType(type);
     setShowDrawer(true);
   };
@@ -284,6 +286,7 @@ const TeamManagement = () => {
           <Form.Item
             name="e_mail"
             label="Email"
+            tooltip="Username"
             rules={[{ required: true, message: 'โปรดใส่อีเมล์คุณ' }]}
           >
             <Input />
@@ -335,6 +338,17 @@ const TeamManagement = () => {
                 },
               ]}
             ></Select>
+          </Form.Item>
+
+          <Form.Item
+            name="isuse"
+            label="สถานะ"
+            rules={[{ required: true, message: 'กรุณาเลือก' }]}
+          >
+            <Radio.Group>
+              <Radio.Button value={1}>Active</Radio.Button>
+              <Radio.Button value={0}>Non Active</Radio.Button>
+            </Radio.Group>
           </Form.Item>
 
           <Form.Item>

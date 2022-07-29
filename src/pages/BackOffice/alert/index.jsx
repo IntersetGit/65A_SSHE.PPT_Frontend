@@ -120,10 +120,6 @@ const Alert = () => {
               <InputNumber style={{ width: '100%' }} />
             </Form.Item>
 
-            <Form.Item name="away_from_work_case" label="Away from work case">
-              <InputNumber style={{ width: '100%' }} />
-            </Form.Item>
-
             <Form.Item name="work_days_lost" label="Work days lost">
               <InputNumber style={{ width: '100%' }} />
             </Form.Item>
@@ -136,6 +132,10 @@ const Alert = () => {
             </Form.Item>
 
             <Form.Item name="recordable_case" label="Recordable case">
+              <InputNumber style={{ width: '100%' }} />
+            </Form.Item>
+
+            <Form.Item name="away_from_work_case" label="Away from work case">
               <InputNumber style={{ width: '100%' }} />
             </Form.Item>
 

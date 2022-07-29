@@ -97,14 +97,23 @@ const NonadUsermanage = (props) => {
       },
     },
     {
-      title: 'ชื่อเข้าใช้ระบบ',
-      dataIndex: 'user_name',
-      key: '2',
+      title: 'อีเมล์',
+      dataIndex: 'e_mail',
+      key: '4',
       align: 'center',
       sorter: (record1, record2) => {
-        return record1.user_name > record2.user_name;
+        return record1.e_mail > record2.e_mail;
       },
     },
+    // {
+    //   title: 'ชื่อเข้าใช้ระบบ',
+    //   dataIndex: 'user_name',
+    //   key: '2',
+    //   align: 'center',
+    //   sorter: (record1, record2) => {
+    //     return record1.user_name > record2.user_name;
+    //   },
+    // },
     {
       title: 'ชื่อ-นามสกุล',
       dataIndex: 'firstlast',
@@ -112,15 +121,6 @@ const NonadUsermanage = (props) => {
       align: 'center',
       sorter: (record1, record2) => {
         return record1.firstlast > record2.firstlast;
-      },
-    },
-    {
-      title: 'อีเมล์',
-      dataIndex: 'e_mail',
-      key: '4',
-      align: 'center',
-      sorter: (record1, record2) => {
-        return record1.e_mail > record2.e_mail;
       },
     },
     {
@@ -153,6 +153,16 @@ const NonadUsermanage = (props) => {
       onFilter: (value, record) => record.roles_name.indexOf(value) === 0,
       sorter: (record1, record2) => {
         return record1.roles_name > record2.roles_name;
+      },
+    },
+    {
+      title: 'สถานะ',
+      dataIndex: 'isuse',
+      key: 'isuse',
+      align: 'center',
+      sorter: (a, b) => a.isuse - b.isuse,
+      render: (record) => {
+        return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
       },
     },
     {
@@ -193,6 +203,7 @@ const NonadUsermanage = (props) => {
             {
               number: key + 1,
               key: key + 1,
+              isuse: 'ใช้งาน',
               ...data,
             },
           ];
@@ -242,11 +253,13 @@ const NonadUsermanage = (props) => {
   useEffect(() => {
     reload();
     formCrete.setFieldsValue({ password: 'user@123!!!' });
+    formCrete.setFieldsValue({ isuse: 0 });
   }, []);
 
   const showDrawer = (type) => {
     if (type == 1) {
       formCrete.setFieldsValue({ password: 'user@123!!!' });
+      formCrete.setFieldsValue({ isuse: 0 });
     }
     setdrawerType(type);
     setShowDrawer(true);
@@ -585,9 +598,10 @@ const NonadUsermanage = (props) => {
                 </Form.Item>
 
                 <Form.Item
-                  label="ชื่อผู้ใช้"
-                  name="username"
-                  rules={[{ required: true, message: 'กรุณากรอกข้อมูล' }]}
+                  label="Email"
+                  name="e_mail"
+                  tooltip="Username"
+                  rules={[{ required: true, message: 'กรุณากรอกอีเมล' }]}
                 >
                   <Input />
                 </Form.Item>
@@ -623,10 +637,6 @@ const NonadUsermanage = (props) => {
                   <Input />
                 </Form.Item>
 
-                <Form.Item label="Email" name="e_mail">
-                  <Input />
-                </Form.Item>
-
                 <Form.Item
                   name="roles_id"
                   label="กลุ่มผู้ใช้งาน"
@@ -641,6 +651,17 @@ const NonadUsermanage = (props) => {
                   rules={[{ required: true, message: 'กรุณาเลือกโครงการ' }]}
                 >
                   <Select options={filteredproject} allowClear />
+                </Form.Item>
+
+                <Form.Item
+                  name="isuse"
+                  label="สถานะ"
+                  rules={[{ required: true, message: 'กรุณาเลือก' }]}
+                >
+                  <Radio.Group>
+                    <Radio.Button value={1}>Active</Radio.Button>
+                    <Radio.Button value={0}>Non Active</Radio.Button>
+                  </Radio.Group>
                 </Form.Item>
 
                 <Form.Item>
