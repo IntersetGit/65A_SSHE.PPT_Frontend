@@ -99,7 +99,7 @@ const NonadUsermanage = (props) => {
     {
       title: 'อีเมล์',
       dataIndex: 'e_mail',
-      key: '4',
+      key: '2',
       align: 'center',
       sorter: (record1, record2) => {
         return record1.e_mail > record2.e_mail;
@@ -126,7 +126,7 @@ const NonadUsermanage = (props) => {
     {
       title: 'กลุ่มผู้ใช้งาน',
       dataIndex: 'roles_name',
-      key: '5',
+      key: '4',
       align: 'center',
       filters: [
         {
@@ -158,7 +158,7 @@ const NonadUsermanage = (props) => {
     {
       title: 'สถานะ',
       dataIndex: 'isuse',
-      key: 'isuse',
+      key: '5',
       align: 'center',
       sorter: (a, b) => a.isuse - b.isuse,
       render: (record) => {
