@@ -16,6 +16,12 @@ export const columns: ProColumns[] = [
     align: 'center',
   },
   {
+    title: 'อีเมล',
+    dataIndex: 'e_mail',
+    key: 'e_mail',
+    align: 'center',
+  },
+  {
     title: 'ตำแหน่ง',
     dataIndex: 'position',
     key: 'position',

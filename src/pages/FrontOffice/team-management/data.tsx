@@ -7,6 +7,7 @@ export const data = [
     position: 'Project Manager',
     role: 'Company Admin',
     isuse: 'ใช้งาน',
+    e_mail: 'somwang@gmail.com',
     project_responsible: 'TP5-Phase3',
   },
   {
@@ -17,6 +18,7 @@ export const data = [
     position: 'SSHE Officer',
     role: 'SSHE Officer',
     isuse: 'ใช้งาน',
+    e_mail: 'rustana@gmail.com',
     project_responsible: 'New Plant Tank Farm2',
   },
   {
@@ -27,6 +29,7 @@ export const data = [
     position: 'หัวหน้าทีมไฟฟ้า',
     role: 'Staff',
     isuse: 'ใช้งาน',
+    e_mail: 'kumjohn@gmail.com',
     project_responsible: 'New Plant Tank Farm3',
   },
   {
@@ -37,6 +40,7 @@ export const data = [
     position: 'หัวหน้าทีมก่อสร้าง',
     role: 'Staff',
     isuse: 'ใช้งาน',
+    e_mail: 'somkiat@gmail.com',
     project_responsible: 'TP5-Phase3',
   },
   {
@@ -47,6 +51,7 @@ export const data = [
     position: 'IT Manager',
     role: 'SSHE Officer',
     isuse: 'ใช้งาน',
+    e_mail: 'gorgert@gmail.com',
     project_responsible: 'TP5-Phase3',
   },
   {
@@ -57,6 +62,7 @@ export const data = [
     position: 'Project CO-Ordinary',
     role: 'Company Admin',
     isuse: 'ใช้งาน',
+    e_mail: 'paweena@gmail.com',
     project_responsible: '10KmPipeto EEC',
   },
   {
@@ -67,6 +73,7 @@ export const data = [
     position: 'IT Staff',
     role: 'Staff',
     isuse: 'ใช้งาน',
+    e_mail: 'stephen@gmail.com',
     project_responsible: '10KmPipeto EEC',
   },
 ];

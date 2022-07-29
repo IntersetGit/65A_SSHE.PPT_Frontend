@@ -126,6 +126,7 @@ declare namespace APITypes {
     position: string;
     role: string;
     isuse: string;
+    e_mail: string;
     project_responsible: string;
   };
 }
