@@ -1,17 +1,80 @@
-import { Card, Col, Row, Typography } from 'antd';
+import Rangepicker from '@/components/RangePicker';
+import getUnsafeIssue from '@/service/FrontoffceApi/ssheAnalysis';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Row, Typography } from 'antd';
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
 import BargraphPage from './BargraphIssue/BargraphPage';
 import KpisPage from './Kpis/KpisPage';
+import SelectProject from './SelectProject';
 import styled from './styled';
 import SummaryPage from './Summary/SummaryPage';
-import UnsafePage from './UnsafeIssue/UnsafePage';
+import UnsafePage, { PieT } from './UnsafeIssue/UnsafePage';
 
 const SsheAnalysis = () => {
-  const { Title } = Typography;
+  const [paramQuery, setParamQurey] = useState<string>(``);
+  const [selectDateRange, setSelectDateRange] = useState<[Date, Date] | null>(
+    null,
+  );
+  const [dataSources, setDataSources] = useState<PieT>([]);
+
+  const handleSubmit = async () => {
+    if (selectDateRange)
+      setParamQurey(
+        `?start_date=${selectDateRange[0].toISOString()}&end_date=${selectDateRange[1].toISOString()}`,
+      );
+    else setParamQurey(``);
+  };
+
+  const beginProcess = async () => {
+    const responseUnsafe = await getUnsafeIssue(paramQuery);
+    if (_.size(responseUnsafe.items) > 0) {
+      setDataSources(
+        responseUnsafe.items.map(({ issue_type_name, quantity }) => {
+          return {
+            type: issue_type_name,
+            value: quantity,
+          };
+        }),
+      );
+    } else {
+      setDataSources([
+        {
+          type: 'empty',
+          value: 0,
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    beginProcess();
+  }, [paramQuery]);
+
   return (
     <>
-      <Title level={4}>Paragraph</Title>
-      <hr />
-      <Row gutter={[16, 16]}>
+      <Card style={{ width: '100%', height: '90%' }}>
+        <Row justify="center" gutter={[8, 8]}>
+          <Col style={styled.cardBarSearch}>
+            <Typography>Project Name:</Typography>
+            <SelectProject />
+          </Col>
+          <Col style={styled.cardBarSearch}>
+            <Typography>From - To Date:</Typography>
+            <Rangepicker onChange={setSelectDateRange} />
+          </Col>
+          <Col style={styled.cardBarSearch}>
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              onClick={handleSubmit}
+            >
+              Search
+            </Button>
+          </Col>
+        </Row>
+      </Card>
+      <Row style={{ marginTop: '10px' }} gutter={[16, 16]}>
         <Col xl={{ span: 12 }}>
           <Typography style={styled.headerTitle}>KPIs</Typography>
           <Card style={styled.cardTool}>
@@ -23,7 +86,7 @@ const SsheAnalysis = () => {
             Analyze by Criteria of Unsafe Action/Condition Issues
           </Typography>
           <Card style={styled.cardTool}>
-            <UnsafePage />
+            <UnsafePage dataPie={dataSources} />
           </Card>
         </Col>
         <Col xl={{ span: 12 }}>
