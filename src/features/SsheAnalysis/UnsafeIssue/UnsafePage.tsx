@@ -1,5 +1,5 @@
 import { Pie, PieConfig } from '@ant-design/plots';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 
 export type PieT = {
   type: string;
@@ -39,7 +39,11 @@ const UnsafePage: FC<UnsafePageI> = ({ dataPie }) => {
     ],
   };
 
-  return <Pie height={360} {...config} />;
+  return (
+    <Fragment>
+      <Pie height={360} {...config} />;
+    </Fragment>
+  );
 };
 
 export default UnsafePage;
