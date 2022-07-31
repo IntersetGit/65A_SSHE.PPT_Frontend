@@ -1,51 +1,45 @@
 import { Pie, PieConfig } from '@ant-design/plots';
-import { Fragment } from 'react';
+import { FC } from 'react';
 
-const dataPie = [
-  {
-    type: 'Unsafe Action Issue',
-    value: 16,
-  },
-  {
-    type: 'Unsafe Condition Issue',
-    value: 84,
-  },
-];
+export type PieT = {
+  type: string;
+  value: number;
+}[];
 
-const config: PieConfig = {
-  style: {
-    width: '100%',
-    height: '50%',
-  },
-  appendPadding: 50,
-  legend: {
-    position: 'bottom',
-  },
-  data: dataPie,
-  angleField: 'value',
-  colorField: 'type',
-  radius: 0.8,
-  label: {
-    type: 'spider',
-    labelHeight: 28,
-    content: '{name}\n{percentage}',
-  },
-  interactions: [
-    {
-      type: 'element-selected',
+interface UnsafePageI {
+  dataPie: PieT;
+}
+
+const UnsafePage: FC<UnsafePageI> = ({ dataPie }) => {
+  const config: PieConfig = {
+    style: {
+      width: '100%',
+      height: '50%',
     },
-    {
-      type: 'element-active',
+    appendPadding: 50,
+    legend: {
+      position: 'bottom',
     },
-  ],
-};
+    data: dataPie,
+    angleField: 'value',
+    colorField: 'type',
+    radius: 0.8,
+    label: {
+      type: 'spider',
+      labelHeight: 28,
+      content: '{name}\n{percentage}',
+    },
+    interactions: [
+      {
+        type: 'element-selected',
+      },
+      {
+        type: 'element-active',
+      },
+    ],
+  };
 
-const UnsafePage = () => {
-  return (
-    <Fragment>
-      <Pie height={360} {...config} />
-    </Fragment>
-  );
+  return <Pie height={360} {...config} />;
 };
 
 export default UnsafePage;
