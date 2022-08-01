@@ -1,14 +1,17 @@
 import Rangepicker from '@/components/RangePicker';
-import getUnsafeIssue from '@/service/FrontoffceApi/ssheAnalysis';
+import {
+  getSummaryIssue,
+  getUnsafeIssue,
+} from '@/service/FrontoffceApi/ssheAnalysis';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Row, Typography } from 'antd';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BargraphPage from './BargraphIssue/BargraphPage';
 import KpisPage from './Kpis/KpisPage';
 import SelectProject from './SelectProject';
 import styled from './styled';
-import SummaryPage from './Summary/SummaryPage';
+import SummaryPage, { PieeT } from './Summary/SummaryPage';
 import UnsafePage, { PieT } from './UnsafeIssue/UnsafePage';
 
 const SsheAnalysis = () => {
@@ -17,6 +20,7 @@ const SsheAnalysis = () => {
     null,
   );
   const [dataSources, setDataSources] = useState<PieT>([]);
+  const [dataSourcesSummary, setDataSourcesSummary] = useState<PieeT>([]);
 
   const handleSubmit = async () => {
     if (selectDateRange)
@@ -26,14 +30,15 @@ const SsheAnalysis = () => {
     else setParamQurey(``);
   };
 
-  const beginProcess = async () => {
+  const beginProcess = useCallback(async () => {
     const responseUnsafe = await getUnsafeIssue(paramQuery);
+    const responseSummary = await getSummaryIssue(paramQuery);
     if (_.size(responseUnsafe.items) > 0) {
       setDataSources(
         responseUnsafe.items.map(({ issue_type_name, quantity }) => {
           return {
             type: issue_type_name,
-            value: quantity,
+            value: Number(quantity),
           };
         }),
       );
@@ -45,7 +50,25 @@ const SsheAnalysis = () => {
         },
       ]);
     }
-  };
+
+    if (_.size(responseSummary.items) > 0) {
+      setDataSourcesSummary(
+        responseSummary.items.map(({ hazard_name, quantity }) => {
+          return {
+            type: hazard_name,
+            value: Number(quantity),
+          };
+        }),
+      );
+    } else {
+      setDataSourcesSummary([
+        {
+          type: 'empty',
+          value: 0,
+        },
+      ]);
+    }
+  }, [paramQuery]);
 
   useEffect(() => {
     beginProcess();
@@ -94,7 +117,7 @@ const SsheAnalysis = () => {
             Summary by Criteria of Environmental issue
           </Typography>
           <Card style={styled.cardTool}>
-            <SummaryPage />
+            <SummaryPage dataPiee={dataSourcesSummary} />
           </Card>
         </Col>
         <Col xl={{ span: 12 }}>
