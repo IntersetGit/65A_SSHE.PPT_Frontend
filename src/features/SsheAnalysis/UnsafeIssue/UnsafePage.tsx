@@ -41,7 +41,7 @@ const UnsafePage: FC<UnsafePageI> = ({ dataPie }) => {
 
   return (
     <Fragment>
-      <Pie height={360} {...config} />;
+      <Pie height={360} {...config} />
     </Fragment>
   );
 };

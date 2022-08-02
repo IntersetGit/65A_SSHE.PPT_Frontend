@@ -1,48 +1,32 @@
 import { Column, ColumnConfig } from '@ant-design/plots';
-import { Fragment } from 'react';
+import { FC, Fragment } from 'react';
 
-const data = [
-  {
-    type: 'Scaffolding',
-    sales: 38,
-  },
-  {
-    type: 'Safety Sign',
-    sales: 52,
-  },
-  {
-    type: 'Barricade',
-    sales: 61,
-  },
-  {
-    type: 'Equipment',
-    sales: 145,
-  },
-  {
-    type: 'Waste Management',
-    sales: 48,
-  },
-];
+export type BargraphT = {
+  type: string;
+  sales: number;
+}[];
+interface BargraphI {
+  dataBargraph: BargraphT;
+}
 
-const config: ColumnConfig = {
-  data,
-  xField: 'type',
-  yField: 'sales',
-  columnWidthRatio: 0.8,
-  xAxis: {
-    label: {
-      autoHide: true,
-      autoRotate: false,
+const BargraphPage: FC<BargraphI> = ({ dataBargraph }) => {
+  const config: ColumnConfig = {
+    data: dataBargraph,
+    xField: 'type',
+    yField: 'sales',
+    columnWidthRatio: 0.8,
+    xAxis: {
+      label: {
+        autoHide: true,
+        autoRotate: false,
+      },
     },
-  },
-  meta: {
-    sales: {
-      alias: 'amount',
+    meta: {
+      sales: {
+        alias: 'amount',
+      },
     },
-  },
-};
-
-const BargraphPage = () => {
+  };
   return (
     <Fragment>
       <Column width={200} height={340} {...config} />
