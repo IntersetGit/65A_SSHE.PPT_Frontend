@@ -24,6 +24,11 @@ export const routes = [
     name: 'เข้าสู่ระบบ',
     component: 'login',
   },
+  {
+    path: '/passwordchange',
+    name: 'แก้ไขรหัสผ่านครั้งแรก',
+    component: 'passwordChanger',
+  },
   ...frontoffice_menu.ROUTES,
   ...backoffice_menu.ROUTES,
   {

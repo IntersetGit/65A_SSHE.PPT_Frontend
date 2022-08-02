@@ -1,23 +1,19 @@
 import JWTCLASS from '@/jwt';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Form, Input, Row } from 'antd';
+import { EditOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Col, Form, Input, Modal, Row } from 'antd';
 import { useState } from 'react';
 import { history, request, useModel } from 'umi';
-import frontoffice_menu from '../../config/frontoffice';
+import './index.less';
 
 const JWT = new JWTCLASS();
 
 const Login = () => {
   const [form] = Form.useForm();
+  const [forgotpasswordform] = Form.useForm();
   const [isBlock, setisBlock] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [toggleForgotPassword, setForgotPassWord] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
-
-  const Bypasser = () => {
-    console.log('Bypass');
-
-    history.push(frontoffice_menu.REDIRECT_PATH);
-  };
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.getUserInfo?.();
@@ -25,6 +21,16 @@ const Login = () => {
     if (userInfo) {
       await setInitialState((s) => ({ ...s, userInfo: userInfo }));
     }
+  };
+
+  const handleCloseForgotPassword = () => {
+    setForgotPassWord(!toggleForgotPassword);
+  };
+
+  const handleFinish = async () => {
+    await forgotpasswordform.validateFields().then(async (values) => {
+      console.log(values);
+    });
   };
 
   const onFinish = async (values) => {
@@ -68,7 +74,7 @@ const Login = () => {
         <Col
           xs={24}
           sm={14}
-          mg={14}
+          md={14}
           lg={14}
           xl={7}
           style={{
@@ -133,7 +139,11 @@ const Login = () => {
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox disabled={isBlock || loading}>Remember me</Checkbox>
               </Form.Item>
-              <Button style={{ float: 'right' }} type="link">
+              <Button
+                style={{ float: 'right' }}
+                type="link"
+                onClick={handleCloseForgotPassword}
+              >
                 Forgot Password
               </Button>
             </Form.Item>
@@ -164,6 +174,44 @@ const Login = () => {
               {loading ? <h5 className="text-center text-red">กำลังโหลดข้อมูล{pointLoading}</h5> : null} */}
           </Form>
         </Col>
+        <Modal
+          visible={toggleForgotPassword}
+          centered
+          closable={false}
+          className="modal-border-radius"
+          footer={[
+            <Button key="back" onClick={handleCloseForgotPassword}>
+              ยกเลิก
+            </Button>,
+            <Button
+              type="primary"
+              key="submit"
+              loading={false}
+              onClick={handleFinish}
+            >
+              ลืมรหัสผ่าน
+            </Button>,
+          ]}
+        >
+          <p>
+            <EditOutlined /> Forgot Password
+          </p>
+
+          <Form form={forgotpasswordform}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Email !',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Form>
+        </Modal>
       </Row>
     </div>
   );
