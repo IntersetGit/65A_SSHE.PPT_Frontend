@@ -340,11 +340,7 @@ const TeamManagement = () => {
             ></Select>
           </Form.Item>
 
-          <Form.Item
-            name="isuse"
-            label="สถานะ"
-            rules={[{ required: true, message: 'กรุณาเลือก' }]}
-          >
+          <Form.Item name="isuse" label="สถานะ">
             <Radio.Group>
               <Radio.Button value={1}>Active</Radio.Button>
               <Radio.Button value={0}>Non Active</Radio.Button>

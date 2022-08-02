@@ -334,61 +334,64 @@ const ContractorCompanyManage = (props) => {
 
   return (
     <>
-      <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <Space>
-          <p>ชื่อบริษัท</p>
-          <Search
-            placeholder="Search"
-            style={{ width: 300, marginBottom: 10 }}
-            enterButton
-            allowClear
-            onSearch={(search) => {
-              reload(search);
+      <Col span={24}>
+        <Card style={{ marginTop: '1rem' }} bordered={true}>
+          <Space>
+            <p>ชื่อบริษัท</p>
+            <Search
+              placeholder="Search"
+              style={{ width: 300, marginBottom: 10 }}
+              enterButton
+              allowClear
+              onSearch={(search) => {
+                reload(search);
+              }}
+            />
+          </Space>
+
+          <Button
+            onClick={() => {
+              reload();
+            }}
+            style={{ marginLeft: 10 }}
+          >
+            <RedoOutlined />
+          </Button>
+
+          <Button
+            type="primary"
+            style={{ float: 'right' }}
+            icon={<PlusOutlined />}
+            onClick={() => showModal(1)}
+          >
+            เพิ่ม
+          </Button>
+
+          <Table
+            columns={columns}
+            dataSource={comusermanage}
+            expandable={{
+              expandedRowRender: (record) => (
+                <>
+                  {record.project.map((v, k) => {
+                    return (
+                      <span style={{ margin: 0 }} key={v.project_id}>
+                        {' '}
+                        {v.project_name} ,{' '}
+                      </span>
+                    );
+                  })}
+                </>
+              ),
+              rowExpandable: (record) =>
+                record.company_name !== 'Not Expandable',
+            }}
+            pagination={{
+              pageSize: 8,
             }}
           />
-        </Space>
-
-        <Button
-          onClick={() => {
-            reload();
-          }}
-          style={{ marginLeft: 10 }}
-        >
-          <RedoOutlined />
-        </Button>
-
-        <Button
-          type="primary"
-          style={{ float: 'right' }}
-          icon={<PlusOutlined />}
-          onClick={() => showModal(1)}
-        >
-          เพิ่ม
-        </Button>
-
-        <Table
-          columns={columns}
-          dataSource={comusermanage}
-          expandable={{
-            expandedRowRender: (record) => (
-              <>
-                {record.project.map((v, k) => {
-                  return (
-                    <span style={{ margin: 0 }} key={v.project_id}>
-                      {' '}
-                      {v.project_name} ,{' '}
-                    </span>
-                  );
-                })}
-              </>
-            ),
-            rowExpandable: (record) => record.company_name !== 'Not Expandable',
-          }}
-          pagination={{
-            pageSize: 8,
-          }}
-        />
-      </Card>
+        </Card>
+      </Col>
 
       <Drawer
         title="บริษัทผู้รับเหมา"

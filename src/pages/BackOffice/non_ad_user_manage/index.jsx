@@ -15,6 +15,8 @@ import {
   Form,
   Input,
   Menu,
+  Radio,
+  Row,
   Select,
   Space,
   Table,
@@ -43,6 +45,7 @@ const NonadUsermanage = (props) => {
   const [formEdit] = Form.useForm();
   const [usertype, setusertype] = useState(undefined);
   const [filteredproject, setfilteredproject] = useState(undefined);
+  const isMobile = true;
 
   const onCompanychange = async (value) => {
     let arr = [];
@@ -169,6 +172,7 @@ const NonadUsermanage = (props) => {
       title: 'แหล่งที่มาจากผู้ใช้งาน',
       dataIndex: 'is_ad',
       key: '6',
+      align: 'center',
       sorter: (record1, record2) => {
         return record1.is_ad > record2.is_ad;
       },
@@ -178,6 +182,7 @@ const NonadUsermanage = (props) => {
     {
       title: 'จัดการ',
       key: '7',
+      align: 'center',
       valueType: 'option',
       render: (id) => (
         <Dropdown.Button
@@ -203,7 +208,7 @@ const NonadUsermanage = (props) => {
             {
               number: key + 1,
               key: key + 1,
-              isuse: 'ใช้งาน',
+              isuse: 0,
               ...data,
             },
           ];
@@ -256,10 +261,15 @@ const NonadUsermanage = (props) => {
     formCrete.setFieldsValue({ isuse: 0 });
   }, []);
 
-  const showDrawer = (type) => {
+  const showDrawer = async (type) => {
+    await formCrete.resetFields();
+    await formEdit.resetFields();
+    await formAD.resetFields();
+
     if (type == 1) {
       formCrete.setFieldsValue({ password: 'user@123!!!' });
       formCrete.setFieldsValue({ isuse: 0 });
+      formAD.setFieldsValue({ isuse: 0 });
     }
     setdrawerType(type);
     setShowDrawer(true);
@@ -391,15 +401,13 @@ const NonadUsermanage = (props) => {
     handleCancel();
   };
 
-  const handleCancel = () => {
-    setShowDrawer(false);
+  const handleCancel = async () => {
     setStatusValidation({
       validateStatus: '',
       help: '',
     });
-    formCrete.resetFields();
-    formEdit.resetFields();
-    formAD.resetFields();
+    setShowDrawer(false);
+    setIdUser(null);
     setLoading(false);
   };
 
@@ -488,12 +496,6 @@ const NonadUsermanage = (props) => {
     formAD.submit();
   };
 
-  const handleCancelAD = () => {
-    formAD.resetFields();
-    setShowDrawer(false);
-    setIdUser(null);
-  };
-
   const onFinishFailedAD = (error) => {
     console.log('error :>> ', error);
   };
@@ -524,48 +526,58 @@ const NonadUsermanage = (props) => {
 
   return (
     <>
-      <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <Search
-          placeholder="input search text"
-          allowClear
-          enterButton
-          onSearch={(search) => {
-            reload(search);
-          }}
-          style={{ width: 400 }}
-        />
-        <Button
-          onClick={() => {
-            reload();
-          }}
-          style={{ marginLeft: 10 }}
-        >
-          <RedoOutlined />
-        </Button>
+      <Col span={24}>
+        <Card style={{ marginTop: '1rem' }} bordered={true}>
+          <Row gutter={[10, 10]}>
+            <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={5}>
+              <Search
+                placeholder="input search text"
+                allowClear
+                enterButton
+                onSearch={(search) => {
+                  reload(search);
+                }}
+              />
+            </Col>
 
-        <Button
-          style={{ float: 'right' }}
-          type="primary"
-          onClick={() => {
-            setMode('add');
-            showDrawer(1);
-          }}
-        >
-          + เพิ่มผู้ใช้ระบบ
-        </Button>
-        <Col span={24}>
-          <div>
-            <Table
-              columns={columns}
-              dataSource={data}
-              style={{ marginTop: 20 }}
-              pagination={{
-                pageSize: 8,
-              }}
-            />
-          </div>
-        </Col>
-      </Card>
+            <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={11}>
+              <Button
+                onClick={() => {
+                  reload();
+                }}
+                style={{ marginLeft: 10 }}
+              >
+                <RedoOutlined />
+              </Button>
+            </Col>
+            <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
+              <Button
+                style={{ float: 'right' }}
+                type="primary"
+                onClick={() => {
+                  setMode('add');
+                  showDrawer(1);
+                }}
+              >
+                + เพิ่มผู้ใช้ระบบ
+              </Button>
+            </Col>
+            <Col span={24}>
+              <div>
+                <Table
+                  scroll={{ x: true }}
+                  columns={columns}
+                  dataSource={data}
+                  style={{ marginTop: 20 }}
+                  pagination={{
+                    pageSize: 8,
+                  }}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Card>
+      </Col>
 
       <Drawer
         onClose={handleCancel}
@@ -574,7 +586,7 @@ const NonadUsermanage = (props) => {
         closable={true}
         maskClosable={false}
         keyboard={false}
-        width="40%"
+        width={isMobile ? '40%' : '100'}
       >
         <Tabs defaultActiveKey="1">
           {(mode === 'add' || usertype === 'nonad') && (
@@ -603,7 +615,7 @@ const NonadUsermanage = (props) => {
                   tooltip="Username"
                   rules={[{ required: true, message: 'กรุณากรอกอีเมล' }]}
                 >
-                  <Input />
+                  <Input type="email" />
                 </Form.Item>
 
                 <Form.Item
@@ -653,11 +665,7 @@ const NonadUsermanage = (props) => {
                   <Select options={filteredproject} allowClear />
                 </Form.Item>
 
-                <Form.Item
-                  name="isuse"
-                  label="สถานะ"
-                  rules={[{ required: true, message: 'กรุณาเลือก' }]}
-                >
+                <Form.Item name="isuse" label="สถานะ">
                   <Radio.Group>
                     <Radio.Button value={1}>Active</Radio.Button>
                     <Radio.Button value={0}>Non Active</Radio.Button>
@@ -669,7 +677,7 @@ const NonadUsermanage = (props) => {
                     <Button type="primary" htmlType="sumbit">
                       ตกลง
                     </Button>
-                    <Button onClick={handleCancelAD}>ยกเลิก</Button>
+                    <Button onClick={handleCancel}>ยกเลิก</Button>
                   </Space>
                 </Form.Item>
               </Form>
@@ -692,7 +700,7 @@ const NonadUsermanage = (props) => {
                   >
                     <Form.Item
                       name="username"
-                      label="Username"
+                      label="รหัสผู้ใช้ (AD)"
                       rules={[{ required: true }]}
                       {...statusValidation}
                     >
@@ -716,6 +724,13 @@ const NonadUsermanage = (props) => {
                       <Select placeholder="กลุ่มผู้ใช้งาน" options={roles} />
                     </Form.Item>
 
+                    <Form.Item name="isuse" label="สถานะ">
+                      <Radio.Group>
+                        <Radio.Button value={1}>Active</Radio.Button>
+                        <Radio.Button value={0}>Non Active</Radio.Button>
+                      </Radio.Group>
+                    </Form.Item>
+
                     <Form.Item>
                       <Space style={{ float: 'right' }}>
                         <Button type="primary" htmlType="sumbit">
@@ -733,6 +748,7 @@ const NonadUsermanage = (props) => {
                   <Form
                     form={formEdit}
                     layout="vertical"
+                    size="large"
                     onFinish={onFinishEdit}
                     onFinishFailed={onFinishFailedAD}
                     initialValues={{
@@ -754,6 +770,13 @@ const NonadUsermanage = (props) => {
                       ]}
                     >
                       <Select placeholder="กลุ่มผู้ใช้งาน" options={roles} />
+                    </Form.Item>
+
+                    <Form.Item name="isuse" label="สถานะ">
+                      <Radio.Group>
+                        <Radio.Button value={1}>Active</Radio.Button>
+                        <Radio.Button value={0}>Non Active</Radio.Button>
+                      </Radio.Group>
                     </Form.Item>
 
                     <Form.Item>
