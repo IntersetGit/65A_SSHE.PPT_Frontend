@@ -60,7 +60,7 @@ const frontoffice_menu = {
         {
           path: '/frontoffice/sshe_analysis',
           type: 'group',
-          name: 'SSHE ANALYSIS',
+          name: 'SSHE DASHBOARD',
           icon: 'SSHE-Analysis',
           component: './FrontOffice/analysis_graph',
           // routes: [
