@@ -14,7 +14,7 @@
 .DS_Store
 
 #build path
-/dist
+#/dist
 
 # umi
 /src/.umi
