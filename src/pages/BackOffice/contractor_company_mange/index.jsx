@@ -470,7 +470,7 @@ const ContractorCompanyManage = (props) => {
             <Form.Item label="">
               <Form.Item
                 name="company_type"
-                label="สำนักงานใหญ๋/สาขา :"
+                label="สำนักงานใหญ่/สาขา :"
                 labelCol={{ span: 24 }}
                 style={{
                   display: 'inline-block',
