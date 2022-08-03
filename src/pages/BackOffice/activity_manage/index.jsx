@@ -9,11 +9,13 @@ import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
+  Col,
   Drawer,
   Dropdown,
   Form,
   Input,
   Menu,
+  Row,
   Space,
   Table,
 } from 'antd';
@@ -270,6 +272,7 @@ const ActivityManage = (props) => {
       key: 'action',
       align: 'center',
       valueType: 'option',
+      width: '15%',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -284,37 +287,48 @@ const ActivityManage = (props) => {
 
   return (
     <>
-      <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <Space>
-          <p>ค้นหาด้วยชื่อ</p>
-          <Search
-            placeholder="Search"
-            style={{ width: 300, marginBottom: 10 }}
-            enterButton
-            allowClear
-            onSearch={(search) => {
-              reload(search);
-            }}
-          />
-        </Space>
-        <Button
-          type="primary"
-          style={{ float: 'right' }}
-          icon={<PlusOutlined />}
-          onClick={() => showModal(1)}
-        >
-          เพิ่ม Activity
-        </Button>
-        <Table
-          columns={columns}
-          dataSource={activity}
-          expandable
-          size={'middle'}
-          pagination={{
-            pageSize: 8,
-          }}
-        />
-      </Card>
+      <Col span={24}>
+        <Card style={{ marginTop: '1rem' }} bordered={true}>
+          <Row gutter={[10, 10]}>
+            <Col xs={18} sm={16} md={12} lg={12} xl={8} xxl={8}>
+              <Form.Item label="ค้นหาด้วยชื่อ">
+                <Search
+                  placeholder="Search"
+                  // style={{ marginBottom: 10 }}
+                  enterButton
+                  allowClear
+                  onSearch={(search) => {
+                    reload(search);
+                  }}
+                />
+              </Form.Item>
+            </Col>
+
+            <Col xs={4} sm={8} md={12} lg={12} xl={16} xxl={16}>
+              <Button
+                type="primary"
+                style={{ float: 'right' }}
+                icon={<PlusOutlined />}
+                onClick={() => showModal(1)}
+              >
+                เพิ่ม Activity
+              </Button>
+            </Col>
+
+            <Col span={24}>
+              <Table
+                columns={columns}
+                dataSource={activity}
+                expandable
+                size={'middle'}
+                pagination={{
+                  pageSize: 8,
+                }}
+              />
+            </Col>
+          </Row>
+        </Card>
+      </Col>
 
       <Drawer
         title="Activity"

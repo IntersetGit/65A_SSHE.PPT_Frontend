@@ -10,11 +10,13 @@ import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
+  Col,
   Drawer,
   Dropdown,
   Form,
   Input,
   Menu,
+  Row,
   Space,
   Table,
 } from 'antd';
@@ -33,6 +35,15 @@ const ActivityManage = (props) => {
   const [selectedrow, setselectedrow] = useState(null);
   const [isShowDrawer, setShowDrawer] = useState(false);
   const [form] = useForm();
+  const [inputValue, setInputValue] = useState('');
+
+  const handleUserInput = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const resetInputField = () => {
+    setInputValue('');
+  };
 
   useEffect(() => {
     reload();
@@ -280,47 +291,60 @@ const ActivityManage = (props) => {
 
   return (
     <>
-      <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <Space>
-          <p>ชื่อประเภทโครงการ</p>
-          <Search
-            placeholder="Search"
-            style={{ width: 300, marginBottom: 10 }}
-            enterButton
-            allowClear
-            onSearch={(search) => {
-              reload(search);
-            }}
-          />
-        </Space>
+      <Col span={24}>
+        <Card style={{ marginTop: '1rem' }} bordered={true}>
+          <Row gutter={[10, 10]}>
+            <Col xs={20} sm={18} md={14} lg={14} xl={8} xxl={8}>
+              <Form.Item label="ชื่อประเภทโครงการ">
+                <Search
+                  placeholder="Search"
+                  enterButton
+                  // style={{ marginBottom: 10 }}
+                  value={inputValue}
+                  onChange={handleUserInput}
+                  allowClear
+                  onSearch={(search) => {
+                    reload(search);
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={2} sm={4} md={6} lg={6} xl={12} xxl={12}>
+              <Button
+                onClick={() => {
+                  reload();
+                  resetInputField();
+                }}
+              >
+                <RedoOutlined />
+              </Button>
+            </Col>
 
-        <Button
-          onClick={() => {
-            reload();
-          }}
-          style={{ marginLeft: 10 }}
-        >
-          <RedoOutlined />
-        </Button>
+            <Col xs={2} sm={2} md={4} lg={4} xl={4} xxl={4}>
+              <Button
+                type="primary"
+                style={{ float: 'right' }}
+                icon={<PlusOutlined />}
+                onClick={() => showModal(1)}
+              >
+                เพิ่ม ประเภท
+              </Button>
+            </Col>
 
-        <Button
-          type="primary"
-          style={{ float: 'right' }}
-          icon={<PlusOutlined />}
-          onClick={() => showModal(1)}
-        >
-          เพิ่ม ประเภท
-        </Button>
-        <Table
-          columns={columns}
-          dataSource={projecttype}
-          expandable
-          size={'middle'}
-          pagination={{
-            pageSize: 8,
-          }}
-        />
-      </Card>
+            <Col span={24}>
+              <Table
+                columns={columns}
+                dataSource={projecttype}
+                expandable
+                size={'middle'}
+                pagination={{
+                  pageSize: 8,
+                }}
+              />
+            </Col>
+          </Row>
+        </Card>
+      </Col>
 
       <Drawer
         title="Project Type"

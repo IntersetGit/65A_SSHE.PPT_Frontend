@@ -16,6 +16,7 @@ import {
   Form,
   Input,
   Menu,
+  Row,
   Select,
   Space,
   Table,
@@ -38,6 +39,15 @@ const ContractorCompanyManage = (props) => {
   const [drawerType, setdrawerType] = useState(1);
   const [selectedrow, setselectedrow] = useState(null);
   const [form] = Form.useForm();
+  const [inputValue, setInputValue] = useState('');
+
+  const handleUserInput = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const resetInputField = () => {
+    setInputValue('');
+  };
 
   useEffect(() => {
     reload();
@@ -336,60 +346,71 @@ const ContractorCompanyManage = (props) => {
     <>
       <Col span={24}>
         <Card style={{ marginTop: '1rem' }} bordered={true}>
-          <Space>
-            <p>ชื่อบริษัท</p>
-            <Search
-              placeholder="Search"
-              style={{ width: 300, marginBottom: 10 }}
-              enterButton
-              allowClear
-              onSearch={(search) => {
-                reload(search);
-              }}
-            />
-          </Space>
+          <Row gutter={[10, 10]}>
+            <Col xs={22} sm={16} md={12} lg={12} xl={8} xxl={8}>
+              <Form.Item label="ชื่อบริษัท">
+                <Search
+                  placeholder="Search"
+                  // style={{ marginBottom: 10 }}
+                  enterButton
+                  value={inputValue}
+                  onChange={handleUserInput}
+                  allowClear
+                  onSearch={(search) => {
+                    reload(search);
+                  }}
+                />
+              </Form.Item>
+            </Col>
 
-          <Button
-            onClick={() => {
-              reload();
-            }}
-            style={{ marginLeft: 10 }}
-          >
-            <RedoOutlined />
-          </Button>
+            <Col xs={24} sm={4} md={8} lg={8} xl={8} xxl={8}>
+              <Button
+                onClick={() => {
+                  reload();
+                  resetInputField();
+                }}
+              >
+                <RedoOutlined />
+              </Button>
+            </Col>
 
-          <Button
-            type="primary"
-            style={{ float: 'right' }}
-            icon={<PlusOutlined />}
-            onClick={() => showModal(1)}
-          >
-            เพิ่ม
-          </Button>
+            <Col xs={24} sm={4} md={4} lg={4} xl={8} xxl={8}>
+              <Button
+                type="primary"
+                style={{ float: 'right' }}
+                icon={<PlusOutlined />}
+                onClick={() => showModal(1)}
+              >
+                เพิ่ม
+              </Button>
+            </Col>
 
-          <Table
-            columns={columns}
-            dataSource={comusermanage}
-            expandable={{
-              expandedRowRender: (record) => (
-                <>
-                  {record.project.map((v, k) => {
-                    return (
-                      <span style={{ margin: 0 }} key={v.project_id}>
-                        {' '}
-                        {v.project_name} ,{' '}
-                      </span>
-                    );
-                  })}
-                </>
-              ),
-              rowExpandable: (record) =>
-                record.company_name !== 'Not Expandable',
-            }}
-            pagination={{
-              pageSize: 8,
-            }}
-          />
+            <Col span={24}>
+              <Table
+                columns={columns}
+                dataSource={comusermanage}
+                expandable={{
+                  expandedRowRender: (record) => (
+                    <>
+                      {record.project.map((v, k) => {
+                        return (
+                          <span style={{ margin: 0 }} key={v.project_id}>
+                            {' '}
+                            {v.project_name} ,{' '}
+                          </span>
+                        );
+                      })}
+                    </>
+                  ),
+                  rowExpandable: (record) =>
+                    record.company_name !== 'Not Expandable',
+                }}
+                pagination={{
+                  pageSize: 8,
+                }}
+              />
+            </Col>
+          </Row>
         </Card>
       </Col>
 

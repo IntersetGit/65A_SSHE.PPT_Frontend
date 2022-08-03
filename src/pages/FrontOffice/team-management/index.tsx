@@ -216,8 +216,24 @@ const TeamManagement = () => {
         columns={comparedColums}
         dataSource={teammanagement}
         size={'middle'}
+        // headerTitle={
+        //   <ProForm
+        //     layout={'inline'}
+        //     submitter={{
+        //       render: false,
+        //     }}
+        //   >
+        //     <ProFormText label="ชื่อ-นามสกุล" />
+        //   </ProForm>
+        // }
         pagination={{
           pageSize: 8,
+        }}
+        toolbar={{
+          settings: [],
+          onSearch: (value: string) => {
+            alert(value);
+          },
         }}
         toolBarRender={() => [
           <Button

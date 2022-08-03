@@ -46,6 +46,15 @@ const NonadUsermanage = (props) => {
   const [usertype, setusertype] = useState(undefined);
   const [filteredproject, setfilteredproject] = useState(undefined);
   const isMobile = true;
+  const [inputValue, setInputValue] = useState('');
+
+  const handleUserInput = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const resetInputField = () => {
+    setInputValue('');
+  };
 
   const onCompanychange = async (value) => {
     let arr = [];
@@ -529,21 +538,24 @@ const NonadUsermanage = (props) => {
       <Col span={24}>
         <Card style={{ marginTop: '1rem' }} bordered={true}>
           <Row gutter={[10, 10]}>
-            <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={5}>
+            <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
               <Search
                 placeholder="input search text"
                 allowClear
                 enterButton
+                value={inputValue}
+                onChange={handleUserInput}
                 onSearch={(search) => {
                   reload(search);
                 }}
               />
             </Col>
 
-            <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={11}>
+            <Col xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
               <Button
                 onClick={() => {
                   reload();
+                  resetInputField();
                 }}
                 style={{ marginLeft: 10 }}
               >

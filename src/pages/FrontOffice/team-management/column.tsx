@@ -20,13 +20,13 @@ export const columns: ProColumns[] = [
     dataIndex: 'e_mail',
     key: 'e_mail',
     align: 'center',
+    hideInSearch: true,
   },
   {
     title: 'ตำแหน่ง',
     dataIndex: 'position',
     key: 'position',
     align: 'center',
-    hideInSearch: true,
   },
   {
     title: 'Role',
@@ -47,6 +47,7 @@ export const columns: ProColumns[] = [
     dataIndex: 'isuse',
     key: 'isuse',
     align: 'center',
+    hideInSearch: true,
     sorter: (a, b) => a.isuse - b.isuse,
     render: (record) => {
       return <p>{record === 1 ? `ใช้งาน` : `ไม่ใช้งาน`}</p>;
