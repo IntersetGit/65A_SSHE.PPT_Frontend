@@ -9,11 +9,13 @@ import { ProDescriptions } from '@ant-design/pro-components';
 import {
   Button,
   Card,
+  Col,
   Drawer,
   Dropdown,
   Form,
   Input,
   Menu,
+  Row,
   Select,
   Space,
   Table,
@@ -275,6 +277,7 @@ const LikelihoodManage = (props) => {
       dataIndex: 'value',
       key: 'value',
       align: 'center',
+      width: '15%',
       render: (record) => {
         const data = likelihood_value.find((e) => e.value === record);
         return (
@@ -289,6 +292,7 @@ const LikelihoodManage = (props) => {
       key: 'action',
       align: 'center',
       valueType: 'option',
+      width: '15%',
       render: (record) => (
         <Dropdown.Button
           icon={<MoreOutlined />}
@@ -303,37 +307,48 @@ const LikelihoodManage = (props) => {
 
   return (
     <>
-      <Card style={{ marginTop: '1rem' }} bordered={true}>
-        <Space>
-          <p>ค้นหาด้วยชื่อ</p>
-          <Search
-            placeholder="Search"
-            style={{ width: 300, marginBottom: 10 }}
-            enterButton
-            allowClear
-            onSearch={(search) => {
-              reload(search);
-            }}
-          />
-        </Space>
-        <Button
-          type="primary"
-          style={{ float: 'right' }}
-          icon={<PlusOutlined />}
-          onClick={() => showModal(1)}
-        >
-          เพิ่ม Likelihood
-        </Button>
-        <Table
-          columns={columns}
-          dataSource={likelihood}
-          expandable
-          size={'middle'}
-          pagination={{
-            pageSize: 8,
-          }}
-        />
-      </Card>
+      <Col span={24}>
+        <Card style={{ marginTop: '1rem' }} bordered={true}>
+          <Row gutter={[10, 10]}>
+            <Col xs={18} sm={16} md={12} lg={12} xl={8} xxl={8}>
+              <Form.Item label="ค้นหาด้วยชื่อ">
+                <Search
+                  placeholder="Search"
+                  // style={{ marginBottom: 10 }}
+                  enterButton
+                  allowClear
+                  onSearch={(search) => {
+                    reload(search);
+                  }}
+                />
+              </Form.Item>
+            </Col>
+
+            <Col xs={4} sm={8} md={12} lg={12} xl={16} xxl={16}>
+              <Button
+                type="primary"
+                style={{ float: 'right' }}
+                icon={<PlusOutlined />}
+                onClick={() => showModal(1)}
+              >
+                เพิ่ม Likelihood
+              </Button>
+            </Col>
+
+            <Col span={24}>
+              <Table
+                columns={columns}
+                dataSource={likelihood}
+                expandable
+                size={'middle'}
+                pagination={{
+                  pageSize: 8,
+                }}
+              />
+            </Col>
+          </Row>
+        </Card>
+      </Col>
 
       <Drawer
         title="Likelihood"
