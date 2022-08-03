@@ -1,0 +1,22 @@
+{
+  "name": "PTT-SSHE-AI",
+  "short_name": "PTT-SSHE-AI",
+  "display": "standalone",
+  "start_url": "./?utm_source=homescreen",
+  "theme_color": "#002140",
+  "background_color": "#001529",
+  "icons": [
+    {
+      "src": "/assets/images/PTT-herder.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assets/images/PTT-herder.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "/assets/images/PTT-herder.png",
+      "sizes": "512x512"
+    }
+  ]
+}
