@@ -232,7 +232,7 @@ const Incident = () => {
                   alt="ptt-logo"
                 />
                 <p style={{ fontWeight: 'bold' }}>
-                  INCIDENT/ACCIDENT INVESTIGATION TEST
+                  INCIDENT/ACCIDENT INVESTIGATION TEST CICD
                 </p>
                 <p style={{ fontWeight: 'bold' }}>REPORT NO-001</p>
               </div>
