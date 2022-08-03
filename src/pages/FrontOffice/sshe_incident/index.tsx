@@ -265,7 +265,7 @@ const Incident = () => {
                     <Card title={'Date/Time of Incident'}>
                       <Form.Item
                         label="Date of Incident"
-                        name="dateofincident"
+                        name="date_incident"
                         rules={[
                           {
                             required: true,
@@ -273,12 +273,12 @@ const Incident = () => {
                           },
                         ]}
                       >
-                        <DatePicker />
+                        <DatePicker showTime />
                       </Form.Item>
 
                       <Form.Item
                         label="Time of Incident"
-                        name="timeofincident"
+                        name="datetime_incident"
                         rules={[
                           {
                             required: true,
@@ -295,7 +295,7 @@ const Incident = () => {
                     <Card title={'Date/Time of Report'}>
                       <Form.Item
                         label="Date of Report"
-                        name="dateofreport"
+                        name="date_incident_report"
                         rules={[
                           {
                             required: true,
@@ -308,7 +308,7 @@ const Incident = () => {
 
                       <Form.Item
                         label="Time of Report"
-                        name="timeofreport"
+                        name="datetime_incident_report"
                         rules={[
                           {
                             required: true,
